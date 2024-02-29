@@ -104,25 +104,11 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
 ### Prepare your environment
 
 1. Lunix operating system **Required**
-2. [Install Docker Engine](https://docs.docker.com/engine/install/#supported-platforms), here is an example for ubuntu 22.04
+2. Folowing procedure to [Install Docker Engine](https://docs.docker.com/engine/install/#supported-platforms) according to your operating system, or use next example using generic script (not recommended for production environments)
 
       ```bash
-      # Add Docker's official GPG key:
-      sudo apt-get update
-      sudo apt-get install ca-certificates curl
-      sudo install -m 0755 -d /etc/apt/keyrings
-      sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-      sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-      # Add the repository to Apt sources:
-      echo \
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-      sudo apt-get update
-
-      # Install docker
-      sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      # Install docker with generic script 
+      curl -fsSL https://get.docker.com/ | sudo sh
 
       # add your user to docker group
       sudo usermod -aG docker $USER
@@ -163,8 +149,8 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
 
       ```bash
       # or at least these commands tu setup your user
-      sed -i "s/REPLACE_BY_USER_ID/${id -u $UID}/g" .env
-      sed -i "s/REPLACE_BY_GROUP_ID/${id -g $UID}/g" .env
+      sed -i "s/REPLACE_BY_USER_ID/$UID/g" .env
+      sed -i "s/REPLACE_BY_GROUP_ID/$(id -g $UID)/g" .env
       ```
 
 3. Run the demo decoder with docker compose
