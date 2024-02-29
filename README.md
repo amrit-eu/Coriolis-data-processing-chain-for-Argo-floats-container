@@ -53,7 +53,8 @@ DECODER_RUNTIME_DIR=<path to runtime directory>
 DECODER_DATA_INPUT=<path to input directory>
 DECODER_DATA_CONF=<path to conf directory>
 DECODER_DATA_OUTPUT=<path to output directory>
-DECODER_REF_GEBCO=<path to gebco file>
+DECODER_REF_GEBCO=<path to gebco file> # Optionnal
+DECODER_REF_GREYLIST=<path to gebco file> # Optionnal
 
 USER_ID=<uid volumes owner>
 GROUP_ID=<gid volumes owner>
@@ -75,7 +76,6 @@ docker run -it --rm \
 -v $DECODER_DATA_INPUT:/mnt/data/rsync:rw \
 -v $DECODER_DATA_CONF:/mnt/data/config:ro \
 -v $DECODER_DATA_OUTPUT:/mnt/data/output:rw \
--v $DECODER_REF_GEBCO:/mnt/ref/gebco.nc:ro \
 $DECODER_IMAGE:$DECODER_IMAGE_TAG /mnt/runtime 'rsynclog' 'all' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd.json' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd_rem.json' 'xmlreport' 'co041404_'$(date +"%Y%m%dT%H%M%SZ")'_'$FLOAT_WMO'.xml' 'floatwmo' ''$FLOAT_WMO'' 'PROCESS_REMAINING_BUFFERS' '1'
 ```
 
