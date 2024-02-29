@@ -19,7 +19,7 @@ services:
       - ${DECODER_DATA_INPUT}:/mnt/data/rsync:rw
       - ${DECODER_DATA_CONF}:/mnt/data/config:ro
       - ${DECODER_DATA_OUTPUT}:/mnt/data/output:rw
-    command: /mnt/runtime 'rsynclog' 'all' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd.json' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd_rem.json' 'xmlreport' 'co041404_20240124T112515Z_458271.xml' 'floatwmo' '6903014' 'PROCESS_REMAINING_BUFFERS' '1'
+    command: /mnt/runtime 'rsynclog' 'all' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd.json' 'xmlreport' 'co041404_Argo_Workshop_6903014.xml' 'floatwmo' '6903014' 'PROCESS_REMAINING_BUFFERS' '1'
     group_add:
       - gbatch
     depends_on:
@@ -37,7 +37,7 @@ services:
       - ${DECODER_DATA_INPUT}:/mnt/data/rsync:rw
       - ${DECODER_DATA_CONF}:/mnt/data/config:ro
       - ${DECODER_DATA_OUTPUT}:/mnt/data/output:rw
-    command: /mnt/runtime 'rsynclog' 'all' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd.json' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd_rem.json' 'xmlreport' 'co041404_20240124T112515Z_458271.xml' 'floatwmo' '6902892' 'PROCESS_REMAINING_BUFFERS' '1'
+    command: /mnt/runtime 'rsynclog' 'all' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd.json' 'xmlreport' 'co041404_Argo_Workshop_6902892.xml' 'floatwmo' '6902892' 'PROCESS_REMAINING_BUFFERS' '1'
     group_add:
       - gbatch
     depends_on:
