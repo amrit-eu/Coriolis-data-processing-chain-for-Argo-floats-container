@@ -15,7 +15,7 @@ RUN \
     unzip ${APP_FILENAME} && \
     rm ${APP_FILENAME}
 
-FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 as runtime
+FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 as runtime-base
 
 # confifurable arguments
 ARG RUN_FILE=run_decode_argo_2_nc_rt.sh
@@ -64,4 +64,19 @@ RUN \
     chown -R root:gbatch ${APP_DIR} /mnt /tmp && \
     find . -type f -exec chmod ug+x {} \;
 
+# classique runtime image
+FROM runtime-base as runtime
+
 ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Galaxy runtime image
+FROM runtime-base as runtime-galaxy
+
+RUN \
+    apt-get -y update && \
+    echo "===== ADD TOOLS LIBRARIES =====" && \
+    apt-get -y install zip unzip
+
+COPY --chown=root:gbatch ./R2022b /mnt/runtime
+
+USER 1000:${GROUPID}
