@@ -1,0 +1,13 @@
+services:
+  # Matlab runtime environment
+  runtime-matlab:
+    profiles:
+      - matlab
+    container_name: argo-runtime-matlab
+    image: ${RUNTIME_IMAGE}:${RUNTIME_IMAGE_TAG}
+    volumes:
+      - runtime_volume:${RUNTIME_CONTAINER_PATH}:rw
+
+volumes:
+  runtime_volume:
+    external: false
