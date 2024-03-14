@@ -94,7 +94,7 @@ docker build -t decode-argo:develop --build-arg "HEADER_TOKEN=${HEADER_TOKEN}" -
 
 - Run see run section to run the image.
 
-## Argo workshop
+## Demo
 
 This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats based on a Dockerised Matlab Runtime on two Argo floats :
 
@@ -126,7 +126,7 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
 
 ### Run demo with docker compose
 
-1. Get demo project
+1. Upload the project with demonstration dataset
 
    - Option 1 : Using Git
 
@@ -145,7 +145,7 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
    cd Coriolis-data-processing-chain-for-Argo-floats
    ```
 
-2. Edit environement variables `.env` file with your favorite text editor to setup your configuration
+2. Edit environment variables `.env` file with your favorite text editor to setup your configuration, or use the next commands :
 
       ```bash
       # or at least these commands tu setup your user
@@ -153,10 +153,10 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
       sed -i "s/REPLACE_BY_GROUP_ID/$(id -g $UID)/g" .env
       ```
 
-3. Run the demo decoder with docker compose
+3. Run decoder demo with matlab runtime thanks to docker compose
 
       ```bash
-      docker compose up
+      docker compose --profile matlab up
       ```
 
-4. Check next directory to consulte decoder outputs : `./decArgo_demo/output`
+4. Check next directory to see decoder outputs : `./decArgo_demo/output`

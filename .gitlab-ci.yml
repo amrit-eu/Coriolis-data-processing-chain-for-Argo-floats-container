@@ -37,10 +37,10 @@ publish_docker_on_github:
     GITHUB_REGISTRY_PATH: euroargodev/coriolis-data-processing-chain-for-argo-floats
   script:
     - echo ${CI_REGISTRY_PASSWORD} | docker login ${CI_REGISTRY} --password-stdin -u ${CI_REGISTRY_USER}
-    - docker pull ${CI_REGISTRY_IMAGE}:20240111
+    - docker pull ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
     - docker logout
     - docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} ${GITHUB_REGISTRY}/${GITHUB_REGISTRY_PATH}:${CI_COMMIT_TAG}
-    - echo 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 | docker login ${GITHUB_REGISTRY} --password-stdin -u marine-argo-coriolis-decoder-package-token-rw
+    - echo ${EXTERNAL_REGISTRY_PASSWORD} | docker login ${GITHUB_REGISTRY} --password-stdin -u marine-argo-coriolis-decoder-package-token-rw
     - docker push ${GITHUB_REGISTRY}/${GITHUB_REGISTRY_PATH}:${CI_COMMIT_TAG}
     - docker logout
 
