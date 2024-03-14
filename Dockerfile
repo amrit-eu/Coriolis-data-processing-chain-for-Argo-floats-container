@@ -2,7 +2,8 @@ FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 as pr
 
 RUN \
     apt-get -y update && \
-    apt-get -y install wget unzip
+    apt-get -y install wget unzip && \
+    mkdir -p /tmp/config
 
 ARG HEADER_TOKEN
 ARG APP_VERSION
@@ -10,10 +11,12 @@ ARG APP_FILENAME
 
 WORKDIR /tmp
 
-RUN \
-    wget --header "${HEADER_TOKEN}" https://gitlab.ifremer.fr/api/v4/projects/4282/packages/generic/decode_argo/${APP_VERSION}/${APP_FILENAME} && \
-    unzip ${APP_FILENAME} && \
-    rm ${APP_FILENAME}
+COPY decArgo_soft/exec/run_decode_argo_2_nc_rt.sh .
+COPY decArgo_soft/exec/decode_argo_2_nc_rt .
+COPY decArgo_soft/config/configuration_sample_files_docker/_argo_decoder_conf_ir_sbd.json config/
+COPY decArgo_soft/config/configuration_sample_files_docker/_argo_decoder_conf_ir_sbd_rem.json config/
+COPY decArgo_soft/config/_configParamNames config/
+COPY decArgo_soft/config/_techParamNames config/
 
 FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 as runtime
 
