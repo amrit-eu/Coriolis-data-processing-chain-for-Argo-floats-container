@@ -62,7 +62,7 @@ COPY entrypoint.sh .
 # adjust rights
 RUN \
     chown -R root:gbatch ${APP_DIR} /mnt /tmp && \
-    find . -type f -exec chmod ug+x {} \;
+    chmod -R 770 ${APP_DIR} /mnt /tmp
 
 # classique runtime image
 FROM runtime-base as runtime
