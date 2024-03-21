@@ -17,9 +17,10 @@ services:
     command: /mnt/runtime 'rsynclog' 'all' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd.json' 'xmlreport' 'co041404_Argo_Workshop_6903014.xml' 'floatwmo' '6903014' 'PROCESS_REMAINING_BUFFERS' '1'
     group_add:
       - gbatch
-    # depends_on:
-    #   runtime-matlab:
-    #     condition: service_started
+    depends_on:
+      runtime-matlab:
+        condition: service_started
+        required: false
   # Decode float Arvor Deep 6902892
   decode-float-6902892:
     container_name: decode-floatwmo-6902892
@@ -35,9 +36,10 @@ services:
     command: /mnt/runtime 'rsynclog' 'all' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd.json' 'xmlreport' 'co041404_Argo_Workshop_6902892.xml' 'floatwmo' '6902892' 'PROCESS_REMAINING_BUFFERS' '1'
     group_add:
       - gbatch
-    # depends_on:
-    #   runtime-matlab:
-    #     condition: service_started
+    depends_on:
+      runtime-matlab:
+        condition: service_started
+        required: false
 
 volumes:
   runtime_volume:
