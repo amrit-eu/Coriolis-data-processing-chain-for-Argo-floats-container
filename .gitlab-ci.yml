@@ -3,17 +3,17 @@ include:
     ref: feature/pipeline-generic
     file: /pipelines/generic-container-image.yml
 
-  #   container-image:euroargo:github 🐳:
-  # extends: [.only-on-tag]
-  # stage: share
-  # variables: 
-  #   GITHUB_REGISTRY: ghcr.io
-  #   GITHUB_REGISTRY_PATH: euroargodev/coriolis-data-processing-chain-for-argo-floats-container
-  # script:
-  #   - echo ${CI_REGISTRY_PASSWORD} | docker login ${CI_REGISTRY} --password-stdin -u ${CI_REGISTRY_USER}
-  #   - docker pull ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
-  #   - docker logout
-  #   - docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} ${GITHUB_REGISTRY}/${GITHUB_REGISTRY_PATH}:${CI_COMMIT_TAG}
-  #   - echo ${EUROARGODEV_PACKAGE_TOKEN} | docker login ${GITHUB_REGISTRY} --password-stdin -u marine-argo-coriolis-decoder-package-token-rw
-  #   - docker push ${GITHUB_REGISTRY}/${GITHUB_REGISTRY_PATH}:${CI_COMMIT_TAG}
-  #   - docker logout
+# déploiement sur le github euroargo
+container-image:github:euroargo 🐳:
+  stage: container-image
+  extends:
+    - .container-image:docker:build-tag-push:socket
+  variables:
+    CONTAINER_IMAGE_REGISTRY: ghcr.io
+    CONTAINER_IMAGE_NAMESPACE: euroargodev
+    CONTAINER_IMAGE_NAME: coriolis-data-processing-chain-for-argo-floats-container
+    CONTAINER_IMAGE_LOGIN_USER: marine-argo-coriolis-decoder-package-token-rw
+    CONTAINER_IMAGE_LOGIN_TOKEN: $EUROARGODEV_PACKAGE_TOKEN
+  rules:
+    - !reference [ .deploy:prod:branches:rules, rules ]
+    - when: never

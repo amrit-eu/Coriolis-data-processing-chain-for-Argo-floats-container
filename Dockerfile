@@ -63,10 +63,12 @@ RUN \
     chown -R root:gbatch ${APP_DIR} /mnt && \
     chmod -R 770 ${APP_DIR} /mnt
 
-# classique runtime image
-FROM runtime-base AS runtime
-
 ENTRYPOINT ["/app/entrypoint.sh"]
+
+# classique runtime image
+# FROM runtime-base AS runtime
+
+# ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Galaxy runtime image
 # FROM runtime-base AS runtime-galaxy
