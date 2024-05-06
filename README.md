@@ -86,10 +86,14 @@ $DECODER_IMAGE:$DECODER_IMAGE_TAG /mnt/runtime 'rsynclog' 'all' 'configfile' '/a
 - Use the following command to build the Docker image.
 
 ```bash
+<<<<<<< HEAD
 HEADER_TOKEN="DEPLOY-TOKEN: REPLACE_BY_DEPLOY_TOKEN"
 APP_VERSION=061a
 APP_FILENAME=argo-decoder-${APP_VERSION}.zip
 docker build -t decode-argo:develop --build-arg "HEADER_TOKEN=${HEADER_TOKEN}" --build-arg "APP_VERSION=${APP_VERSION}" --build-arg "APP_FILENAME=${APP_FILENAME}" .
+=======
+docker build -t decode-argo:develop .
+>>>>>>> main
 ```
 
 - Run see run section to run the image.
