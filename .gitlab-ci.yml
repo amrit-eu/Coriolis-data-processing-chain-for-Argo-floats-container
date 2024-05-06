@@ -2,16 +2,13 @@ include:
   - project: dev-ops/templates/automatisation/ci-cd
     ref: main
     file: /pipelines/generic-container-image.yml
-variables:
-  CI_DEBUG_TRACE: true
-  CI_DEBUG_SERVICES: true
 
-# le decodeur argo à un convention de nommage des version bien spécifique
+# Pas de contrôle du formattage de la version car le decodeur argo à une convention de nommage des versions bien spécifique
 .release:rules:
   rules:
     - if: '$CI_COMMIT_TAG != null'
 
-# déploiement sur le github euroargo
+# Déploiement du livrable docker sur la registry docker du hithub euroargo lors d'un tag
 container-image:github:euroargo 🐳:
   stage: container-image
   extends:
