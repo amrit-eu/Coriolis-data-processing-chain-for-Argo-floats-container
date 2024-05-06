@@ -1,0 +1,73 @@
+% ------------------------------------------------------------------------------
+% Create NetCDF META-DATA AUX file.
+%
+% SYNTAX :
+%  create_nc_meta_aux_file( ...
+%    a_inputAuxMetaName, a_inputAuxMetaId, a_inputAuxMetaValue, a_inputAuxMetaDescription, ...
+%    a_inputAuxStaticConfigName, a_inputAuxStaticConfigId, a_inputAuxStaticConfigValue, ...
+%    a_launchAuxConfigName, a_launchAuxConfigId, a_launchAuxConfigValue, ...
+%    a_missionAuxConfigName, a_missionAuxConfigId, a_missionAuxConfigValue, a_configMissionNumber, ...
+%    a_metaDataAux)
+%
+% INPUT PARAMETERS :
+%   a_inputAuxMetaName          : AUX meta-data names
+%   a_inputAuxMetaId            : AUX meta-data Ids
+%   a_inputAuxMetaValue         : AUX meta-data values
+%   a_inputAuxMetaDescription   : AUX meta-data description
+%   a_inputAuxStaticConfigName  : static AUX configuration names
+%   a_inputAuxStaticConfigId    : static AUX configuration Ids
+%   a_inputAuxStaticConfigValue : static AUX configuration values
+%   a_launchAuxConfigName       : launch AUX configuration names
+%   a_launchAuxConfigId         : launch AUX configuration Ids
+%   a_launchAuxConfigValue      : launch AUX configuration values
+%   a_missionAuxConfigName      : mission AUX configuration names
+%   a_missionAuxConfigId        : mission AUX configuration Ids
+%   a_missionAuxConfigValue     : mission AUX configuration values
+%   a_configMissionNumber       : mission configuration numbers
+%   a_metaDataAux               : SENSOR AUX meta-data
+%
+% OUTPUT PARAMETERS :
+%
+% EXAMPLES :
+%
+% SEE ALSO :
+% AUTHORS  : Jean-Philippe Rannou (Altran)(jean-philippe.rannou@altran.com)
+% ------------------------------------------------------------------------------
+% RELEASES :
+%   02/20/2017 - RNU - creation
+% ------------------------------------------------------------------------------
+function create_nc_meta_aux_file( ...
+   a_inputAuxMetaName, a_inputAuxMetaId, a_inputAuxMetaValue, a_inputAuxMetaDescription, ...
+   a_inputAuxStaticConfigName, a_inputAuxStaticConfigId, a_inputAuxStaticConfigValue, ...
+   a_launchAuxConfigName, a_launchAuxConfigId, a_launchAuxConfigValue, ...
+   a_missionAuxConfigName, a_missionAuxConfigId, a_missionAuxConfigValue, a_configMissionNumber, ...
+   a_metaDataAux)
+
+
+if (isempty(a_inputAuxMetaName) && isempty(a_inputAuxStaticConfigName) && ...
+      isempty(a_launchAuxConfigName) && isempty(a_missionAuxConfigName) && ...
+      ~isfield(a_metaDataAux, 'SENSOR') && ~isfield(a_metaDataAux, 'PARAMETER'))
+   return
+end
+
+if (iscell(a_launchAuxConfigValue) || iscell(a_missionAuxConfigValue))
+
+   create_nc_meta_aux_file_2_0( ...
+      a_inputAuxMetaName, a_inputAuxMetaId, a_inputAuxMetaValue, a_inputAuxMetaDescription, ...
+      a_inputAuxStaticConfigName, a_inputAuxStaticConfigId, a_inputAuxStaticConfigValue, ...
+      a_launchAuxConfigName, a_launchAuxConfigId, a_launchAuxConfigValue, ...
+      a_missionAuxConfigName, a_missionAuxConfigId, a_missionAuxConfigValue, a_configMissionNumber, ...
+      a_metaDataAux)
+
+else
+
+   create_nc_meta_aux_file_1_0( ...
+      a_inputAuxMetaName, a_inputAuxMetaId, a_inputAuxMetaValue, a_inputAuxMetaDescription, ...
+      a_inputAuxStaticConfigName, a_inputAuxStaticConfigId, a_inputAuxStaticConfigValue, ...
+      a_launchAuxConfigName, a_launchAuxConfigId, a_launchAuxConfigValue, ...
+      a_missionAuxConfigName, a_missionAuxConfigId, a_missionAuxConfigValue, a_configMissionNumber, ...
+      a_metaDataAux)
+
+end
+
+return
