@@ -15,10 +15,6 @@ stages:
   - security
   - docs
 
-
-default:
-  tags: [coriolis-runner]
-
 .only-on-tag:
   rules:
     - if: '$CI_COMMIT_TAG != null'
