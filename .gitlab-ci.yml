@@ -1,56 +1,19 @@
 include:
-  - project: 'dev-ops/hebergement_web/templates/remote-ci-templates'
-    ref: 'main'
-    file: 'Auto-DevOps.gitlab-ci.yml'
+  - project: dev-ops/templates/automatisation/ci-cd
+    ref: feature/pipeline-generic
+    file: /pipelines/generic-container-image.yml
 
-# stages (main steps of pipeline)
-stages:
-  - prepare
-  - build
-  - test
-  - quality
-  - release
-  - publish
-  - share
-  - security
-  - docs
-
-default:
-  tags: [coriolis-runner]
-
-.only-on-tag:
-  rules:
-    - if: '$CI_COMMIT_TAG != null'
-
-publish_docker_on_registry:
-  extends: [.docker-push-on-project-registry, .only-on-tag]
-  stage: publish
-  variables:
-    TPL_IMAGE_STAGE: "runtime"
-
-container-image:euroargo:giltab 🐳:
-  extends: [.docker-push-on-project-registry, .only-on-tag]
-  stage: publish
-  variables:
-    TPL_IMAGE_STAGE: "runtime"
-
-# container:galaxy:build 🐳:
-#   extends: [.docker-push-on-project-registry, .only-on-tag]
-#   stage: publish
-#   variables:
-#     TPL_IMAGE_STAGE: "runtime-galaxy"
-
-container-image:euroargo:github 🐳:
-  extends: [.only-on-tag]
-  stage: share
-  variables: 
-    GITHUB_REGISTRY: ghcr.io
-    GITHUB_REGISTRY_PATH: euroargodev/coriolis-data-processing-chain-for-argo-floats-container
-  script:
-    - echo ${CI_REGISTRY_PASSWORD} | docker login ${CI_REGISTRY} --password-stdin -u ${CI_REGISTRY_USER}
-    - docker pull ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
-    - docker logout
-    - docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} ${GITHUB_REGISTRY}/${GITHUB_REGISTRY_PATH}:${CI_COMMIT_TAG}
-    - echo ${EUROARGODEV_PACKAGE_TOKEN} | docker login ${GITHUB_REGISTRY} --password-stdin -u marine-argo-coriolis-decoder-package-token-rw
-    - docker push ${GITHUB_REGISTRY}/${GITHUB_REGISTRY_PATH}:${CI_COMMIT_TAG}
-    - docker logout
+  #   container-image:euroargo:github 🐳:
+  # extends: [.only-on-tag]
+  # stage: share
+  # variables: 
+  #   GITHUB_REGISTRY: ghcr.io
+  #   GITHUB_REGISTRY_PATH: euroargodev/coriolis-data-processing-chain-for-argo-floats-container
+  # script:
+  #   - echo ${CI_REGISTRY_PASSWORD} | docker login ${CI_REGISTRY} --password-stdin -u ${CI_REGISTRY_USER}
+  #   - docker pull ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
+  #   - docker logout
+  #   - docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} ${GITHUB_REGISTRY}/${GITHUB_REGISTRY_PATH}:${CI_COMMIT_TAG}
+  #   - echo ${EUROARGODEV_PACKAGE_TOKEN} | docker login ${GITHUB_REGISTRY} --password-stdin -u marine-argo-coriolis-decoder-package-token-rw
+  #   - docker push ${GITHUB_REGISTRY}/${GITHUB_REGISTRY_PATH}:${CI_COMMIT_TAG}
+  #   - docker logout

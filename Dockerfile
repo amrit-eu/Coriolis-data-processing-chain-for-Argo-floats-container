@@ -69,13 +69,13 @@ FROM runtime-base AS runtime
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Galaxy runtime image
-FROM runtime-base AS runtime-galaxy
+# FROM runtime-base AS runtime-galaxy
 
-RUN \
-    apt-get -y update && \
-    echo "===== ADD TOOLS LIBRARIES =====" && \
-    apt-get -y install zip unzip
+# RUN \
+#     apt-get -y update && \
+#     echo "===== ADD TOOLS LIBRARIES =====" && \
+#     apt-get -y install zip unzip
 
-COPY --chown=root:gbatch ./R2022b /mnt/runtime
+# COPY --chown=root:gbatch ./R2022b /mnt/runtime
 
-USER 1000:${GROUPID}
+# USER 1000:${GROUPID}
