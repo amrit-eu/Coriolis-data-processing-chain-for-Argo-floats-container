@@ -34,23 +34,12 @@ publish_docker_on_github:
   stage: share
   variables: 
     GITHUB_REGISTRY: ghcr.io
-    GITHUB_REGISTRY_PATH: euroargodev/coriolis-data-processing-chain-for-argo-floats
+    GITHUB_REGISTRY_PATH: euroargodev/coriolis-data-processing-chain-for-argo-floats-container
   script:
     - echo ${CI_REGISTRY_PASSWORD} | docker login ${CI_REGISTRY} --password-stdin -u ${CI_REGISTRY_USER}
     - docker pull ${CI_REGISTRY_IMAGE}:20240111
     - docker logout
     - docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} ${GITHUB_REGISTRY}/${GITHUB_REGISTRY_PATH}:${CI_COMMIT_TAG}
-    - echo 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 | docker login ${GITHUB_REGISTRY} --password-stdin -u marine-argo-coriolis-decoder-package-token-rw
+    - echo ${EUROARGODEV_PACKAGE_TOKEN} | docker login ${GITHUB_REGISTRY} --password-stdin -u marine-argo-coriolis-decoder-package-token-rw
     - docker push ${GITHUB_REGISTRY}/${GITHUB_REGISTRY_PATH}:${CI_COMMIT_TAG}
     - docker logout
-
-# publish_docker_on_github:
-#   extends: [.docker-push-on-project-registry, .only-on-tag]
-#   stage: publish
-#   variables:
-#     TPL_IMAGE_BUILD_ARGS: "--build-arg HEADER_TOKEN=JOB-TOKEN:${CI_JOB_TOKEN} --build-arg APP_VERSION=${CI_COMMIT_TAG} --build-arg APP_FILENAME=argo-decoder-${CI_COMMIT_TAG}.zip"
-#     TPL_IMAGE_PATH: "ghcr.io/euroargodev/Coriolis-data-processing-chain-for-Argo-floats:${CI_COMMIT_TAG}"
-#   before_script:
-#     - echo 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 | docker login ghcr.io --password-stdin -u marine-argo-coriolis-decoder-package-token-rw
-#   after_script:
-#     - docker logout ghcr.io

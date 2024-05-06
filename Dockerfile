@@ -1,4 +1,4 @@
-FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 as prepare
+FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 AS prepare
 
 RUN \
     apt-get -y update && \
@@ -18,7 +18,7 @@ COPY decArgo_soft/config/configuration_sample_files_docker/_argo_decoder_conf_ir
 COPY decArgo_soft/config/_configParamNames config/
 COPY decArgo_soft/config/_techParamNames config/
 
-FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 as runtime
+FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 AS runtime
 
 # confifurable arguments
 ARG RUN_FILE=run_decode_argo_2_nc_rt.sh

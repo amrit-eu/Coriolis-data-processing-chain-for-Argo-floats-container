@@ -1,6 +1,12 @@
-.env.ifremer
-.env.local
+# outputs
 decArgo_demo/output/iridium
 decArgo_demo/output/nc
 decArgo_demo/output/xml
+
+# big files
 decArgo_soft/soft/misc/woa13_all_n00_01.nc
+
+# configurations
+.env*
+!.env
+!.env.docs
