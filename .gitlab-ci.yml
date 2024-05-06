@@ -2,7 +2,11 @@ include:
   - project: dev-ops/templates/automatisation/ci-cd
     ref: feature/pipeline-generic
     file: /pipelines/generic-container-image.yml
+variables:
+  CI_DEBUG_TRACE: true
+  CI_DEBUG_SERVICES: true
 
+# le decodeur argo à un convention de nommage des version bien spécifique
 .release:rules:
   rules:
     - if: '$CI_COMMIT_TAG != null'
@@ -18,6 +22,6 @@ container-image:github:euroargo 🐳:
     CONTAINER_IMAGE_NAME: coriolis-data-processing-chain-for-argo-floats-container
     CONTAINER_IMAGE_LOGIN_USER: marine-argo-coriolis-decoder-package-token-rw
     CONTAINER_IMAGE_LOGIN_TOKEN: $EUROARGODEV_PACKAGE_TOKEN
-  rules:
-    - !reference [ .release:rules, rules ]
-    - when: never
+  # rules:
+  #   - !reference [ .release:rules, rules ]
+  #   - when: never
