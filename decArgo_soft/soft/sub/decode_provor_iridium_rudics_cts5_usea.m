@@ -538,6 +538,10 @@ if (isempty(g_decArgo_outputCsvFileId))
    % add MTIME to profiles
    o_tabProfiles = finalize_profile_ir_rudics_cts5(o_tabProfiles);
 
+   % remove desc prof levels sampled during multi-park phase
+   [o_tabProfiles] = remove_desc_prof_levels_multi_park_phase_cts5_usea( ...
+      o_tabProfiles, o_tabTrajNCycle);
+
    % merge multiple N_CYCLE and N_MEAS records for a given output cycle number
    % and add not present (but expected for this float family) Measurement Codes
    [o_tabTrajNMeas, o_tabTrajNCycle] = finalize_trajectory_data_ir_rudics_cts5( ...

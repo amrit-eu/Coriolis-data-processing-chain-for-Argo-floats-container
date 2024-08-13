@@ -3,7 +3,7 @@
 % final (and intermediate) trajectories of estimated profile locations.
 %
 % SYNTAX :
-%   ge_generate_traj_from_csv_estimate_profile_position(6902899)
+%   ge_generate_traj_from_csv_estimate_profile_position('csv_file_path_name')
 %
 % INPUT PARAMETERS :
 %   varargin : CSV file path name

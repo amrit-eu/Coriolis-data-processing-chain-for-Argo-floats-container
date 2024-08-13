@@ -21,12 +21,15 @@
 % ------------------------------------------------------------------------------
 function [o_profInfo] = get_WOA_data(a_profInfo)
 
+% WOA file path name
+global g_decArgo_woaFile;
+
 % output parameters initialization
 o_profInfo = [];
 
 
-% check that World Ocean Atlas 2013 is available in the Matlab path
-WOA_FILE_NAME = 'woa13_all_n00_01.nc';
+% check that World Ocean Atlas is available
+WOA_FILE_NAME = g_decArgo_woaFile;
 if ~(exist(WOA_FILE_NAME, 'file') == 2)
    fprintf('ERROR: World Ocean Atlas 2013 file not found in the Matlab path: %s - NITRATE data cannot be adjusted\n', WOA_FILE_NAME);
    return

@@ -419,6 +419,7 @@ for idSpoolFile = 1:length(tabAllFileNames)
       continue
    end
    
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    % decode SBD file
    sbdFileName = regexprep(curMailFile, '.txt', '.sbd');
    decodedData = decode_sbd_file(sbdFileName, curMailFileDate, a_decoderId, a_launchDate);
@@ -444,6 +445,7 @@ end
 
 fprintf('\nDEC_INFO: creating buffers\n');
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % create decoding buffers
 decodedDataTab = create_decoding_buffers(decodedDataTab, a_decoderId);
 
@@ -456,6 +458,7 @@ end
 
 fprintf('\nDEC_INFO: processing decoded data\n');
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % process decoded data
 bufferList = [decodedDataTab.rankByCycle];
 % if (isempty(g_decArgo_outputCsvFileId))

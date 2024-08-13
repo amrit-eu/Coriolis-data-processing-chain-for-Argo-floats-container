@@ -38,26 +38,13 @@ g_NTT_NC_DIR = 'D:\202211-ArgoData\coriolis\';
 g_NTT_NC_DIR = 'C:\Users\jprannou\_DATA\OUT\nc_output_decArgo\';
 
 % directory to store pdf output
-g_NTT_PDF_DIR = 'C:\Users\jprannou\_RNU\DecArgo_soft\work\';
+g_NTT_PDF_DIR = 'C:\Users\jprannou\_RNU\DecArgo_soft\work\pdf\';
 
 % default list of floats to plot
 FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_tmp.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_nke_222_223_225.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\lists_20221013\list_decId_222_4.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_203.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_215.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_204.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_205.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_210.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_211.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_212.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_213.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_214.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_217.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_222.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_223.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_224.txt';
-% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\Contacts\Desktop\Profils_alternés\prv_225.txt';
+FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\arvor_deep_221.txt';
+FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\arvor_deep_221_surface_grounded_anomaly.txt';
+% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\arvor_deep_221_surface_grounded_ok.txt';
 
 % display help information on available commands
 display_help;

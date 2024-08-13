@@ -134,15 +134,32 @@ for idMsg = 1:size(sbdDataTab, 1)
          o_decodedData = [o_decodedData decodedData];
 
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      case {224, 226}
+      case {224, 226, 227}
          % Arvor-ARN-Ice RBR Iridium 5.49
          % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
+         % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
 
          % decode the collected data
-         decodedData = decode_prv_data_ir_sbd_224_226(sbdDataTab(idMsg, :), ...
+         decodedData = decode_prv_data_ir_sbd_224_226_227(sbdDataTab(idMsg, :), ...
             a_sbdFileName, a_sbdFileDate, a_launchDate, a_decoderId);
          o_decodedData = [o_decodedData decodedData];
 
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      case {228} % Arvor-Deep-Ice Iridium 5.68 (3T prototype)
+         
+         % decode the collected data
+         decodedData = decode_prv_data_ir_sbd_228(sbdDataTab(idMsg, :), ...
+            a_sbdFileName, a_sbdFileDate, a_launchDate);
+         o_decodedData = [o_decodedData decodedData];
+
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      case {229} % Arvor-Deep-Ice Iridium 5.69 (2T prototype)
+         
+         % decode the collected data
+         decodedData = decode_prv_data_ir_sbd_229(sbdDataTab(idMsg, :), ...
+            a_sbdFileName, a_sbdFileDate, a_launchDate);
+         o_decodedData = [o_decodedData decodedData];
+         
       otherwise
          fprintf('WARNING: Float #%d: Nothing implemented yet in decode_sbd_file for decoderId #%d\n', ...
             g_decArgo_floatNum, ...

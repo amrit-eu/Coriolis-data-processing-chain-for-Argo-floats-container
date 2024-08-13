@@ -398,13 +398,25 @@ for idFloat = 1:nbFloats
          g_decArgo_gpsData{13} = 0;
       end
       
-      if (ismember(floatDecId, [212, 222, 214, 216, 217, 218, 221, 223, 224, 225, 226]))
+      if (ismember(floatDecId, [401]))
+
+         % PFV2 floats
+
+         [tabProfiles, ...
+            tabTrajNMeas, tabTrajNCycle, ...
+            tabNcTechIndex, tabNcTechVal, tabTechAuxNMeas, ...
+            structConfig] = decode_arvor_pfv2_iridium_sbd( ...
+            floatNum, floatCycleList, ...
+            floatDecId, str2num(floatArgosId), ...
+            floatLaunchDate, floatRefDay, floatEndDate);
+
+      elseif (ismember(floatDecId, [212, 222, 214, 216, 217, 218, 221, 223, 224, 225, 226, 227, 228, 229]))
 
          % ICE floats
 
          % since version 5.67 Arvor Deep are supposed to be in the
          % float_sensor_list
-         if (ismember(floatDecId, [221]))
+         if (ismember(floatDecId, [221, 228, 229]))
             % store the sensor list
             if (isfield(g_decArgo_jsonMetaData, 'SENSOR_MOUNTED_ON_FLOAT') && ~isempty(g_decArgo_jsonMetaData.SENSOR_MOUNTED_ON_FLOAT))
                jSensorNames = struct2cell(g_decArgo_jsonMetaData.SENSOR_MOUNTED_ON_FLOAT);

@@ -37,7 +37,7 @@ switch (a_decoderId)
       % ARVOR SBE
       o_wmoInstType = '844';
       
-   case {224, 226}
+   case {224, 226, 227}
       % ARVOR RBR
       o_wmoInstType = '878';
       
@@ -49,11 +49,11 @@ switch (a_decoderId)
       % PROVOR_IV SBE
       o_wmoInstType = '835';
       
-   case {126, 127, 128, 129, 130, 131, 132, 133}
+   case {126, 127, 128, 129, 130, 131, 132, 133, 134}
       % PROVOR_V SBE
       o_wmoInstType = '834';
       
-   case {201, 202, 203, 215, 216, 218, 221}
+   case {201, 202, 203, 215, 216, 218, 221, 228, 229}
       % ARVOR_D SBE
       o_wmoInstType = '838';
       

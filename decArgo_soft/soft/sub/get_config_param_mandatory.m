@@ -47,7 +47,7 @@ switch (a_decoderId)
          {'CONFIG_TransmissionEndCycle_LOGICAL'}; ...
          ];
       
-   case {121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133}
+   case {121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134}
       % CTS5
       o_configParamName = [ ...
          {'CONFIG_CycleTime_seconds'}; ...
@@ -55,7 +55,7 @@ switch (a_decoderId)
          {'CONFIG_ProfilePressure_dbar'}; ...
          ];
       
-   case {201, 202, 203, 204, 205, 206, 207, 208, 209, 215, 216, 218, 221}
+   case {201, 202, 203, 204, 205, 206, 207, 208, 209, 215, 216, 218, 221, 228, 229}
       % Provor Iridium
       o_configParamName = [ ...
          {'CONFIG_CycleTime_days'}; ...
@@ -63,7 +63,7 @@ switch (a_decoderId)
          {'CONFIG_ProfilePressure_dbar'}; ...
          ];
       
-   case {210, 211, 212, 222, 213, 214, 217, 223, 224, 225, 226}
+   case {210, 211, 212, 222, 213, 214, 217, 223, 224, 225, 226, 227}
       % Arvor-ARN Iridium
       % Arvor-ARN-Ice Iridium 5.45 & 5.47
       % Provor-ARN-DO Iridium
@@ -73,6 +73,7 @@ switch (a_decoderId)
       % Arvor-ARN-Ice RBR Iridium 5.49
       % Provor-ARN-DO-Ice Iridium 5.76
       % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
+      % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
       o_configParamName = [ ...
          {'CONFIG_CycleTime_hours'}; ...
          {'CONFIG_ParkPressure_dbar'}; ...

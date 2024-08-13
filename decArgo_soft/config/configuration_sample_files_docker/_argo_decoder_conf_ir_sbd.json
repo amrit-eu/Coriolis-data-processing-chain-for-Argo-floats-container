@@ -76,7 +76,10 @@
     "TEST063_CHLA" : "1",
     "TEST004_GEBCO_FILE" : "/mnt/ref/gebco.nc",
     "TEST015_GREY_LIST_FILE" : "/tmp/ar_greylist.txt",
-     
+
+    "WOA_FILE" : "/mnt/ref/woa13_all_n00_01.nc",
+    "CHLA_COR_FACT_FILE" : "/mnt/ref/SLOPE_RT_2024.txt",
+
     "ADD_THREE_MINUTES" : "0"
  }
  

@@ -54,13 +54,46 @@ nHistory = outputFileSchema.Dimensions(idF).Length;
 % create updated file
 ncwriteschema(trajFileName, outputFileSchema);
 
+% copy data in updated file - V1 - NOT EFFICIENT
+% for idVar = 1:length(outputFileSchema.Variables)
+%    varData = ncread(tmpTrajFileName, outputFileSchema.Variables(idVar).Name);
+%    if (~isempty(varData))
+%       ncwrite(trajFileName, outputFileSchema.Variables(idVar).Name, varData);
+%    end
+% end
+
 % copy data in updated file
+fCdfIn = netcdf.open(tmpTrajFileName, 'NC_NOWRITE');
+if (isempty(fCdfIn))
+   fprintf('RTQC_ERROR: Unable to open NetCDF input file: %s\n', tmpTrajFileName);
+   return
+end
+fCdfOut = netcdf.open(trajFileName, 'NC_WRITE');
+if (isempty(fCdfOut))
+   fprintf('RTQC_ERROR: Unable to open NetCDF input file: %s\n', trajFileName);
+   return
+end
+
 for idVar = 1:length(outputFileSchema.Variables)
-   varData = ncread(tmpTrajFileName, outputFileSchema.Variables(idVar).Name);
+   varName = outputFileSchema.Variables(idVar).Name;
+   varData = netcdf.getVar(fCdfIn, netcdf.inqVarID(fCdfIn, varName));
    if (~isempty(varData))
-      ncwrite(trajFileName, outputFileSchema.Variables(idVar).Name, varData);
+      dimList = {outputFileSchema.Variables(idVar).Dimensions.Name};
+      if (length(dimList) == 1)
+         netcdf.putVar(fCdfOut, netcdf.inqVarID(fCdfOut, varName), 0, length(varData), varData);
+      else
+         startList = zeros(1, length(dimList));
+         countList = size(varData);
+         if (length(countList) < length(dimList))
+            countList = [countList ones(1, length(dimList)-length(countList))];
+         end
+         netcdf.putVar(fCdfOut, netcdf.inqVarID(fCdfOut, varName), startList, countList, varData);
+      end
    end
 end
+
+netcdf.close(fCdfOut);
+netcdf.close(fCdfIn);
 
 % update input file
 move_file(trajFileName, a_trajFileName);

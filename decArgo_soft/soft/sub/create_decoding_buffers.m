@@ -58,12 +58,31 @@ switch (a_decoderId)
 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-   case {224, 226}
+   case {224, 226, 227}
       % Arvor-ARN-Ice RBR Iridium 5.49
       % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
+      % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
 
-      [o_decodedData] = create_decoding_buffers_224_226(a_decodedData, a_decoderId);
+      [o_decodedData] = create_decoding_buffers_224_226_227(a_decodedData, a_decoderId);
 
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      
+   case {228} % Arvor-Deep-Ice Iridium 5.68 (3T prototype)
+      
+      [o_decodedData] = create_decoding_buffers_228(a_decodedData, a_decoderId);
+
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   case {229} % Arvor-Deep-Ice Iridium 5.69 (2T prototype)
+
+      [o_decodedData] = create_decoding_buffers_229(a_decodedData, a_decoderId);
+
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      
+   case {401} % Arvor PFV2 8.01
+      
+      [o_decodedData] = create_decoding_buffers_pfv2(a_decodedData, a_decoderId);
+      
    otherwise
       fprintf('WARNING: Float #%d: Nothing implemented yet to create decoding buffers for decoderId #%d\n', ...
          g_decArgo_floatNum, ...

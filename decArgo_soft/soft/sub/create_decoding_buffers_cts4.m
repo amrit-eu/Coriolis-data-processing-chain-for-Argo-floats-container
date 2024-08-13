@@ -39,6 +39,7 @@ global g_decArgo_processRemainingBuffers;
 global g_decArgo_phasePreMission;
 global g_decArgo_phaseSurfWait;
 global g_decArgo_phaseSatTrans;
+global g_decArgo_phaseEndOfProf;
 global g_decArgo_phaseEndOfLife;
 
 % ICE float firmware
@@ -57,7 +58,7 @@ NB_SESSION_MAX = 3;
 
 % specific
 if (ismember(g_decArgo_floatNum, ...
-      [6903247, 6904182, 7901001]))
+      [6903247, 6904182, 7901001, 6903091]))
    switch g_decArgo_floatNum
       case 6903247
 
@@ -111,11 +112,20 @@ if (ismember(g_decArgo_floatNum, ...
          return
       case 7901001
          % the float has been reset at sea after cycle (72, 0) and cycle numbers
-         %started from 1
+         % started from 1
          tabCyNumRaw = [a_decodedData.cyNumRaw];
          tabPhaseNumRaw = [a_decodedData.phaseNumRaw];
          idStart = find((tabCyNumRaw == 1) & (tabPhaseNumRaw == g_decArgo_phaseSurfWait), 1, 'last');
          a_decodedData(idStart:end) = update_cycle_number(a_decodedData(idStart:end), 71);
+      case 6903091
+         % the float has been reset at sea after cycle (127, 0) and cycle numbers
+         % started from 1
+         tabCyNumRaw = [a_decodedData.cyNumRaw];
+         tabPhaseNumRaw = [a_decodedData.phaseNumRaw];
+         id = find((tabCyNumRaw == 1) & (tabPhaseNumRaw == g_decArgo_phaseSurfWait), 1, 'last');
+         a_decodedData(id) = update_cycle_number(a_decodedData(id), 127);
+         idStart = find((tabCyNumRaw == 1) & (tabPhaseNumRaw == g_decArgo_phaseSatTrans), 1, 'last');
+         a_decodedData(idStart:end) = update_cycle_number(a_decodedData(idStart:end), 127);
    end
 end
 
@@ -419,7 +429,7 @@ tabRank(idSurfVectorPres) = -1;
 if (ismember(g_decArgo_floatNum, ...
       [6903249, 6902906, 6903551, 3902122, 2902239, 3902121, 2902242, 3902124, ...
       6903130, 6903549, 6903129, 7901001, 4903643, 2902238, 2902241, 2902244, ...
-      6903247, 6903592]))
+      6903247, 6903592, 5907088, 6903091]))
    switch g_decArgo_floatNum
 
       case 6903249
@@ -596,7 +606,7 @@ if (ismember(g_decArgo_floatNum, ...
          tabDone(idDel) = 1;
          % during cycle (52, 0) transmission, the float
          % transmitted old memorized data
-         idLastForCycle52 = find((tabCyNumRaw == 53) & (tabProfNumRaw == 0) & (tabPackType == 253), 1, 'last');
+         idLastForCycle52 = find((tabCyNumRaw == 53) & (tabProfNumRaw == 0) & (tabPackType == 253), 1, 'first');
          idDel = find((tabCyNumRaw == 52) & (tabProfNumRaw == 0));
          idDel(find(idDel <= idLastForCycle52)) = [];
          tabRank(idDel) = -1;
@@ -605,6 +615,8 @@ if (ismember(g_decArgo_floatNum, ...
          % transmission for unknown reason!)
          idF = find((tabCyNumRaw == 52) & (tabProfNumRaw == 0) & (tabPackType == 250) & (tabSensorType == 0), 1, 'first');
          tabExpNbDesc(idF) = 255;
+
+         tabDone(tabRank == -1) = 1;     
 
       case 7901001
          % the float has been reset at sea after cycle (72, 0) and cycle numbers
@@ -822,6 +834,38 @@ if (ismember(g_decArgo_floatNum, ...
 
          idF = find(ismember(tabCyNumRaw, [109:117 120 126 129 134 135 138:142 146:152]) & (tabProfNumRaw == 0) & (tabDeep == 1));
          tabDeep(idF) = 0;
+
+      case 5907088
+         % during cycle (21, 0) transmission, the float
+         % transmitted old memorized data
+         id21 = find((tabCyNumRaw == 21) & (tabProfNumRaw == 0) & (tabPackType == 253));
+         idOk = find((tabCyNumRaw == 21) & (tabProfNumRaw == 0) & ((tabRank == tabRank(id21(1))) | (tabRank == tabRank(id21(2)))));
+         idAll = find((tabCyNumRaw == 21) & (tabProfNumRaw == 0));
+         idDel = setdiff(idAll, idOk);
+         tabRank(idDel) = -1;
+         tabDone(idDel) = 1;
+         allList = idOk(1):idOk(end);
+         koList = allList(tabRank(allList) == -1);
+         tabDone(koList) = 1;
+
+         id21bis = find((tabCyNumRaw == 22) & (tabProfNumRaw == 0) & (tabPackType == 253) & (tabPhaseNumRaw == 1), 1, 'first');
+         idAll = find(tabRank == tabRank(id21bis));
+         idDel = setdiff(idAll, id21bis);
+         tabRank(idDel) = -1;
+         tabDone(idDel) = 1;
+         
+         idFirst = find((tabCyNumRaw == 22) & (tabProfNumRaw == 0) & (tabPhaseNumRaw == 1) & (tabPackType == 253));
+         idLast = find((tabCyNumRaw == 22) & (tabProfNumRaw == 0) & (tabPhaseNumRaw == 12) & (tabPackType == 253));
+         allList = idFirst:idLast-1;
+         koList = allList(tabRank(allList) == -1);
+         tabDone(koList) = 1;
+
+      case 6903091
+         % do not consider packets received during float reset
+         idDelStart = find((tabCyNumRaw == 127) & (tabPhaseNumRaw == g_decArgo_phaseEndOfProf), 1, 'first');
+         idDelStop = find((tabCyNumRaw == 127) & (tabPackType == 248), 1, 'last');
+         tabRank(idDelStart:idDelStop) = -1;
+         tabDone(idDelStart:idDelStop) = 1;
    end
 end
 

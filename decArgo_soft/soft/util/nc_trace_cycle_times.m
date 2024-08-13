@@ -54,16 +54,20 @@ else
 
    % top directory of NetCDF files to plot (TRAJ and META)
    g_NTCT_NC_DIR = 'C:\Users\jprannou\_DATA\OUT\nc_output_decArgo\';
+   % g_NTCT_NC_DIR = 'C:\Users\jprannou\_DATA\TRAJ_DM_2024\nc_output_decArgo_traj_dm\';
 
    % top directory of NetCDF auxiliary files to plot (TECH_AUX)
    g_NTCT_NC_DIR_AUX = 'C:\Users\jprannou\_DATA\OUT\nc_output_decArgo\';
+   % g_NTCT_NC_DIR_AUX = 'C:\Users\jprannou\_DATA\TRAJ_DM_2024\nc_output_decArgo_traj_dm\';
 
    % directory to store pdf output
    g_NTCT_PDF_DIR = 'C:\Users\jprannou\_RNU\DecArgo_soft\work\pdf\';
 
    % default list of floats to plot
    FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_tmp.txt';
-%    FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\lists_20221013\list_decId_222_4.txt';
+   FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\arvor_deep_221.txt';
+   FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\arvor_deep_221_surface_grounded_anomaly.txt';
+   FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\Argo\ActionsCoriolis\ANDRO_2_TRAJ-DM\Decomptes_20240621\arvor_in_andro_with_prof_DM.txt';
 
    % JPR CONFIGURATION - END
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1568,7 +1572,7 @@ if (g_NTCT_PRINT)
    print('-dpdf', [g_NTCT_PDF_DIR '/' sprintf('nc_trace_cycle_times_%s_%s%s', ...
       num2str(g_NTCT_FLOAT_LIST(a_idFloat+1))), num2str(g_NTCT_cycles(a_idCycle+1)), surfText, '.pdf']);
    g_NTCT_PRINT = 0;
-   orient portrait
+   % orient portrait
 end
 
 return

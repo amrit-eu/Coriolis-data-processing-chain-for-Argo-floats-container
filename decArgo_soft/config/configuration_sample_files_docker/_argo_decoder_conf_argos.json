@@ -77,5 +77,8 @@
    "TEST004_GEBCO_FILE" : "C:/Users/jprannou/_RNU/_ressources/GEBCO_2020/GEBCO_2020.nc",
    "TEST015_GREY_LIST_FILE" : "C:/Users/jprannou/_RNU/DecArgo_soft/work/ar_greylist.txt",
 
+   "WOA_FILE" : "C:/Users/jprannou/_RNU/_ressources/WOA/woa13_all_n00_01.nc",
+   "CHLA_COR_FACT_FILE" : "C:/Users/jprannou/_RNU/_ressources/CHLA_COR_FACT/SLOPE_RT_2024.txt",
+
    "ADD_THREE_MINUTES" : "0"
 }

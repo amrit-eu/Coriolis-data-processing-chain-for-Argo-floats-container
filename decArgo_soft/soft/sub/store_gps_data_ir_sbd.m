@@ -67,13 +67,15 @@ if (~isempty(a_tabTech))
       for idP = 1:length(idPos)
          switch (a_decoderId)
             
-            case {201, 202, 203, 215, 216, 218, 221}
+            case {201, 202, 203, 215, 216, 218, 221, 228, 229}
                % Arvor-deep 4000
                % Arvor-deep 3500
                % Arvor-deep 4000 with "Near Surface" & "In Air" measurements
                % Arvor-Deep-Ice Iridium 5.65 (IFREMER version)
                % Arvor-Deep-Ice Iridium 5.66 (NKE version)
                % Arvor-Deep-Ice Iridium 5.67
+               % Arvor-Deep-Ice Iridium 5.68 (3T prototype)
+               % Arvor-Deep-Ice Iridium 5.69 (2T prototype)
                gpsValidFlagFromTech = a_tabTech(idPos(idP), 59);
                eolFlag = min(eolFlag, a_tabTech(idPos(idP), 64));
 
@@ -84,7 +86,7 @@ if (~isempty(a_tabTech))
                gpsValidFlagFromTech = a_tabTech(idPos(idP), 74);
                % no EOL FLAG for these firmware versions
 
-            case {210, 211, 212, 222, 224, 223, 213, 214, 217, 225, 226}
+            case {210, 211, 212, 222, 224, 223, 213, 214, 217, 225, 226, 227}
                % Arvor-ARN Iridium
                % Arvor-ARN-Ice Iridium
                % Arvor-ARN-Ice RBR Iridium 5.49
@@ -93,6 +95,7 @@ if (~isempty(a_tabTech))
                % Arvor-ARN-DO-Ice Iridium 5.46
                % Provor-ARN-DO-Ice Iridium 5.76
                % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
+               % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
                gpsValidFlagFromTech = a_tabTech(idPos(idP), 62);
                eolFlag = min(eolFlag, a_tabTech(idPos(idP), 67));
 

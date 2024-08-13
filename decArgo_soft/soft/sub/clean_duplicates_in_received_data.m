@@ -91,7 +91,7 @@ function [o_packetName] = get_packet_name(a_packType, a_decoderId)
 o_packetName = '';
 
 switch (a_decoderId)
-   case {212, 222, 214, 217, 223, 224, 225, 226}
+   case {212, 222, 214, 217, 223, 224, 225, 226, 227}
       switch (a_packType)
          case 0
             o_packetName = 'one technical packet #1';
@@ -142,6 +142,44 @@ switch (a_decoderId)
             o_packetName = 'one technical packet';
          case 1
             o_packetName = 'one ascending data packet';
+      end
+   case {228}
+      switch (a_packType)
+         case 0
+            o_packetName = 'one technical packet #1';
+         case 4
+            o_packetName = 'one technical packet #2';
+         case 26
+            o_packetName = 'one technical packet #3 3T';
+         case 5
+            o_packetName = 'one parameter packet #1';
+         case 27
+            o_packetName = 'one parameter packet #2 3T';
+         case 6
+            o_packetName = 'one hydraulic valve packet';
+         case 7
+            o_packetName = 'one hydraulic pump packet';
+         otherwise
+            o_packetName = 'one data packet';
+      end
+   case {229}
+      switch (a_packType)
+         case 0
+            o_packetName = 'one technical packet #1';
+         case 4
+            o_packetName = 'one technical packet #2';
+         case 26
+            o_packetName = 'one technical packet #3 2T';
+         case 5
+            o_packetName = 'one parameter packet #1';
+         case 27
+            o_packetName = 'one parameter packet #2 2T';
+         case 6
+            o_packetName = 'one hydraulic valve packet';
+         case 7
+            o_packetName = 'one hydraulic pump packet';
+         otherwise
+            o_packetName = 'one data packet';
       end
    otherwise
       fprintf('WARNING: Nothing done yet in get_packet_name for decoderId #%d\n', ...

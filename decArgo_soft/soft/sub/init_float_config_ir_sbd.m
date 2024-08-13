@@ -126,12 +126,31 @@ switch (a_decoderId)
       
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       
-   case {224, 226}
+   case {224, 226, 227}
       % Arvor-ARN-Ice RBR Iridium 5.49
       % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
+      % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
       
-      init_float_config_prv_ir_sbd_224_226(a_launchDate, a_decoderId);
+      init_float_config_prv_ir_sbd_224_226_227(a_launchDate, a_decoderId);
+
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   case {228} % Arvor-deep 5.68 (3T prototype)
       
+      init_float_config_prv_ir_sbd_228(a_launchDate);
+
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   case {229} % Arvor-Deep-Ice Iridium 5.69 (2T prototype)
+      
+      init_float_config_prv_ir_sbd_228(a_launchDate); % to be check if we need a dedicated one
+
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   case {401} % Arvor PFV2 8.01
+      
+      init_float_config_prv_ir_sbd_401(a_launchDate);
+
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%      
       
    case {2001, 2002, 2003} % Nova, Dova

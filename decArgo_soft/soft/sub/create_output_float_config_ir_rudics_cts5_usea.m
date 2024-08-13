@@ -460,7 +460,7 @@ notWantedDynamicConfigNames{end+1} = 'CONFIG_APMT_SENSOR_17_P53';
 notWantedDynamicConfigNames{end+1} = 'CONFIG_APMT_SENSOR_18_P53';
 notWantedDynamicConfigNames{end+1} = 'CONFIG_APMT_SENSOR_20_P53';
 notWantedDynamicConfigNames{end+1} = 'CONFIG_APMT_SENSOR_21_P53';
-if (ismember(a_decoderId, [126, 127, 128]))
+if (ismember(a_decoderId, [126, 127, 128, 134]))
    notWantedDynamicConfigNames{end+1} = 'CONFIG_APMT_PATTERN_01_P99'; % used to manage multi parking for decId >= 129
 end
 

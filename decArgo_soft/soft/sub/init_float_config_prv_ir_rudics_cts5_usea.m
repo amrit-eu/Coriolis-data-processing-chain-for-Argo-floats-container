@@ -160,7 +160,7 @@ end
 % create static configuration names
 configNames1 = [];
 switch (a_decoderId)
-   case {126, 127, 128, 129, 130, 131, 132, 133}
+   case {126, 127, 128, 129, 130, 131, 132, 133, 134}
       configInfoList = [ ...
          {'SYSTEM'} {[0:4 7 9:12]} {[]}; ...
          {'TECHNICAL'} {[0:1 8:15 17 18 20]} {[]}; ...
@@ -258,7 +258,7 @@ configNames1 = [configNames1 ...
 % create dynamic configuration names
 configNames2 = [];
 switch (a_decoderId)
-   case {126, 127, 128, 129, 130, 131, 132, 133}
+   case {126, 127, 128, 129, 130, 131, 132, 133, 134}
       configInfoList = [ ...
          {'SYSTEM'} {[5 6 8]} {[]}; ...
          {'TECHNICAL'} {[2:7 16 19 21 22 23 24]} {[]}; ...
@@ -621,7 +621,7 @@ if (isfield(g_decArgo_jsonMetaData, 'CALIBRATION_COEFFICIENT'))
       
       % create the tabDoxyCoef array
       switch (a_decoderId)
-         case {126, 127, 128, 129, 130, 131, 132, 133}
+         case {126, 127, 128, 129, 130, 131, 132, 133, 134}
             if (any(strcmp(g_decArgo_sensorMountedOnFloat, 'OPTODE')))
                if (isfield(g_decArgo_calibInfo, 'OPTODE'))
                   calibData = g_decArgo_calibInfo.OPTODE;
@@ -703,7 +703,7 @@ if (isfield(g_decArgo_jsonMetaData, 'CALIBRATION_COEFFICIENT'))
                      g_decArgo_calibInfo.SUNA.FloatPixelBegin = get_config_value_from_json('CONFIG_PX_1_6_0_0_3', g_decArgo_jsonMetaData);
                      g_decArgo_calibInfo.SUNA.FloatPixelEnd = get_config_value_from_json('CONFIG_PX_1_6_0_0_4', g_decArgo_jsonMetaData);
                      
-                  case {127}
+                  case {127, 134}
                      calibData = g_decArgo_calibInfo.SUNA;
                      tabOpticalWavelengthUv = [];
                      tabENitrate = [];

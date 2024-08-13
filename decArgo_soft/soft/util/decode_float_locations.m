@@ -40,7 +40,7 @@
 function decode_float_locations(varargin)
 
 % to switch between Coriolis and JPR configurations
-CORIOLIS_CONFIGURATION_FLAG = 1;
+CORIOLIS_CONFIGURATION_FLAG = 0;
 
 if (CORIOLIS_CONFIGURATION_FLAG)
 
@@ -307,6 +307,7 @@ decIdManagedList = [ ...
    214 ... % Provor-ARN-DO-Ice Iridium 5.75
    225 ... % Provor-ARN-DO-Ice Iridium 5.76
    226 ... % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
+   227 ... % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
    g_decArgo_decoderIdListNkeCts4 ... % all versions of Provor CTS4
    g_decArgo_decoderIdListNkeCts5 ... % all versions of Provor CTS5
    g_decArgo_decoderIdListApexApf11IridiumRudics ... % all versions of Apex APF11 Iridium Rudics
@@ -466,7 +467,7 @@ elseif (ismember(floatDecId, g_decArgo_decoderIdListNkeCts5))
 else
    switch (floatDecId)
       case {219, ...
-            210, 211, 212, 217, 222, 223, 224, 226, ...
+            210, 211, 212, 217, 222, 223, 224, 226, 227, ...
             203, 215, 218, 221, ...
             213, 214, 225}
          duplicate_iridium_mail_files_float_to_recover( ...
@@ -496,7 +497,7 @@ elseif (ismember(floatDecId, g_decArgo_decoderIdListNkeCts5))
 else
    switch (floatDecId)
       case {219, ...
-            210, 211, 212, 217, 222, 223, 224, 226, ...
+            210, 211, 212, 217, 222, 223, 224, 226, 227, ...
             203, 215, 218, 221, ...
             213, 214, 225}
          [decodedDataTab] = decode_float_location_iridium_sbd(floatDecId, floatWmo, floatPtt, DIR_OUTPUT_DATA_IRIDIUM_SBD);
@@ -1675,9 +1676,10 @@ for idMsg = 1:size(sbdDataTab, 1)
             o_decodedData = [o_decodedData; [floatTime gpsLocLon gpsLocLat]];
 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-         case {224, 226}
+         case {224, 226, 227}
             % Arvor-ARN-Ice RBR Iridium 5.49
             % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
+            % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
 
             % first item bit number
             firstBit = 1;

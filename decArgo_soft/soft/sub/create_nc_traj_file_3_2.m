@@ -285,6 +285,25 @@ if (~isempty(histoInstitution))
       nHistoryDim = size(histoInstitution, 2) + 1;
    end
 end
+% we create a trajectory file with 2 additionnal N_HISTORY set of arrays (to
+% speed up the RTQC phase)
+if (isempty(histoInstitution))
+   nHistoryDim = nHistoryDim + 2;
+else
+   if (size(histoInstitution, 2) == 1)
+      if (~isempty(strtrim(histoInstitution(:, end))))
+         nHistoryDim = nHistoryDim + 2;
+      else
+         nHistoryDim = nHistoryDim + 1;
+      end
+   elseif (size(histoInstitution, 2) >= 2)
+      if (~isempty(strtrim(histoInstitution(:, end))))
+         nHistoryDim = nHistoryDim + 2;
+      elseif (~isempty(strtrim(histoInstitution(:, end-1))))
+         nHistoryDim = nHistoryDim + 1;
+      end
+   end
+end
 nHistoryDimId = netcdf.defDim(fCdf, 'N_HISTORY', nHistoryDim);
 
 if (VERBOSE_MODE == 2)
@@ -2080,6 +2099,8 @@ if (~isempty(histoInstitution))
    if (length(ncDataMode) <= length(cycles))
       currentHistoId = size(histoInstitution, 2);
    end
+   % write history information in N_HISTORY end-2 set of arrays
+   currentHistoId = currentHistoId - 2;
 end
 value = 'IF';
 netcdf.putVar(fCdf, historyInstitutionVarId, ...

@@ -445,7 +445,8 @@ end
 if (ismember(g_decArgo_floatNum, [ ...
       6904068, 6900791, 6903064, 6904067, 6903800, 6904072, 6903059, 6903109, ...
       6904236, 6903046, 6904097, 6904080, 6903867, 6901283, 6904207, 3901997, ...
-      6904218, 3902005, 6903132, 3902006, 3902468, 3902004, 3902117, 4903650]))
+      6904218, 3902005, 6903132, 3902006, 3902468, 3902004, 3902117, 4903650, ...
+      6903815, 6903055, 6904234, 6904079, 5906866, 7901091, 6904206, 1902575]))
    switch g_decArgo_floatNum
       case 6900791
          % cycle #11 data are separated
@@ -648,8 +649,18 @@ if (ismember(g_decArgo_floatNum, [ ...
          id136 = find(tabCyNum == 136);
          tabRank(id136) = tabRank(id136(1));
          % cycle #154 split for unknown reason
-         id154= find(tabCyNum == 154);
+         id154 = find(tabCyNum == 154);
          tabRank(id154) = tabRank(id154(1));
+
+         % cycle #211 the first part of the transmission is split for unknown reason
+         id211_1 = find(tabCyNum == 211, 1, 'first');
+         id211_2 = find((tabCyNum == 211) & (tabBase == 1));
+         id211_2 = id211_2(2);
+         tabRank(tabRank == tabRank(id211_2)) = tabRank(id211_1);
+         tabSession(tabSession == tabSession(id211_2)) = tabSession(id211_1);
+         tabSessionDeep(tabSessionDeep == tabSessionDeep(id211_2)) = tabSessionDeep(id211_1);
+         tabDelayed(tabDelayed == tabDelayed(id211_2)) = 0;
+         tabCompleted(tabCyNum == 211) = 1;
          
       case 6901283
          % cycle #67: tech#1, tech#2 and one hydraulic packets are transmitted twice
@@ -762,6 +773,13 @@ if (ismember(g_decArgo_floatNum, [ ...
          id = find((tabCyNum == 161) & (tabIrSession == 1));
          tabDeep(id) = 0;
 
+         % cycle #170 separated by the algorithm
+         id = find(tabCyNum == 170);
+         tabCompleted(id) = 1;
+         tabRank(id) = tabRank(id(1));
+         tabSession(id) = tabSession(id(1));
+         tabSessionDeep(id) = tabSessionDeep(id(1));
+
       case 3902004
          % cycle #158 transmitted in multiple sessions
          id = find((tabCyNum == 158) & (tabIrSession == 1));
@@ -773,7 +791,16 @@ if (ismember(g_decArgo_floatNum, [ ...
          tabDelayed(id(id2)) = 2;
          tabRank(id) = tabRank(id(1));
          tabDeep(id) = 1;
-      
+
+         % cycle #169 transmitted in multiple sessions
+         id = find((tabCyNum == 169) & ((tabIrSession == 0) | (tabIrSession == -1)));
+         id2 = find(tabRank(id) ~= tabRank(id(1)));
+         tabDelayed(id(id2)) = 0;
+         tabRank(id) = tabRank(id(1));
+         id3 = find((tabCyNum == 169) & (tabIrSession == 1));
+         tabDeep(id3) = 0;
+         tabDelayed(id3) = 0;
+
       case 6903132
          % cycle #46: TECH #1, #2 and one hydraulic packet are decoded twice
          id = find((tabCyNum == 46) & (tabBase == 1));
@@ -823,8 +850,8 @@ if (ismember(g_decArgo_floatNum, [ ...
          tabDeep(id2) = 0;
          tabRank(id1) = tabRank(id1(1));
 
-         % cycle #29 to #43 delayed with second Iridium session
-         for cyNum = 29:43
+         % cycle #29:44 46:48 52  delayed with second Iridium session
+         for cyNum = [29:44 46:48 52]
             id = find(tabCyNum == cyNum);
             id3 = find((tabCyNum == cyNum) & (tabIrSession == 1));
             id1 = setdiff(id, id3);
@@ -832,6 +859,13 @@ if (ismember(g_decArgo_floatNum, [ ...
             tabDeep(id3) = 0;
          end
 
+         % cycle #52 separated by the algorithm
+         id = find(tabCyNum == 52);
+         tabCompleted(id) = 1;
+         tabRank(id) = tabRank(id(1));
+         tabSession(id) = tabSession(id(1));
+         tabSessionDeep(id) = tabSessionDeep(id(1));
+         
       case 3902468
          % cycle #24 split
          id1 = find((tabCyNum == 24) & (tabPackType == 0));
@@ -861,6 +895,95 @@ if (ismember(g_decArgo_floatNum, [ ...
          tabSession(tabCyNum == 18) = tabSession(id);   
          tabSessionDeep(tabCyNum == 18) = tabSessionDeep(id);   
          tabCompleted(tabCyNum == 18) = 1;
+
+      case 6903815
+         % cycle #133 data are separated
+         id = find(tabCyNum == 133);
+         id = id(1);
+         tabRank(tabCyNum == 133) = tabRank(id);
+         tabSession(tabCyNum == 133) = tabSession(id);   
+         tabSessionDeep(tabCyNum == 133) = tabSessionDeep(id);   
+         tabCompleted(tabCyNum == 133) = 1;
+         
+      case 6903055
+         % cycle #304 data are separated
+         idB = find((tabCyNum == 304) & (tabBase == 1));
+         tabRank(tabRank == tabRank(idB(2))) = tabRank(idB(1));
+         tabSession(tabSession == tabSession(idB(2))) = tabSession(idB(1));
+         tabSessionDeep(tabSessionDeep == tabSessionDeep(idB(2))) = tabSessionDeep(idB(1));
+         tabCompleted(tabRank == tabRank(idB(1))) = 1;
+
+      case 6904234
+         % cycle #43 2 tech packets and 1 hydrau packet transmitted twice
+         idB = find((tabCyNum == 43) & (tabBase == 1));
+         idDel1 = find((tabRank == tabRank(idB(1))) & (tabPackType == 6));
+         idDel2 = find((tabRank == tabRank(idB(2))) & ((tabPackType == 0) | (tabPackType == 4)));
+         tabRank(tabRank == tabRank(idB(2))) = tabRank(idB(1));
+         tabSession(tabSession == tabSession(idB(2))) = tabSession(idB(1));
+         tabSessionDeep(tabSessionDeep == tabSessionDeep(idB(2))) = tabSessionDeep(idB(1));
+         tabRank([idDel1 idDel2]) = -1;
+         tabRankByCycle([idDel1 idDel2]) = -1;
+
+      case 6904079
+         % cycle #52 data are separated
+         idB = find((tabCyNum == 52) & (tabBase == 1));
+         tabRank(tabRank == tabRank(idB(2))) = tabRank(idB(1));
+         tabSession(tabSession == tabSession(idB(2))) = tabSession(idB(1));
+         tabSessionDeep(tabSessionDeep == tabSessionDeep(idB(2))) = tabSessionDeep(idB(1));
+         tabCompleted(tabRank == tabRank(idB(1))) = 1;
+
+      case 5906866
+         % cycle #47 data are separated
+         id47 = find(tabCyNum == 47);
+         tabRank(id47) = tabRank(id47(1));
+         tabCompleted(id47) = 1;
+
+         % cycle #50 data are separated
+         id50 = find(tabCyNum == 50);
+         tabRank(id50) = tabRank(id50(1));
+         tabCompleted(id50) = 1;
+
+         % cycle #55 data are separated
+         id55 = find(tabCyNum == 55);
+         tabRank(id55) = tabRank(id55(1));
+         tabCompleted(id55) = 1;
+         
+         % cycle #57 data are separated
+         id57 = find(tabCyNum == 57);
+         tabRank(id57) = tabRank(id57(1));
+         tabCompleted(id57) = 1;
+         
+         % cycle #58 data are separated
+         id58 = find(tabCyNum == 58);
+         tabRank(id58) = tabRank(id58(1));
+         tabCompleted(id58) = 1;
+
+      case 7901091
+         % cycle #304 data are separated
+         id = find(tabCyNum == 304);
+         tabRank(tabCyNum == 304) = tabRank(id(1));
+         tabSession(tabSession == 304) = tabSession(id(1));
+         tabCompleted(tabCyNum == 304) = 1;
+
+      case 6904206
+         % cycle #75, tech message #1 and #2 transmitted twice
+         id = find(tabCyNum == 75);
+         tabRank(id) = tabRank(id(1));
+         tabSession(id) = tabSession(id(1));
+         tabCompleted(id) = 1;
+         id0 = find((tabCyNum == 75) & (tabPackType == 0));
+         id4 = find((tabCyNum == 75) & (tabPackType == 4));
+         id6 = find((tabCyNum == 75) & (tabPackType == 6));
+         tabRank([id0(2) id4(2) id6(2)]) = -1;
+         tabRankByCycle([id0(2) id4(2) id6(2)]) = -1;
+
+      case 1902575
+         % cycle #17 data are separated
+         id17 = find(tabCyNum == 17);
+         tabRank(id17) = tabRank(id17(1));
+         tabSession(id17) = tabSession(id17(1));
+         tabGo(id17) = 1;
+         tabCompleted(id17) = 1;
 
    end
 

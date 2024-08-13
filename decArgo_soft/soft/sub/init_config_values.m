@@ -50,6 +50,7 @@ global g_decArgo_dirInputJsonConfLabelFile;
 global g_decArgo_dirInputJsonFloatMetaDataFile;
 
 global g_decArgo_dirInputDmBufferList;
+global g_decArgo_iridiumDataDirectory;
 
 global g_decArgo_dirOutputLogFile;
 global g_decArgo_dirOutputCsvFile;
@@ -106,8 +107,10 @@ global g_decArgo_rtqcTest63;
 global g_decArgo_rtqcGebcoFile;
 global g_decArgo_rtqcGreyList;
 
+global g_decArgo_woaFile;
+global g_decArgo_chlaCorFactFile;
+
 global g_decArgo_add3Min;
-global g_decArgo_iridiumDataDirectory;
 
 % configuration parameters
 configVar = [];
@@ -191,6 +194,9 @@ configVar{end+1} = 'TEST063_CHLA';
 
 configVar{end+1} = 'TEST004_GEBCO_FILE';
 configVar{end+1} = 'TEST015_GREY_LIST_FILE';
+
+configVar{end+1} = 'WOA_FILE';
+configVar{end+1} = 'CHLA_COR_FACT_FILE';
 
 configVar{end+1} = 'ADD_THREE_MINUTES';
 
@@ -356,6 +362,11 @@ if (o_inputError == 0)
    g_decArgo_rtqcGebcoFile = configVal{1};
    configVal(1) = [];
    g_decArgo_rtqcGreyList = configVal{1};
+   configVal(1) = [];
+
+   g_decArgo_woaFile = configVal{1};
+   configVal(1) = [];
+   g_decArgo_chlaCorFactFile = configVal{1};
    configVal(1) = [];
    
    g_decArgo_add3Min = str2num(configVal{1});

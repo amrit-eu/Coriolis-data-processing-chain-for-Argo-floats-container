@@ -758,7 +758,7 @@ switch (a_decoderId)
       nbConfigParam = length(missionConfigName);
 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   case {121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133}
+   case {121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134}
       
       % CTS5 floats
       
@@ -1273,16 +1273,18 @@ switch (a_decoderId)
       missionConfigValue = configValue;
       configMissionNumber = 1;
       nbConfigParam = length(missionConfigName);
-      
+
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   case {221}
-      
+   case {221, 228, 229}
+
       % Arvor-Deep-Ice Iridium 5.67
-      
+      % Arvor-Deep-Ice Iridium 5.68 (3T prototype)
+      % Arvor-Deep-Ice Iridium 5.69 (2T prototype)
+
       % select Argo and Auxiliary configuration information
       staticConfigName = a_structConfig.STATIC_NC.NAMES;
       staticConfigValue = a_structConfig.STATIC_NC.VALUES;
-      
+
       inputAuxStaticConfigName = [];
       inputAuxStaticConfigValue = [];
       for idC = 1:length(staticConfigName)
@@ -1399,13 +1401,14 @@ switch (a_decoderId)
          metaDataAux);
       
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   case {222, 223, 224, 225, 226}
+   case {222, 223, 224, 225, 226, 227}
       
       % Arvor-ARN-Ice Iridium 5.47
       % Arvor-ARN-DO-Ice Iridium 5.48
       % Arvor-ARN-Ice RBR Iridium 5.49
       % Provor-ARN-DO-Ice Iridium 5.76
       % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
+      % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
 
       % select Argo and Auxiliary configuration information
       staticConfigName = a_structConfig.STATIC_NC.NAMES;

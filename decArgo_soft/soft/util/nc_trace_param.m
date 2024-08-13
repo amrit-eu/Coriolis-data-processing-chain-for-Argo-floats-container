@@ -204,6 +204,8 @@ global g_decArgo_qcStrInterpolated;
 global g_decArgo_qcStrMissing;
 
 
+PROF_DIR = 'A';
+
 g_NTP_idCycle = a_idCycle;
 
 figure(g_NTP_FIG_HANDLE);
@@ -357,7 +359,7 @@ if (a_idFloat ~= g_NTP_ID_FLOAT)
                end
             end
 
-            idProf = find(profDir == 'A');
+            idProf = find(profDir == PROF_DIR);
             tabCycles1 = cycleNumberProf(idProf);
             tabPres1 = profPres(:, idProf);
             tabPres1Qc = profPresQc(:, idProf);
@@ -387,7 +389,7 @@ if (a_idFloat ~= g_NTP_ID_FLOAT)
                end
             end
 
-            idProf = find(profDir == 'A');
+            idProf = find(profDir == PROF_DIR);
             tabCycles2 = cycleNumberProf(idProf);
             tabPres2 = profPres(:, idProf);
             tabPres2Qc = profPresQc(:, idProf);
@@ -473,7 +475,7 @@ if (a_idFloat ~= g_NTP_ID_FLOAT)
                      break
                   end
                end
-               if ((~isempty(profNum)) && (profDir(profNum) == 'A'))
+               if ((~isempty(profNum)) && (profDir(profNum) == PROF_DIR))
                   tabCycles1 = [tabCycles1; cycleNumberProf(profNum)];
                   pres1 = profPres(:, profNum);
                   pres1Qc = profPresQc(:, profNum);
@@ -561,7 +563,7 @@ if (a_idFloat ~= g_NTP_ID_FLOAT)
                %                      end
                %                   end
 
-               if ((~isempty(profNum)) && (profDir(profNum) == 'A'))
+               if ((~isempty(profNum)) && (profDir(profNum) == PROF_DIR))
                   tabCycles2 = [tabCycles2; cycleNumberProf(profNum)];
                   pres2 = profPres(:, profNum);
                   pres2Qc = profPresQc(:, profNum);
@@ -688,7 +690,7 @@ if (a_idFloat ~= g_NTP_ID_FLOAT)
                      break
                   end
                end
-               if ((~isempty(profNum)) && (profDir(profNum) == 'A'))
+               if ((~isempty(profNum)) && (profDir(profNum) == PROF_DIR))
                   tabCycles1 = [tabCycles1; cycleNumberProf(profNum)];
                   pres1 = profPres(:, profNum);
 %                   pres1Qc = profPresQc(:, profNum);
@@ -778,7 +780,7 @@ if (a_idFloat ~= g_NTP_ID_FLOAT)
                end
                %                end
                
-               if ((~isempty(profNum)) && (profDir(profNum) == 'A'))
+               if ((~isempty(profNum)) && (profDir(profNum) == PROF_DIR))
                   tabCycles2 = [tabCycles2; cycleNumberProf(profNum)];
                   pres2 = profPres(:, profNum);
 %                   pres2Qc = profPresQc(:, profNum);

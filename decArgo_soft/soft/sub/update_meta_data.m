@@ -34,8 +34,8 @@ global g_decArgo_decoderIdListMtime;
 % list of decoder Ids implemented in the current decoder
 decoderIdListNke = [1, 3, 4, 11, 12, 17, 19, 24, 25, 27, 28, 29, 30, 31, 32, ...
    105, 106, 107, 109, 110, 111, 112, 113, 114, 115, 116, ...
-   121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, ...
-   201, 202, 203, 204, 205, 206, 208, 209, 210, 211, 212, 222, 213, 214, 215, 216, 217, 218, 219, 220, 221, 223, 224, 225, 226, ...
+   121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, ...
+   201, 202, 203, 204, 205, 206, 208, 209, 210, 211, 212, 222, 213, 214, 215, 216, 217, 218, 219, 220, 221, 223, 224, 225, 226, 227, 228, ...
    301, 302, 303];
 decoderIdListApex = [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1021, 1022, ...
    1101, 1102, 1103, 1104, 1105, 1106, 1107, 1108, 1109, 1110, 1111, 1112, 1113, 1114, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130, ...
@@ -1049,6 +1049,46 @@ switch (a_paramName)
          end
       end
 
+   case {'PRES2'} % from SBE61
+      if (a_decoderId == 228)
+         o_param = 'PRES2';
+         o_paramSensor = 'CTD_PRES2';
+         o_paramUnits = 'decibar';
+         o_paramAccuracy = '2.4';
+         o_paramResolution = '0.1';
+         o_preCalibEq = 'none';
+         o_preCalibCoef = 'none';
+         o_preCalibComment = '';
+      end
+
+   case {'PRES3'} % from RBR
+      if (a_decoderId == 228)
+         o_param = 'PRES3';
+         o_paramSensor = 'CTD_PRES3';
+         o_paramUnits = 'decibar';
+         o_paramAccuracy = '1';
+         o_paramResolution = '0.02';
+         o_preCalibEq = 'none';
+         o_preCalibCoef = 'none';
+         o_preCalibComment = '';
+
+         if (isfield(o_metaData, 'PRES_PARAMETER_ACCURACY') && ~isempty(o_metaData.PRES_PARAMETER_ACCURACY))
+            o_paramAccuracy = o_metaData.PRES_PARAMETER_ACCURACY;
+         end
+         if (isfield(o_metaData, 'PRES_PARAMETER_RESOLUTION') && ~isempty(o_metaData.PRES_PARAMETER_RESOLUTION))
+            o_paramResolution = o_metaData.PRES_PARAMETER_RESOLUTION;
+         end
+         if (isfield(o_metaData, 'PRES_PREDEPLOYMENT_CALIB_EQUATION') && ~isempty(o_metaData.PRES_PREDEPLOYMENT_CALIB_EQUATION))
+            o_preCalibEq = o_metaData.PRES_PREDEPLOYMENT_CALIB_EQUATION;
+         end
+         if (isfield(o_metaData, 'PRES_PREDEPLOYMENT_CALIB_COEFFICIENT') && ~isempty(o_metaData.PRES_PREDEPLOYMENT_CALIB_COEFFICIENT))
+            o_preCalibCoef = o_metaData.PRES_PREDEPLOYMENT_CALIB_COEFFICIENT;
+         end
+         if (isfield(o_metaData, 'PRES_PREDEPLOYMENT_CALIB_COMMENT') && ~isempty(o_metaData.PRES_PREDEPLOYMENT_CALIB_COMMENT))
+            o_preCalibComment = o_metaData.PRES_PREDEPLOYMENT_CALIB_COMMENT;
+         end
+      end
+
    case {'TEMP'}
       o_param = 'TEMP';
       o_paramSensor = 'CTD_TEMP';
@@ -1111,6 +1151,46 @@ switch (a_paramName)
                fprintf('ERROR: Float #%d: inconsistent CTD_TEMP calibration information\n', ...
                   g_decArgo_floatNum);
             end
+         end
+      end
+
+   case {'TEMP2'} % from SBE61
+      if (a_decoderId == 228)
+         o_param = 'TEMP2';
+         o_paramSensor = 'CTD_TEMP2';
+         o_paramUnits = 'degree_Celsius';
+         o_paramAccuracy = '0.002';
+         o_paramResolution = '0.001';
+         o_preCalibEq = 'none';
+         o_preCalibCoef = 'none';
+         o_preCalibComment = '';
+      end
+
+   case {'TEMP3'} % from RBR
+      if (a_decoderId == 228)
+         o_param = 'TEMP3';
+         o_paramSensor = 'CTD_TEMP3';
+         o_paramUnits = 'degree_Celsius';
+         o_paramAccuracy = '0.002';
+         o_paramResolution = '0.00005';
+         o_preCalibEq = 'none';
+         o_preCalibCoef = 'none';
+         o_preCalibComment = '';
+
+         if (isfield(o_metaData, 'TEMP_PARAMETER_ACCURACY') && ~isempty(o_metaData.TEMP_PARAMETER_ACCURACY))
+            o_paramAccuracy = o_metaData.TEMP_PARAMETER_ACCURACY;
+         end
+         if (isfield(o_metaData, 'TEMP_PARAMETER_RESOLUTION') && ~isempty(o_metaData.TEMP_PARAMETER_RESOLUTION))
+            o_paramResolution = o_metaData.TEMP_PARAMETER_RESOLUTION;
+         end
+         if (isfield(o_metaData, 'TEMP_PREDEPLOYMENT_CALIB_EQUATION') && ~isempty(o_metaData.TEMP_PREDEPLOYMENT_CALIB_EQUATION))
+            o_preCalibEq = o_metaData.TEMP_PREDEPLOYMENT_CALIB_EQUATION;
+         end
+         if (isfield(o_metaData, 'TEMP_PREDEPLOYMENT_CALIB_COEFFICIENT') && ~isempty(o_metaData.TEMP_PREDEPLOYMENT_CALIB_COEFFICIENT))
+            o_preCalibCoef = o_metaData.TEMP_PREDEPLOYMENT_CALIB_COEFFICIENT;
+         end
+         if (isfield(o_metaData, 'TEMP_PREDEPLOYMENT_CALIB_COMMENT') && ~isempty(o_metaData.TEMP_PREDEPLOYMENT_CALIB_COMMENT))
+            o_preCalibComment = o_metaData.TEMP_PREDEPLOYMENT_CALIB_COMMENT;
          end
       end
 
@@ -1182,6 +1262,46 @@ switch (a_paramName)
                fprintf('ERROR: Float #%d: inconsistent CTD_CNDC calibration information\n', ...
                   g_decArgo_floatNum);
             end
+         end
+      end
+
+   case {'PSAL2'} % from SBE61
+      if (a_decoderId == 228)
+         o_param = 'PSAL2';
+         o_paramSensor = 'CTD_CNDC2';
+         o_paramUnits = 'psu';
+         o_paramAccuracy = '0.005';
+         o_paramResolution = '0.001';
+         o_preCalibEq = 'none';
+         o_preCalibCoef = 'none';
+         o_preCalibComment = '';
+      end
+
+   case {'PSAL3'} % from RBR
+      if (a_decoderId == 228)
+         o_param = 'PSAL3';
+         o_paramSensor = 'CTD_CNDC3';
+         o_paramUnits = 'psu';
+         o_paramAccuracy = '0.003';
+         o_paramResolution = '0.001';
+         o_preCalibEq = 'none';
+         o_preCalibCoef = 'none';
+         o_preCalibComment = '';
+
+         if (isfield(o_metaData, 'PSAL_PARAMETER_ACCURACY') && ~isempty(o_metaData.PSAL_PARAMETER_ACCURACY))
+            o_paramAccuracy = o_metaData.PSAL_PARAMETER_ACCURACY;
+         end
+         if (isfield(o_metaData, 'PSAL_PARAMETER_RESOLUTION') && ~isempty(o_metaData.PSAL_PARAMETER_RESOLUTION))
+            o_paramResolution = o_metaData.PSAL_PARAMETER_RESOLUTION;
+         end
+         if (isfield(o_metaData, 'PSAL_PREDEPLOYMENT_CALIB_EQUATION') && ~isempty(o_metaData.PSAL_PREDEPLOYMENT_CALIB_EQUATION))
+            o_preCalibEq = o_metaData.PSAL_PREDEPLOYMENT_CALIB_EQUATION;
+         end
+         if (isfield(o_metaData, 'PSAL_PREDEPLOYMENT_CALIB_COEFFICIENT') && ~isempty(o_metaData.PSAL_PREDEPLOYMENT_CALIB_COEFFICIENT))
+            o_preCalibCoef = o_metaData.PSAL_PREDEPLOYMENT_CALIB_COEFFICIENT;
+         end
+         if (isfield(o_metaData, 'PSAL_PREDEPLOYMENT_CALIB_COMMENT') && ~isempty(o_metaData.PSAL_PREDEPLOYMENT_CALIB_COMMENT))
+            o_preCalibComment = o_metaData.PSAL_PREDEPLOYMENT_CALIB_COMMENT;
          end
       end
 
@@ -1291,8 +1411,8 @@ switch (a_decoderId)
          ];
 
    case {106, 301, 202, 207, 208, 213, 214, 107, 109, 110, 111, 112, 113, 114, 115, 116, ...
-         201, 203, 206, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 215, 216, 217, 218, 221, 223, 225}
-      if (ismember(a_decoderId, [213, 214, 121, 122, 123, 124, 125, 126, 127, 215, 216, 217, 218, 221, 223, 225]))
+         201, 203, 206, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 215, 216, 217, 218, 221, 223, 225}
+      if (ismember(a_decoderId, [213, 214, 121, 122, 123, 124, 125, 126, 127, 134, 215, 216, 217, 218, 221, 223, 225]))
          if (a_decoderId == 124) % no optode on CTS5 UVP #6902968
             if (isfield(a_metaData, 'SENSOR_MOUNTED_ON_FLOAT') && ...
                   any(strcmp('OPTODE', struct2cell(a_metaData.SENSOR_MOUNTED_ON_FLOAT))))
@@ -2355,7 +2475,7 @@ switch (a_decoderId)
       end
 
    case {107, 109, 110, 111, 113, 114, 115, 116, ...
-         121, 122, 124, 126, 127, 128, 129, 130, 131, 132, 133, ...
+         121, 122, 124, 126, 127, 128, 129, 130, 131, 132, 133, 134, ...
          201, 203, 206, 213, 214, 215, 216, 217, 218, 221, 223, 225, ...
          1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130, 1322, 1323}
       % CASE_202_205_304
@@ -3756,6 +3876,28 @@ switch (a_decoderId)
             {'DOWNWELLING_PAR2'} ...
             ];
       end
+   case {134}
+      if (isfield(a_metaData, 'SENSOR_MOUNTED_ON_FLOAT') && ...
+            any(strcmp('OCR', struct2cell(a_metaData.SENSOR_MOUNTED_ON_FLOAT))))
+         paramList = [ ...
+            {'RAW_DOWNWELLING_IRRADIANCE443'} ...
+            {'RAW_DOWNWELLING_IRRADIANCE490'} ...
+            {'RAW_DOWNWELLING_IRRADIANCE555'} ...
+            {'RAW_DOWNWELLING_PAR'} ...
+            {'DOWN_IRRADIANCE443'} ...
+            {'DOWN_IRRADIANCE490'} ...
+            {'DOWN_IRRADIANCE555'} ...
+            {'DOWNWELLING_PAR'} ...
+            ];
+      end
+      if (isfield(a_metaData, 'SENSOR_MOUNTED_ON_FLOAT') && ...
+            any(strcmp('MPE', struct2cell(a_metaData.SENSOR_MOUNTED_ON_FLOAT))))
+         paramList = [paramList ...
+            {'VOLTAGE_DOWNWELLING_PAR'} ...
+            {'TEMP_DOWNWELLING_PAR'} ...
+            {'DOWNWELLING_PAR2'} ...
+            ];
+      end
    case {1322, 1323, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130}
       if (isfield(a_metaData, 'SENSOR_MOUNTED_ON_FLOAT') && ...
             any(strcmp('OCR', struct2cell(a_metaData.SENSOR_MOUNTED_ON_FLOAT))))
@@ -3891,7 +4033,7 @@ global g_decArgo_calibInfo;
 
 switch (a_decoderId)
    case {105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, ...
-         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, ...
+         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, ...
          1322, 1323, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130}
       switch (a_paramName)
 
@@ -4410,7 +4552,7 @@ global g_decArgo_addParamListBackscattering;
 paramList = [];
 switch (a_decoderId)
    case {105, 106, 107, 110, 111, 112, 113, 114, 116, ...
-         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, ...
+         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, ...
          1322, 1323, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130}
       if (isfield(a_metaData, 'SENSOR_MOUNTED_ON_FLOAT') && ...
             (any(strcmp('ECO3', struct2cell(a_metaData.SENSOR_MOUNTED_ON_FLOAT))) || ...
@@ -4506,7 +4648,7 @@ global g_decArgo_calibInfo;
 
 switch (a_decoderId)
    case {105, 106, 107, 110, 111, 112, 113, 114, 116, ...
-         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, ...
+         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, ...
          1322, 1323, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130}
       switch (a_paramName)
 
@@ -4771,7 +4913,7 @@ global g_decArgo_addParamListChla;
 paramList = [];
 switch (a_decoderId)
    case {105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, ...
-         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 133, ...
+         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 133, 134, ...
          301, 302, 303, ...
          1322, 1323, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130}
       if (isfield(a_metaData, 'SENSOR_MOUNTED_ON_FLOAT') && ...
@@ -4876,7 +5018,7 @@ global g_decArgo_calibInfo;
 
 switch (a_decoderId)
    case {105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, ...
-         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, ...
+         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, ...
          1322, 1323, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130}
       switch (a_paramName)
 
@@ -5315,7 +5457,7 @@ global g_decArgo_addParamListCdom;
 paramList = [];
 switch (a_decoderId)
    case {105, 106, 107, 110, 111, 112, 113, 114, 116, ...
-         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, ...
+         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 134, ...
          1322, 1323, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130}
       if (isfield(a_metaData, 'SENSOR_MOUNTED_ON_FLOAT') && ...
             any(strcmp('ECO3', struct2cell(a_metaData.SENSOR_MOUNTED_ON_FLOAT))))
@@ -5386,7 +5528,7 @@ global g_decArgo_calibInfo;
 
 switch (a_decoderId)
    case {105, 106, 107, 110, 111, 112, 113, 114, 116, ...
-         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, ...
+         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 134, ...
          1322, 1323, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130}
       switch (a_paramName)
 
@@ -5499,7 +5641,7 @@ switch (a_decoderId)
             {'HUMIDITY_NITRATE'} ...
             ];
       end
-   case {110, 113, 116, 127}
+   case {110, 113, 116, 127, 134}
       % check that a SUNA sensor is mounted on the float
       if (isfield(a_metaData, 'SENSOR_MOUNTED_ON_FLOAT') && ...
             any(strcmp(struct2cell(a_metaData.SENSOR_MOUNTED_ON_FLOAT), 'SUNA')))
@@ -5581,7 +5723,7 @@ global g_decArgo_nitrate_opticalWavelengthOffset;
 
 switch (a_decoderId)
    case {105, 106, 107, 109, 110, 111, 112, 113, 114, 115, 116, ...
-         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133}
+         121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134}
       switch (a_paramName)
 
          case {'UV_INTENSITY_NITRATE'}
@@ -5616,7 +5758,7 @@ switch (a_decoderId)
 
          case {'NITRATE'}
 
-            if (~ismember(a_decoderId, [110, 113, 116, 127]))
+            if (~ismember(a_decoderId, [110, 113, 116, 127, 134]))
 
                % get calibration information
                if (isempty(g_decArgo_calibInfo))
@@ -6174,7 +6316,7 @@ switch (a_decoderId)
       end
    case {1322, 1323, 1121, 1122, 1123, 1124, 1125, 1126, 1127, 1128, 1129, 1130, ...
          111, 113, 114, 115, 116, ...
-         126, 127, 128}
+         126, 127, 128, 134}
       if (isfield(a_metaData, 'SENSOR_MOUNTED_ON_FLOAT') && ...
             any(strcmp('TRANSISTOR_PH', struct2cell(a_metaData.SENSOR_MOUNTED_ON_FLOAT))))
          paramList = [ ...
@@ -6244,7 +6386,7 @@ global g_decArgo_calibInfo;
 
 
 switch (a_decoderId)
-   case {121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133}
+   case {121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134}
       switch (a_paramName)
 
          case {'VRS_PH'}
@@ -7266,7 +7408,7 @@ if (isfield(a_metaData, 'SENSOR_MOUNTED_ON_FLOAT') && ...
                   {'NB_SIZE_SPECTRA_PARTICLES_PER_IMAGE'} ... % LPM
                   {'GREY_SIZE_SPECTRA_PARTICLES'} ... % LPM
                   ];
-            case {126, 127, 128}
+            case {126, 127, 128, 134}
                paramList = [ ...
                   {'NB_IMAGE_PARTICLES'} ... % LPM
                   {'TEMP_PARTICLES'} ... % LPM
@@ -7581,7 +7723,7 @@ switch (a_paramName)
       o_paramUnits = '';
       o_paramAccuracy = '';
       o_paramResolution = '';
-      o_preCalibEq = 'BIOVOLUME_CATEGORY = CONCENTRATION_CATEGORY * OBJECT_MEAN_VOLUME_CATEGORY * UvpPixelSize^3 * 1000';
+      o_preCalibEq = 'BIOVOLUME_CATEGORY = CONCENTRATION_CATEGORY * OBJECT_MEAN_VOLUME_CATEGORY * UvpPixelSize^3 / 1000';
       o_preCalibCoef = sprintf('UvpPixelSize=%g', pixelSize);
       o_preCalibComment = '';
 
