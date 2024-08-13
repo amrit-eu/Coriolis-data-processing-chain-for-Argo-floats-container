@@ -328,10 +328,6 @@ for idParam = 1:length(paramList)
    idNoDefS = find(sData ~= paramInfo.fillValue);
    for idL1 = idNoDefS'
 
-      % if (idL1 == 1372)
-      %    a=1
-      % end
-
       sDataVal = sData(idL1);
       sPresVal = round(double(sPres(idL1))*1000)/1000;
       sDPresVal = round(double(sDPres(idL1))*1000)/1000;
@@ -362,9 +358,6 @@ for idParam = 1:length(paramList)
 
          idNoDef = find(profIdData ~= paramInfo.fillValue);
          for idL2 = idNoDef'
-            % if (idL2 == 226)
-            %    a=1
-            % end
             if (sDPresVal == 0)
                if ((profIdData(idL2) == sDataVal) && (profIdPres(idL2) == sPresValComp))
                   link(idL1, 3) = idProf;

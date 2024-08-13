@@ -78,6 +78,16 @@ switch (a_decoderId)
       else
          g_decArgo_decIdCheckFlag = 1;
       end
+   case {227}
+      % decId = 227 => firmware is 5900A08
+      % expected checksum:
+      % for 5900A08: hex2dec('FC75') = 64629
+      if (a_checkSum ~= 64629)
+         fprintf('ERROR: Float #%d: A wrong decoder (#%d) seems to be used for this float\n', ...
+            a_floatNum, a_decoderId);
+      else
+         g_decArgo_decIdCheckFlag = 1;
+      end
 end
 
 return

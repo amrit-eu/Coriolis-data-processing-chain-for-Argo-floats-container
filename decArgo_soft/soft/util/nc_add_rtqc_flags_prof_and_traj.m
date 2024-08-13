@@ -22,16 +22,18 @@ function nc_add_rtqc_flags_prof_and_traj(varargin)
 
 % top directory of the input NetCDF files
 DIR_INPUT_NC_FILES = 'C:\Users\jprannou\_DATA\OUT\nc_output_decArgo\';
+DIR_INPUT_NC_FILES = 'G:\argo_snapshot_202309\coriolis\';
 
 % top directory of the output NetCDF files (should be set to '' if we want to
 % update the existing files
 DIR_OUTPUT_NC_FILES = ''; % update existing files
 % DIR_OUTPUT_NC_FILES = 'C:\Users\jprannou\_DATA\OUT\nc_output_decArgo_rtqc\';
-% DIR_OUTPUT_NC_FILES = 'C:\Users\jprannou\Contacts\Desktop\refonte_RTQC_20201113\DATA_OUT\NKE2\';
+DIR_OUTPUT_NC_FILES = 'C:\Users\jprannou\_DATA\POUB\';
 
 % default list of floats to convert
-FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\tmp.txt';
-FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_floats_bbp2.txt';
+FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_tmp_apex.txt';
+FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_tmp_nke.txt';
+% FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_floats_bbp2.txt';
 
 % directory to store the log file
 DIR_LOG_FILE = 'C:\Users\jprannou\_RNU\DecArgo_soft\work\log\';
@@ -65,8 +67,8 @@ NB_FILES_TO_PROCESS = -1;
 % the RTQC on profiles and trajectory data are linked (they should always be
 % performed together), however the 2 following flags can be used to report or
 % not the QC values in the concerned files
-UPDATE_PROFILE_FILE_FLAG = 1;
-UPDATE_TRAJECTORY_FILE_FLAG = 1;
+UPDATE_PROFILE_FILE_FLAG = 0;
+UPDATE_TRAJECTORY_FILE_FLAG = 0;
 
 
 % list of tests to perform
@@ -809,7 +811,7 @@ for idFloat = 1:nbFloats
             end
          end
          
-         ncInputFiles = dir([ncInputFileDir '*.nc']);
+         ncInputFiles = [dir([ncInputFileDir 'R*.nc']); dir([ncInputFileDir 'B*.nc'])];
          % sort the file names so that descent profiles will be processed before
          % ascent associated one
          ncInputDescFiles = dir([ncInputFileDir '*D.nc']);

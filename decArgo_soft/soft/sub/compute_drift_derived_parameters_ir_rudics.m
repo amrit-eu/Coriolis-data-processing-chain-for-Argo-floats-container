@@ -1505,7 +1505,7 @@ end
 % if the fitlm Matlab function is available, compute NITRATE data from
 % transmitted spectrum and add them in the profile structure
 if (~FITLM_MATLAB_FUNCTION_NOT_AVAILABLE)
-   if (~ismember(a_decoderId, [110, 113, 127]))
+   if (~ismember(a_decoderId, [110, 113, 127, 134]))
       
       % compute NITRATE
       paramToDeriveList = [ ...
@@ -1581,7 +1581,7 @@ if (~FITLM_MATLAB_FUNCTION_NOT_AVAILABLE)
             derivedParam1 = get_netcdf_param_attributes(derivedParamList{idP, 1});
             derivedParam2 = get_netcdf_param_attributes(derivedParamList{idP, 2});
             
-            [nitrate, bisulfide] = compute_drift_NITRATE_BISULFIDE_from_spectrum_110_113_127( ...
+            [nitrate, bisulfide] = compute_drift_NITRATE_BISULFIDE_from_spectrum_110_113_127_134( ...
                a_driftSuna.data(:, idF1:idF1+a_driftSuna.paramNumberOfSubLevels-1), ...
                a_driftSuna.data(:, idF2), ...
                paramToDerive1.fillValue, ...
@@ -1928,10 +1928,10 @@ if (~isempty(ctdLinkData))
             a_driftOptode);
          o_ptsForDoxy = ctdLinkData;
 
-      case {107, 109, 110, 111, 113, 114, 115, 116, 121, 122, 124, 126, 127, 128, 129, 130, 131, 132, 133}
+      case {107, 109, 110, 111, 113, 114, 115, 116, 121, 122, 124, 126, 127, 128, 129, 130, 131, 132, 133, 134}
          
          % compute DOXY values using the Stern-Volmer equation
-         o_DOXY = compute_DOXY_1xx_7_9_to_11_13_to_16_21_22_24_26_to_33( ...
+         o_DOXY = compute_DOXY_1xx_7_9_to_11_13_to_16_21_22_24_26_to_34( ...
             a_C1PHASE_DOXY, ...
             a_C2PHASE_DOXY, ...
             a_TEMP_DOXY, ...
@@ -2295,7 +2295,7 @@ global g_decArgo_calibInfo;
 % list of parameters of the profile
 paramNameList = {a_driftUvp.paramList.name};
 
-% compute CONCENTRATION_LPMCONCENTRATION_LPM data and add them in the profile structure
+% compute CONCENTRATION_LPM data and add them in the profile structure
 % for 2022.01 version of UVP
 if (any(strcmp('NB_IMAGE_PARTICLES', paramNameList)) && ...
       any(strcmp('NB_SIZE_SPECTRA_PARTICLES', paramNameList)))
@@ -2334,6 +2334,7 @@ if (any(strcmp('NB_IMAGE_PARTICLES', paramNameList)) && ...
 
    dataConcLpm = dataNbSizeSpecPart./(imageVolume*dataNbImPart);
    dataConcLpm(isnan(dataConcLpm)) = paramConcLpm.fillValue;
+   dataConcLpm(isinf(abs(dataConcLpm))) = paramConcLpm.fillValue;
 
    a_driftUvp.paramList = [a_driftUvp.paramList paramConcLpm];
    a_driftUvp.paramNumberWithSubLevels = [a_driftUvp.paramNumberWithSubLevels length(a_driftUvp.paramList)];
@@ -2377,6 +2378,7 @@ if (any(strcmp('NB_SIZE_SPECTRA_PARTICLES_PER_IMAGE', paramNameList)))
 
    dataConcLpm = dataNbSizeSpecPartPerIm/imageVolume;
    dataConcLpm(isnan(dataConcLpm)) = paramConcLpm.fillValue;
+   dataConcLpm(isinf(abs(dataConcLpm))) = paramConcLpm.fillValue;
 
    a_driftUvp.paramList = [a_driftUvp.paramList paramConcLpm];
    a_driftUvp.paramNumberWithSubLevels = [a_driftUvp.paramNumberWithSubLevels length(a_driftUvp.paramList)];
@@ -2432,6 +2434,7 @@ if (any(strcmp('NB_IMAGE_CATEGORY', paramNameList)) && ...
 
    dataConcCat = dataNbObjCat./(imageVolume*dataNbImCat);
    dataConcCat(isnan(dataConcCat)) = paramConcCat.fillValue;
+   dataConcCat(isinf(abs(dataConcCat))) = paramConcCat.fillValue;
 
    a_driftUvp.paramList = [a_driftUvp.paramList paramConcCat];
    a_driftUvp.paramNumberWithSubLevels = [a_driftUvp.paramNumberWithSubLevels length(a_driftUvp.paramList)];
@@ -2439,7 +2442,7 @@ if (any(strcmp('NB_IMAGE_CATEGORY', paramNameList)) && ...
 
    a_driftUvp.data(:, end+1:end+size(dataConcCat, 2)) = dataConcCat;
 
-   dataBioVolCat = dataConcCat.*(dataObjMeanVolCat*pixelSize*pixelSize*pixelSize*1000);
+   dataBioVolCat = dataConcCat.*(dataObjMeanVolCat*pixelSize*pixelSize*pixelSize)/1000;
    dataBioVolCat(isnan(dataBioVolCat)) = paramBioVolCat.fillValue;
 
    a_driftUvp.paramList = [a_driftUvp.paramList paramBioVolCat];

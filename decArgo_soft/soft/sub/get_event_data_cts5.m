@@ -612,8 +612,8 @@ switch (a_decoderId)
       [o_ok] = decode_event_data_121_to_123(a_inputFilePathName, a_launchDate);
    case {124, 125}
       [o_ok] = decode_event_data_124_125(a_inputFilePathName, a_launchDate);
-   case {126, 127, 128, 129, 130, 131, 132, 133}
-      [o_ok] = decode_event_data_126_to_133(a_inputFilePathName, a_launchDate);
+   case {126, 127, 128, 129, 130, 131, 132, 133, 134}
+      [o_ok] = decode_event_data_126_to_134(a_inputFilePathName, a_launchDate);
    otherwise
       fprintf('ERROR: decode_event_data not defined yet for deciId #%d\n', ...
          a_decoderId);
@@ -1032,7 +1032,7 @@ return
 % Decode and store CTS5 events of a given system file.
 %
 % SYNTAX :
-%  [o_ok] = decode_event_data_126_to_133(a_inputFilePathName, a_launchDate)
+%  [o_ok] = decode_event_data_126_to_134(a_inputFilePathName, a_launchDate)
 %
 % INPUT PARAMETERS :
 %   a_inputFilePathName : system file path name
@@ -1049,7 +1049,7 @@ return
 % RELEASES :
 %   09/02/2020 - RNU - creation
 % ------------------------------------------------------------------------------
-function [o_ok] = decode_event_data_126_to_133(a_inputFilePathName, a_launchDate)
+function [o_ok] = decode_event_data_126_to_134(a_inputFilePathName, a_launchDate)
 
 % output parameters initialization
 o_ok = 0;

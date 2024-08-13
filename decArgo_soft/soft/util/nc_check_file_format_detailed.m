@@ -24,11 +24,12 @@ function nc_check_file_format_detailed(varargin)
 % DIR_JAVA_CHECKER = 'C:\Users\jprannou\_RNU\Argo\checker_US\javaChecker\file_checker_java_v2.8_2023-02-27_spec_v2.8_2023-02-27\';
 DIR_JAVA_CHECKER = 'C:\Users\jprannou\_RNU\Argo\checker_US\javaChecker\file_checker_java_v2.8.01_2023-04-11_spec_v2.8_2023-02-27\';
 DIR_JAVA_CHECKER = 'C:\Users\jprannou\_RNU\Argo\checker_US\javaChecker\file_checker_java_v2.8.01_2023-04-11_spec_v2.8.3_20230721\';
+DIR_JAVA_CHECKER = 'C:\Users\jprannou\_RNU\Argo\checker_US\javaChecker\file_checker_v2.8.11\';
 
 % top directory of the NetCDF files to check
 DIR_INPUT_NC_FILES = 'C:\Users\jprannou\_DATA\OUT\nc_output_decArgo\';
-% DIR_INPUT_NC_FILES = 'E:\work_traj_32\nc_output_decArgo_traj_32\';
-% DIR_INPUT_NC_FILES = 'F:\work_traj_32\Traj_3.2_crashes\';
+DIR_INPUT_NC_FILES = 'C:\Users\jprannou\_DATA\OUT\nc_output_decArgo_rt\';
+% DIR_INPUT_NC_FILES = 'C:\Users\jprannou\_DATA\TRAJ_DM_2024\TRAJ_DM_2024_OUT\';
 
 % json meta-data file directory
 DIR_JSON_FLOAT_META = 'C:\Users\jprannou\_DATA\IN\decArgo_config_floats\json_float_meta\';
@@ -40,6 +41,8 @@ DIR_OUTPUT_REPORT_FILES = 'C:\Users\jprannou\_DATA\OUT\checker_reports\';
 % default list of floats to check
 FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_tmp.txt';
 % FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\lists_20230316\list_cts5_locean_all.txt';
+FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\TRAJ_DM\arvor_in_andro_psal_adj_with_pcond_factor_in_eq.txt';
+FLOAT_LIST_FILE_NAME = 'C:\Users\jprannou\_RNU\Argo\ActionsCoriolis\ANDRO_2_TRAJ-DM\Decomptes_20240621\arvor_in_andro.txt';
 
 % directory to store the log file
 DIR_LOG_FILE = 'C:\Users\jprannou\_RNU\DecArgo_soft\work\log\';
@@ -55,11 +58,11 @@ CHECK_NC_MULTI_PROF = 0;
 CHECK_NC_MONO_PROF = 1;
 CHECK_NC_TECH = 1;
 CHECK_NC_META = 1;
-% CHECK_NC_TRAJ = 0;
+% CHECK_NC_TRAJ = 1;
 % CHECK_NC_MULTI_PROF = 0;
 % CHECK_NC_MONO_PROF = 0;
 % CHECK_NC_TECH = 0;
-% CHECK_NC_META = 1;
+% CHECK_NC_META = 0;
 
 
 if (nargin == 0)

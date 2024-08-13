@@ -239,10 +239,6 @@ if (~isempty(idNoDef))
       end
    end
 
-   % if (a_cyNum == 1)
-   %    a=1
-   % end
-
    % compute CHLA_ADJUSTED
    o_profChlaAdj = ones(size(a_profChla))*a_chlaDataFillValue;
    o_profChlaAdjQc = repmat(g_decArgo_qcStrDef, size(a_profChlaQc));

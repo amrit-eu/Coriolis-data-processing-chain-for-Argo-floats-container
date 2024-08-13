@@ -31,8 +31,11 @@ for idFile = 1:length(a_fileNameleList)
       [id, count, errmsg, nextIndex] = sscanf(fileName, '%d_%d_%10c_%d.b64');
    else
       [id, count, errmsg, nextIndex] = sscanf(fileName, '%d_%d_%10c_%d.bin');
+      if (~isempty(errmsg))
+         [id, count, errmsg, nextIndex] = sscanf(fileName, '%d_%d_%9c_%d.bin');
+      end
    end
-   if (isempty(errmsg))
+   if (isempty(errmsg) && (count == 4))
       o_cyNumList(end+1) = id(end);
    end
 end

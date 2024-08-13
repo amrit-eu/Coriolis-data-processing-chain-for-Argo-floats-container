@@ -480,6 +480,31 @@ for cyNum = cyNumList
    end
 end
 
+% specific
+if (ismember(g_decArgo_floatNum, [ ...
+      6902980]))
+   switch g_decArgo_floatNum
+      case 6902980
+         % cycle #77 data are separated
+         id = find((tabCyNum == 77));
+         tabRank(tabCyNum == 77) = tabRank(id(1));
+         tabDeep(tabCyNum == 77) = 1;
+   end
+
+   % sort rank numbers according to cycle numbers
+   rank = 1;
+   cyNumList = unique(tabCyNum);
+   for cyNum = cyNumList
+      idForCy = find(tabCyNum == cyNum);
+      rankNumList = setdiff(unique(tabRank(idForCy)), -1);
+      for rankNum = rankNumList
+         idForRankCy = idForCy(find(tabRank(idForCy) == rankNum));
+         tabRankByCycle(idForRankCy) = rank;
+         rank = rank + 1;
+      end
+   end
+end
+
 % update tabCompleted array
 rankByCycleList = unique(tabRankByCycle);
 rankByCycleList(rankByCycleList < 0) = [];

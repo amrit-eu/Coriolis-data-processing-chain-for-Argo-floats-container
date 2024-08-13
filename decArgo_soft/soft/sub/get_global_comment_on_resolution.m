@@ -40,20 +40,21 @@ switch (a_decoderId)
       % PROVOR CTS4 & ARVOR CM
       o_comment = 'JULD and PRES variable resolutions depend on measurement codes';
       
-   case {121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133}
+   case {121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134}
       % PROVOR APMT
       o_comment = 'PRES variable resolutions depend on measurement codes';
       
-   case {201, 202, 203, 215, 216, 218, 221}
+   case {201, 202, 203, 215, 216, 218, 221, 228}
       % ARVOR DEEP 4000
       % ARVOR DEEP 3500
       % ARVOR DEEP 4000 with "Near Surface" & "In Air" measurements
       % Arvor-Deep-Ice Iridium 5.65
       % Arvor-Deep-Ice Iridium 5.66
       % Arvor-Deep-Ice Iridium 5.67
+      % Arvor-Deep-Ice Iridium 5.68 (3T prototype)
       o_comment = 'JULD and PRES variable resolutions depend on measurement codes';
       
-   case {205, 204, 210, 211, 212, 222, 213, 214, 217, 219, 220, 223, 224, 225, 226}
+   case {205, 204, 210, 211, 212, 222, 213, 214, 217, 219, 220, 223, 224, 225, 226, 227}
       % ARVOR Iridium
       % ARVOR-ARN Iridium
       % ARVOR-ARN-Ice Iridium 5.45 & 5.47
@@ -65,6 +66,7 @@ switch (a_decoderId)
       % ARVOR-ARN-Ice RBR Iridium 5.49
       % Provor-ARN-DO-Ice Iridium 5.76
       % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
+      % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
       o_comment = 'JULD and PRES variable resolutions depend on measurement codes';
       
    case {209}

@@ -1505,7 +1505,7 @@ remoteControl.tech{end+1} = get_cts5_tech_data_init_struct(138, 'Number of unkno
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 payloadConfigFileReceived = init_basic_struct;
-payloadConfigFileReceived.pattern = 'Download=payload file';
+payloadConfigFileReceived.pattern = 'Download=configuration file';
 payloadConfigFileReceived.count = 0;
 
 payloadConfigFileReceived.id{end+1} = 1;

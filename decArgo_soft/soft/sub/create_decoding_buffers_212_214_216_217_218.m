@@ -952,6 +952,42 @@ if (ismember(g_decArgo_floatNum, [ ...
          tabSession(tabSession == tabSession(id2)) = tabSession(id1);
          tabCompleted(tabCyNum == 126) = 1;
 
+         % cycle #142 in 2 sessions
+         id142 = find(tabCyNum == 142);
+         id2 = find((tabCyNum == 142) & (tabIrSession == 1));
+         id142 = id142(id142 < id2(1));
+         tabRank(id142) = tabRank(id142(1));
+         tabCompleted(id142) = 1;
+
+         % cycle #143 in 2 sessions
+         id143 = find(tabCyNum == 143);
+         id2 = find((tabCyNum == 143) & (tabIrSession == 1));
+         id143_2 = id143(id143 >= id2(1));
+         id143 = id143(id143 < id2(1));
+         tabRank(id143) = tabRank(id143(1));
+         tabCompleted(id143) = 1;
+         tabDeep(id143_2) = 0;
+
+         % cycle #145 delayed in 2 sessions
+         id145 = find(tabCyNum == 145);
+         id2 = find((tabCyNum == 145) & (tabIrSession == 1));
+         id145_2 = id145(id145 >= id2(1));
+         id145 = id145(id145 < id2(1));
+         tabRank(id145) = tabRank(id145(1));
+         tabCompleted(id145) = 1;
+         tabDelayed(id145) = 1;
+         tabDeep(id145_2) = 0;
+         
+         % cycle #146 in 2 sessions
+         id146 = find(tabCyNum == 146);
+         id2 = find((tabCyNum == 146) & (tabIrSession == 1));
+         id146_2 = id146(id146 >= id2(1));
+         id146 = id146(id146 < id2(1));
+         tabRank(id146) = tabRank(id146(1));
+         tabCompleted(id146) = 1;
+         tabDelayed(id146) = 0;
+         tabDeep(id146_2) = 0;
+
       case 6903009
          % cycle #213 in 2 sessions
          id213 = find(tabCyNum == 213);

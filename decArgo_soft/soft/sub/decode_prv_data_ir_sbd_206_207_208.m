@@ -435,14 +435,14 @@ global g_decArgo_nbHydraulicPacketsReceived;
 global g_decArgo_nbTechPacketsReceived;
 global g_decArgo_nbTech1PacketsReceived;
 global g_decArgo_nbTech2PacketsReceived;
-global g_decArgo_nbParmPacketsReceived;
-global g_decArgo_nbParm1PacketsReceived;
-global g_decArgo_nbParm2PacketsReceived;
+global g_decArgo_nbParamPacketsReceived;
+global g_decArgo_nbParam1PacketsReceived;
+global g_decArgo_nbParam2PacketsReceived;
 
 g_decArgo_nbDescentPacketsReceived = g_decArgo_nbOf1Or8Or11Or14TypePacketReceived;
 g_decArgo_nbParkPacketsReceived = g_decArgo_nbOf2Or9Or12Or15TypePacketReceived;
 g_decArgo_nbAscentPacketsReceived = g_decArgo_nbOf3Or10Or13Or16TypePacketReceived;
 g_decArgo_nbTechPacketsReceived = g_decArgo_0TypePacketReceivedFlag;
-g_decArgo_nbParmPacketsReceived = g_decArgo_4TypePacketReceivedFlag;
+g_decArgo_nbParamPacketsReceived = g_decArgo_4TypePacketReceivedFlag;
 
 return

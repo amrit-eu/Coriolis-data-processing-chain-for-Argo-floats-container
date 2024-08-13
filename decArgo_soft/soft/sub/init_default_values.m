@@ -499,7 +499,7 @@ global g_decArgo_nitrate_opticalWavelengthOffset;
 % the first 3 digits are incremented at each new complete dated release
 % the last digit is incremented at each patch associated to a given complete
 % dated release
-g_decArgo_decoderVersion = '061a';
+g_decArgo_decoderVersion = '066a';
 
 % list of managed decoders
 
@@ -508,19 +508,19 @@ g_decArgo_decoderVersion = '061a';
 
 % all managed decoders
 g_decArgo_decoderIdListNkeArgos = [1, 3, 4, 11, 12, 17, 19, 24, 25, 27:32];
-g_decArgo_decoderIdListNkeIridiumRbr = [224 226];
-g_decArgo_decoderIdListNkeIridiumDeep = [201, 202, 203, 215, 216, 218, 221];
-g_decArgo_decoderIdListNkeIridiumNotDeep = setdiff([201:226], g_decArgo_decoderIdListNkeIridiumDeep);
+g_decArgo_decoderIdListNkeIridiumRbr = [224, 226, 227, 228, 229];
+g_decArgo_decoderIdListNkeIridiumDeep = [201, 202, 203, 215, 216, 218, 221, 228, 229];
+g_decArgo_decoderIdListNkeIridiumNotDeep = setdiff([201:227], g_decArgo_decoderIdListNkeIridiumDeep);
 g_decArgo_decoderIdListNkeIridium = [ ...
    g_decArgo_decoderIdListNkeIridiumNotDeep ...
    g_decArgo_decoderIdListNkeIridiumDeep];
 g_decArgo_decoderIdListNkeCts4NotIce = [105, 106, 107, 109, 110, 112];
-g_decArgo_decoderIdListNkeCts4Ice = [111 113 114 115 116];
+g_decArgo_decoderIdListNkeCts4Ice = [111, 113, 114, 115, 116];
 g_decArgo_decoderIdListNkeCts4 = [ ...
    g_decArgo_decoderIdListNkeCts4NotIce ...
    g_decArgo_decoderIdListNkeCts4Ice];
 g_decArgo_decoderIdListNkeCts5Osean = [121:125];
-g_decArgo_decoderIdListNkeCts5Usea = [126:133];
+g_decArgo_decoderIdListNkeCts5Usea = [126:134];
 g_decArgo_decoderIdListNkeCts5 = [ ...
    g_decArgo_decoderIdListNkeCts5Osean ...
    g_decArgo_decoderIdListNkeCts5Usea ...

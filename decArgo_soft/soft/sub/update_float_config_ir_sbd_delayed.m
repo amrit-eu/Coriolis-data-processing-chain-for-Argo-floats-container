@@ -66,11 +66,25 @@ switch (a_decoderId)
 
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-   case {224, 226}
+   case {224, 226, 227}
       % Arvor-ARN-Ice RBR Iridium 5.49
       % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
+      % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
 
-      update_float_config_ir_sbd_224_226(a_floatParam, a_cycleNum, a_decoderId);
+      update_float_config_ir_sbd_224_226_227(a_floatParam, a_cycleNum, a_decoderId);
+
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      
+   case {228} % Arvor-Deep-Ice Iridium 5.68 (3T prototype)
+      
+      update_float_config_ir_sbd_228(a_floatParam, a_cycleNum);
+
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      
+   case {229} % Arvor-Deep-Ice Iridium 5.69 (2T prototype)
+      
+      update_float_config_ir_sbd_228(a_floatParam, a_cycleNum);
+
 
    otherwise
       fprintf('WARNING: Float #%d: Nothing implemented yet to update configuration for decoderId #%d\n', ...

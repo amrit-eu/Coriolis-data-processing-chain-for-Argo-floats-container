@@ -145,7 +145,7 @@ for idF = 1:length(fieldNames)
       for idP = 1:length(techInfoStruct.(fieldNames{idF}))
          if (isempty(techInfoStruct.(fieldNames{idF}){idP}.patternStart))
             pattern = techInfoStruct.(fieldNames{idF}){idP}.pattern;
-            
+
             expCount = techInfoStruct.(fieldNames{idF}){idP}.count;
             [val, count, errmsg, nextindex] = sscanf(data, pattern);
             if (isempty(errmsg) && (count == expCount))
@@ -500,8 +500,8 @@ switch (a_decoderId)
    case {126}
       [o_techSectionList, o_techInfoStruct] = init_tech_info_struct_126;
       
-   case {127}
-      [o_techSectionList, o_techInfoStruct] = init_tech_info_struct_127;
+   case {127, 134}
+      [o_techSectionList, o_techInfoStruct] = init_tech_info_struct_127_134;
 
    case {128}
       [o_techSectionList, o_techInfoStruct] = init_tech_info_struct_128;

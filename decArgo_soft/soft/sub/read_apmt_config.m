@@ -158,7 +158,7 @@ for idF = 1:length(fieldNames)
          if (strcmp(data, 'P60=0'))
             continue
          end
-      elseif (ismember(a_decoderId, [129, 130, 131, 132, 133]))
+      elseif (ismember(a_decoderId, [128, 129, 130, 131, 132, 133]))
          allowedNum = [configInfoStruct.(fieldNames{idF}){:}];
          allowedNum = [allowedNum.num];
          idFEq = strfind(data, '=');
@@ -264,8 +264,8 @@ switch (a_decoderId)
       [o_configSectionList, o_configInfoStruct] = init_config_info_struct_124_125;
    case {126}
       [o_configSectionList, o_configInfoStruct] = init_config_info_struct_126;
-   case {127}
-      [o_configSectionList, o_configInfoStruct] = init_config_info_struct_127;
+   case {127, 134}
+      [o_configSectionList, o_configInfoStruct] = init_config_info_struct_127_134;
    case {128}
       [o_configSectionList, o_configInfoStruct] = init_config_info_struct_128;
    case {129, 130, 131, 132, 133}

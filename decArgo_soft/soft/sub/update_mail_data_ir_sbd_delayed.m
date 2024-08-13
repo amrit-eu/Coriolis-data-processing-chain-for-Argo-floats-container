@@ -40,7 +40,7 @@ end
 
 % specific
 if (ismember(g_decArgo_floatNum, [6903230, 6903256, 6902957, 6901880, 6903800, ...
-      6904236, 3901645, 6904080]))
+      6904236, 3901645, 6904080, 6903000]))
    switch g_decArgo_floatNum
       case 6903230
          idF = find([g_decArgo_iridiumMailData.timeOfSessionJuld] == gregorian_2_julian_dec_argo('2018/06/26 06:02:14'));
@@ -105,6 +105,15 @@ if (ismember(g_decArgo_floatNum, [6903230, 6903256, 6902957, 6901880, 6903800, .
          idF = find([g_decArgo_iridiumMailData.timeOfSessionJuld] == gregorian_2_julian_dec_argo('2022/08/31 06:36:36'));
          if (~isempty(idF))
             g_decArgo_iridiumMailData(idF).cycleNumber = 21;
+         end
+      case 6903000
+         idF = find([g_decArgo_iridiumMailData.timeOfSessionJuld] == gregorian_2_julian_dec_argo('2024/04/09 17:27:21'));
+         if (~isempty(idF))
+            g_decArgo_iridiumMailData(idF).cycleNumber = 145;
+         end
+         idF = find([g_decArgo_iridiumMailData.timeOfSessionJuld] == gregorian_2_julian_dec_argo('2024/05/21 09:33:56'));
+         if (~isempty(idF))
+            g_decArgo_iridiumMailData(idF).cycleNumber = 153;
          end
    end
 end

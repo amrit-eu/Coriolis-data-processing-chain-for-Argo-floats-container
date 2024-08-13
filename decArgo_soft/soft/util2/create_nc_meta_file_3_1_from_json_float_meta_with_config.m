@@ -161,7 +161,7 @@ for idFloat = 1:length(floatList)
 
    % GPS timeout in ICE and no Ice have the same label
    % when no data has been received, remove GPS timeout in Ice
-   if (ismember(floatDecId,  [212, 214, 217, 222, 223, 224, 225, 226]))
+   if (ismember(floatDecId,  [212, 214, 217, 222, 223, 224, 225, 226, 227]))
       idTc19 = find(cellfun(@(x) strcmp(x, 'CONFIG_TC19_GPSTimeout'), configNames));
       idIc10 = find(cellfun(@(x) strcmp(x, 'CONFIG_IC10_GPSTimeout'), configNames));
       if (~isempty(idTc19) && ~isempty(idIc10))

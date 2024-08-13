@@ -222,10 +222,10 @@ global g_decArgo_floatNum;
 
 switch (a_decoderId)
    
-   case {121, 122, 124, 126, 127, 128, 129, 130, 131, 132, 133}
+   case {121, 122, 124, 126, 127, 128, 129, 130, 131, 132, 133, 134}
       
       % compute PPOX_DOXY values using the Stern-Volmer equation
-      o_PPOX_DOXY = compute_PPOX_DOXY_1xx_7_9_to_11_13_to_15_21_22_24_26_to_33( ...
+      o_PPOX_DOXY = compute_PPOX_DOXY_1xx_7_9_to_11_13_to_15_21_22_24_26_to_34( ...
          a_C1PHASE_DOXY, ...
          a_C2PHASE_DOXY, ...
          a_TEMP_DOXY, ...
@@ -768,7 +768,7 @@ if (any(strcmp('NB_IMAGE_CATEGORY', paramNameList)) && ...
 
    a_surfUvp.data(:, end+1:end+size(dataConcCat, 2)) = dataConcCat;
 
-   dataBioVolCat = dataConcCat.*(dataObjMeanVolCat*pixelSize*pixelSize*pixelSize*1000);
+   dataBioVolCat = dataConcCat.*(dataObjMeanVolCat*pixelSize*pixelSize*pixelSize)/1000;
    dataBioVolCat(isnan(dataBioVolCat)) = paramBioVolCat.fillValue;
 
    a_surfUvp.paramList = [a_surfUvp.paramList paramBioVolCat];

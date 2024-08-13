@@ -429,7 +429,7 @@ switch (a_decoderId)
             
       end
       
-   case {126, 127, 128, 129, 130, 131, 132, 133}
+   case {126, 127, 128, 129, 130, 131, 132, 133, 134}
       % PROVOR CTS5-USEA
       switch (a_paramName)
          case {'PRES', 'PRES_ADJUSTED'}
@@ -482,13 +482,14 @@ switch (a_decoderId)
             
       end
       
-   case {201, 202, 203, 215, 216, 218, 221}
+   case {201, 202, 203, 215, 216, 218, 221, 228}
       % ARVOR DEEP 4000
       % ARVOR DEEP 3500
       % ARVOR DEEP 4000 with "Near Surface" & "In Air" measurements
       % Arvor-Deep-Ice Iridium 5.65
       % Arvor-Deep-Ice Iridium 5.66
       % Arvor-Deep-Ice Iridium 5.67
+      % Arvor-Deep-Ice Iridium 5.68 (3T prototype)
       switch (a_paramName)
          case {'PRES', 'PRES_ADJUSTED'}
             
@@ -637,7 +638,7 @@ switch (a_decoderId)
             
       end
       
-   case {210, 211, 212, 222, 213, 214, 217, 223, 224, 225, 226}
+   case {210, 211, 212, 222, 213, 214, 217, 223, 224, 225, 226, 227}
       % ARVOR ARN Iridium
       % PROVOR ARN DO Iridium
       % Provor-ARN-Ice Iridium 5.45 & 5.47
@@ -647,6 +648,7 @@ switch (a_decoderId)
       % Provor-ARN-Ice RBR Iridium 5.49
       % Provor-ARN-DO-Ice Iridium 5.76
       % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
+      % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
       switch (a_paramName)
          case {'PRES', 'PRES_ADJUSTED'}
             

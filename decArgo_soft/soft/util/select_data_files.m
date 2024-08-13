@@ -20,26 +20,14 @@
 % ------------------------------------------------------------------------------
 function select_data_files()
 
-floatListFileName = 'C:\Users\jprannou\_RNU\Argo\ActionsCoriolis\ConvertApexOldVersionsTo3.1\list\Apex_all.txt';
-floatListFileName = 'C:\Users\jprannou\_RNU\Argo\ActionsCoriolis\ConvertApexOldVersionsTo3.1\list\Apex_36.txt';
-floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\tmpAll_nova.txt';
-floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\tmpAll_nke_atlantos.txt';
-floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_apex_argos_all.txt';
-floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_apex_apf11_argos_all.txt';
-floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_apex_ir_sbd_090215.txt';
-floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_apex_ir_rudics_all.txt';
-floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_apex_apf11_iridium-sbd_all.txt';
-% floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_apex_apf11_iridium-rudics_all.txt';
-% floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_nemo_all.txt';
-floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\lists_20230316\list_decId_2xx_all.txt';
-% floatListFileName = '\Users\jprannou\_RNU\DecArgo_soft\lists\arvor_C_all.txt';
-% floatListFileName = '\Users\jprannou\_RNU\DecArgo_soft\lists\tmp.txt';
-% floatListFileName = '\Users\jprannou\_RNU\DecArgo_soft\lists\_nke_all_decId_2xx.txt';
+floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\_tmp.txt';
+floatListFileName = 'C:\Users\jprannou\_RNU\Argo\ActionsCoriolis\ANDRO_2_TRAJ-DM\Decomptes_20240621\arvor_in_andro.txt';
+floatListFileName = 'C:\Users\jprannou\_RNU\DecArgo_soft\lists\cts5_20240706.txt';
 
-inputDirName = 'C:\Users\jprannou\_DATA\201905-ArgoData\coriolis\';
-inputDirName = 'C:\Users\jprannou\_DATA\Conversion_en_3.1\IN\';
 inputDirName = 'C:\Users\jprannou\_DATA\OUT\nc_output_decArgo\';
-inputDirName = 'E:\work_traj_32\nc_output_decArgo_traj_32\';
+inputDirName = 'C:\Users\jprannou\_DATA\TRAJ_DM_2024\snapshot-202401_nke_in_andro\';
+inputDirName = 'F:\snapshot-202405\incois\';
+inputDirName = 'C:\Users\jprannou\_DATA\CTS5_DESC_PROF\';
 
 fprintf('Floats from list: %s\n', floatListFileName);
 floatList = load(floatListFileName);

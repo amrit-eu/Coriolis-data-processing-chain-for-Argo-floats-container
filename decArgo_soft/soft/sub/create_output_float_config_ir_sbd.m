@@ -56,7 +56,7 @@ switch (a_decoderId)
       
       % nothing for Nova floats
 
-   case {201, 202, 203, 204, 205, 206, 208, 209, 215, 216, 218, 221}
+   case {201, 202, 203, 204, 205, 206, 208, 209, 215, 216, 218, 221, 228, 229}
       
       % use CONFIG_PT20 to fill CONFIG_PX02 = CONFIG_PT20 + 0.5
       idPos1 = find(strcmp(finalConfigName, 'CONFIG_PT20') == 1, 1);
@@ -67,7 +67,7 @@ switch (a_decoderId)
          finalConfigValue(idPos2, idNoNan) = finalConfigValue(idPos2, idNoNan) + 0.5;
       end
       
-      if (a_decoderId == 216)
+      if (ismember(a_decoderId, [216]))
          
          % ice mode is supposed to be activated
          
@@ -206,7 +206,7 @@ switch (a_decoderId)
          finalConfigValue(idDel, :) = [];
       end
       
-   case {224, 226}
+   case {224, 226, 227}
             
       if (~isempty(g_decArgo_7TypePacketReceivedCyNum))
          
@@ -274,7 +274,7 @@ finalConfigValue(idDel, :) = [];
 staticConfigName = g_decArgo_floatConfig.STATIC.NAMES;
 staticConfigValue = g_decArgo_floatConfig.STATIC.VALUES;
 
-if (ismember(a_decoderId, [222, 223, 224, 225, 226]))
+if (ismember(a_decoderId, [222, 223, 224, 225, 226, 227]))
 
    % CONFIG_MC08_ has been temporarily stored in static configuration (and not
    % removed if at least one deep cycle has not been performed)

@@ -79,14 +79,17 @@ end
 % 224 5.49 : ARVOR ARN Ir Ice with RBR
 % 225 5.76 : ARVOR-ARN-DO Ir Ice
 % 226 5.51 : ARVOR ARN Ir Ice with RBR 1 Hz
+% 227 5.52 : Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL
 %
 % 214 5.75 : PROVOR ARN DO Ir Ice
 %
 % 216 5.65 : ARVOR_DEEP 4000
 % 218 5.66 : ARVOR_DEEP 4000
 % 221 5.67 : ARVOR_DEEP 4000
+% 228 5.68 : ARVOR_DEEP 4000 3T
+% 229 5.69 : ARVOR_DEEP 4000 2T
 
-if (~ismember(a_decoderId, [212 217 222:226 214 216 218 221]))
+if (~ismember(a_decoderId, [212, 217, 222:227, 214, 216, 218, 221, 228, 229]))
    return
 end
 
@@ -96,7 +99,7 @@ tech1GPSSessionDurationId = -1;
 tech2IrSessionId = -1;
 tech2IceDetectionFlagId = -1;
 switch (a_decoderId)
-   case {212, 214, 217, 222, 223, 224, 225, 226}
+   case {212, 214, 217, 222, 223, 224, 225, 226, 227}
       confLabelIc0 = 'CONFIG_IC00_';
       confLabelIc1 = 'CONFIG_IC01_';
       confLabelIc2 = 'CONFIG_IC02_';
@@ -302,7 +305,7 @@ if (~isempty(g_decArgo_7TypePacketReceivedCyNum) && ...
                   end
                   g_decArgo_isaDetectionCounter = 0;
 
-               case 1
+               case 1 % ISA detection
                   ascentAborted = 1;
                   g_decArgo_isaDetectionCounter = g_decArgo_isaDetectionCounter + 1;
                   if (g_decArgo_isaDetectionCounter >= ic2Value)
@@ -313,6 +316,13 @@ if (~isempty(g_decArgo_7TypePacketReceivedCyNum) && ...
 
                case 2 % sat mask => ascent aborted for a IC0 days period
                   ascentAborted = 2;
+                  if (isempty(g_decArgo_lastDetectionDate) || (floatTime > g_decArgo_lastDetectionDate))
+                     g_decArgo_lastDetectionDate = floatTime;
+                  end
+
+               case 3 % ISA detection & sat mask => ascent aborted for a IC0 days period
+                  ascentAborted = 3;
+                  g_decArgo_isaDetectionCounter = g_decArgo_isaDetectionCounter + 1;
                   if (isempty(g_decArgo_lastDetectionDate) || (floatTime > g_decArgo_lastDetectionDate))
                      g_decArgo_lastDetectionDate = floatTime;
                   end
@@ -437,12 +447,15 @@ if (~isempty(g_decArgo_7TypePacketReceivedCyNum) && ...
                ascentAborted = 0;
                g_decArgo_isaDetectionCounter = 0;
 
-            case 1
+            case 1 % ISA detection
                ascentAborted = 1;
                g_decArgo_isaDetectionCounter = g_decArgo_isaDetectionCounter + 1;
 
             case 2 % sat mask => ascent aborted for a IC0 days period
                ascentAborted = 2;
+
+            case 3 % ISA detection & sat mask => ascent aborted for a IC0 days period
+               ascentAborted = 3;
 
             case 4 % ascent hanging => ascent aborted for a IC0 days period
                ascentAborted = 4;

@@ -154,6 +154,12 @@ for idP = 1:length(a_uvpLpmDataV2)
       profStruct.dateList = paramJuld;
 
       profStruct.data = data(:, 2:end);
+      % see anomaly in PARK measurements of float 1902685 cycle(37, 1)
+      if (any(isnan(profStruct.data(:, 4:21))))
+         dataTmp = profStruct.data(:, 4:21);
+         dataTmp(isnan(dataTmp)) = paramNbSizeSpecPart.fillValue;
+         profStruct.data(:, 4:21) = dataTmp;
+      end
       profStruct.dates = data(:, 1);
       profStruct.datesAdj = adjust_time_cts5(profStruct.dates);
 

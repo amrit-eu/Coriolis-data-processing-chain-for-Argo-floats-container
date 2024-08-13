@@ -46,6 +46,8 @@ switch (a_decoderId)
       [o_tabProfiles] = merge_profile_meas_ir_rudics_cts5_usea_ocr_130(a_tabProfiles);
    case {133}
       [o_tabProfiles] = merge_profile_meas_ir_rudics_cts5_usea_ocr_133(a_tabProfiles);
+   case {134}
+      [o_tabProfiles] = merge_profile_meas_ir_rudics_cts5_usea_ocr_134(a_tabProfiles);
    otherwise
       fprintf('ERROR: Float #%d Cycle #%d: (Cy,Ptn)=(%d,%d): Nothing done yet to merge OCR profiles for decoderId #%d\n', ...
          g_decArgo_floatNum, ...

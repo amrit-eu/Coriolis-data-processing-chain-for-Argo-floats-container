@@ -67,9 +67,9 @@ global g_decArgo_nbInAirPacketsReceived;
 global g_decArgo_nbHydraulicPacketsReceived;
 global g_decArgo_nbTech1PacketsReceived;
 global g_decArgo_nbTech2PacketsReceived;
-global g_decArgo_nbParmPacketsReceived;
-global g_decArgo_nbParm1PacketsReceived;
-global g_decArgo_nbParm2PacketsReceived;
+global g_decArgo_nbParamPacketsReceived;
+global g_decArgo_nbParam1PacketsReceived;
+global g_decArgo_nbParam2PacketsReceived;
 
 % to detect ICE mode activation (first cycle for which parameter packet #7 has
 % been received)
@@ -87,8 +87,8 @@ switch (a_decoderId)
       g_decArgo_nbHydraulicPacketsReceived = 0;
       g_decArgo_nbTech1PacketsReceived = 0;
       g_decArgo_nbTech2PacketsReceived = 0;
-      g_decArgo_nbParm1PacketsReceived = 0;
-      g_decArgo_nbParm2PacketsReceived = 0;
+      g_decArgo_nbParam1PacketsReceived = 0;
+      g_decArgo_nbParam2PacketsReceived = 0;
       g_decArgo_nbNearSurfacePacketsReceived = 0;
       g_decArgo_nbInAirPacketsReceived = 0;
       
@@ -138,12 +138,12 @@ switch (a_decoderId)
             case 5
                % parameter packet #1
                o_floatParam1 = [o_floatParam1; a_decDataTab(idSbd).decData{:}];
-               g_decArgo_nbParm1PacketsReceived = g_decArgo_nbParm1PacketsReceived + 1;
+               g_decArgo_nbParam1PacketsReceived = g_decArgo_nbParam1PacketsReceived + 1;
                
             case 7
                % parameter packet #2
                o_floatParam2 = [o_floatParam2; a_decDataTab(idSbd).decData{:}];
-               g_decArgo_nbParm2PacketsReceived = g_decArgo_nbParm2PacketsReceived + 1;
+               g_decArgo_nbParam2PacketsReceived = g_decArgo_nbParam2PacketsReceived + 1;
                
                if (isempty(g_decArgo_7TypePacketReceivedCyNum))
                   g_decArgo_7TypePacketReceivedCyNum = g_decArgo_cycleNum;
@@ -187,20 +187,21 @@ switch (a_decoderId)
             end
          end
       end
-      
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   case {224, 226}
+
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   case {224, 226, 227}
       % Arvor-ARN-Ice RBR Iridium 5.49
       % Arvor-ARN-Ice RBR 1 Hz Iridium 5.51
-      
+      % Arvor-ARN-Ice RBR 1 Hz + auto corrected PSAL Iridium 5.52
+
       g_decArgo_nbDescentPacketsReceived = 0;
       g_decArgo_nbParkPacketsReceived = 0;
       g_decArgo_nbAscentPacketsReceived = 0;
       g_decArgo_nbHydraulicPacketsReceived = 0;
       g_decArgo_nbTech1PacketsReceived = 0;
       g_decArgo_nbTech2PacketsReceived = 0;
-      g_decArgo_nbParm1PacketsReceived = 0;
-      g_decArgo_nbParm2PacketsReceived = 0;
+      g_decArgo_nbParam1PacketsReceived = 0;
+      g_decArgo_nbParam2PacketsReceived = 0;
       g_decArgo_nbNearSurfacePacketsReceived = 0;
       g_decArgo_nbInAirPacketsReceived = 0;
       
@@ -223,64 +224,114 @@ switch (a_decoderId)
                g_decArgo_nbTech2PacketsReceived = g_decArgo_nbTech2PacketsReceived + 1;
                
             case 1
-               % CTD packets
-               o_dataCTD = [o_dataCTD; a_decDataTab(idSbd).decData{:}];
+               % descending CTD packets (PTS)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
                g_decArgo_nbDescentPacketsReceived = g_decArgo_nbDescentPacketsReceived + 1;
                
             case 15
-               % CTD packets
+               % descending CTD packets (PTS + coils temp)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
+               g_decArgo_nbDescentPacketsReceived = g_decArgo_nbDescentPacketsReceived + 1;
+
+            case 25
+               % descending CTD packets (PTS + Scor)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
+               g_decArgo_nbDescentPacketsReceived = g_decArgo_nbDescentPacketsReceived + 1;
+
+            case 36
+               % descending CTD packets (PTScor)
                o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
                g_decArgo_nbDescentPacketsReceived = g_decArgo_nbDescentPacketsReceived + 1;
                
             case 2
-               % CTD packets
-               o_dataCTD = [o_dataCTD; a_decDataTab(idSbd).decData{:}];
+               % drift CTD packets (PTS)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
                g_decArgo_nbParkPacketsReceived = g_decArgo_nbParkPacketsReceived + 1;
                
             case 16
-               % CTD packets
+               % drift CTD packets (PTS + coils temp)
                o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
                g_decArgo_nbParkPacketsReceived = g_decArgo_nbParkPacketsReceived + 1;
-               
+
+            case 27
+               % drift CTD packets (PTS + Scor)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
+               g_decArgo_nbParkPacketsReceived = g_decArgo_nbParkPacketsReceived + 1;
+
+            case 37
+               % drift CTD packets (PTScor)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
+               g_decArgo_nbParkPacketsReceived = g_decArgo_nbParkPacketsReceived + 1;
+
             case 3
-               % CTD packets
-               o_dataCTD = [o_dataCTD; a_decDataTab(idSbd).decData{:}];
+               % ascending CTD packets (PTS)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
                g_decArgo_nbAscentPacketsReceived = g_decArgo_nbAscentPacketsReceived + 1;
                
             case 17
-               % CTD packets
+               % ascending CTD packets (PTS + coils temp)
                o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
                g_decArgo_nbAscentPacketsReceived = g_decArgo_nbAscentPacketsReceived + 1;
-               
+
+            case 28
+               % ascending CTD packets (PTS + Scor)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
+               g_decArgo_nbAscentPacketsReceived = g_decArgo_nbAscentPacketsReceived + 1;
+
+            case 38
+               % ascending CTD packets (PTScor)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
+               g_decArgo_nbAscentPacketsReceived = g_decArgo_nbAscentPacketsReceived + 1;
+
             case 13
-               % CTD packets
-               o_dataCTD = [o_dataCTD; a_decDataTab(idSbd).decData{:}];
+               % NS CTD packets (PTS)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
                g_decArgo_nbNearSurfacePacketsReceived = g_decArgo_nbNearSurfacePacketsReceived + 1;
                
             case 18
-               % CTD packets
+               % NS CTD packets (PTS + coils temp)
                o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
                g_decArgo_nbNearSurfacePacketsReceived = g_decArgo_nbNearSurfacePacketsReceived + 1;
                
-            case 14
-               % CTD packets
-               o_dataCTD = [o_dataCTD; a_decDataTab(idSbd).decData{:}];
-               g_decArgo_nbInAirPacketsReceived = g_decArgo_nbInAirPacketsReceived + 1;
+            case 29
+               % NS CTD packets (PTS + Scor)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
+               g_decArgo_nbNearSurfacePacketsReceived = g_decArgo_nbNearSurfacePacketsReceived + 1;
                
-            case 19
-               % CTD packets
+            case 39
+               % NS CTD packets (PTScor)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
+               g_decArgo_nbNearSurfacePacketsReceived = g_decArgo_nbNearSurfacePacketsReceived + 1;
+
+            case 14
+               % IA CTD packets (PTS)
                o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
                g_decArgo_nbInAirPacketsReceived = g_decArgo_nbInAirPacketsReceived + 1;
                
+            case 19
+               % IA CTD packets (PTS + coils temp)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
+               g_decArgo_nbInAirPacketsReceived = g_decArgo_nbInAirPacketsReceived + 1;
+               
+            case 30
+               % IA CTD packets (PTS + Scor)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
+               g_decArgo_nbInAirPacketsReceived = g_decArgo_nbInAirPacketsReceived + 1;
+               
+            case 40
+               % IA CTD packets (PTScor)
+               o_dataCTDRbr = [o_dataCTDRbr; a_decDataTab(idSbd).decData{:}];
+               g_decArgo_nbInAirPacketsReceived = g_decArgo_nbInAirPacketsReceived + 1;
+
             case 5
                % parameter packet #1
                o_floatParam1 = [o_floatParam1; a_decDataTab(idSbd).decData{:}];
-               g_decArgo_nbParm1PacketsReceived = g_decArgo_nbParm1PacketsReceived + 1;
+               g_decArgo_nbParam1PacketsReceived = g_decArgo_nbParam1PacketsReceived + 1;
                
             case 7
                % parameter packet #2
                o_floatParam2 = [o_floatParam2; a_decDataTab(idSbd).decData{:}];
-               g_decArgo_nbParm2PacketsReceived = g_decArgo_nbParm2PacketsReceived + 1;
+               g_decArgo_nbParam2PacketsReceived = g_decArgo_nbParam2PacketsReceived + 1;
                
                if (isempty(g_decArgo_7TypePacketReceivedCyNum))
                   g_decArgo_7TypePacketReceivedCyNum = g_decArgo_cycleNum;
@@ -338,8 +389,8 @@ switch (a_decoderId)
       g_decArgo_nbHydraulicPacketsReceived = 0;
       g_decArgo_nbTech1PacketsReceived = 0;
       g_decArgo_nbTech2PacketsReceived = 0;
-      g_decArgo_nbParm1PacketsReceived = 0;
-      g_decArgo_nbParm2PacketsReceived = 0;
+      g_decArgo_nbParam1PacketsReceived = 0;
+      g_decArgo_nbParam2PacketsReceived = 0;
       g_decArgo_nbNearSurfacePacketsReceived = 0;
       g_decArgo_nbInAirPacketsReceived = 0;
       
@@ -414,7 +465,7 @@ switch (a_decoderId)
             case 5
                % parameter packet #1
                o_floatParam1 = [o_floatParam1; a_decDataTab(idSbd).decData{:}];
-               g_decArgo_nbParm1PacketsReceived = g_decArgo_nbParm1PacketsReceived + 1;
+               g_decArgo_nbParam1PacketsReceived = g_decArgo_nbParam1PacketsReceived + 1;
                
             case 7
                % parameter packet #2
@@ -426,7 +477,7 @@ switch (a_decoderId)
                      g_decArgo_floatNum, g_decArgo_cycleNum, ...
                      g_decArgo_7TypePacketReceivedCyNum);
                else
-                  g_decArgo_nbParm2PacketsReceived = g_decArgo_nbParm2PacketsReceived + 1;
+                  g_decArgo_nbParam2PacketsReceived = g_decArgo_nbParam2PacketsReceived + 1;
                end
                
             case 6
@@ -474,7 +525,7 @@ switch (a_decoderId)
       g_decArgo_nbHydraulicPacketsReceived = 0;
       g_decArgo_nbTech1PacketsReceived = 0;
       g_decArgo_nbTech2PacketsReceived = 0;
-      g_decArgo_nbParmPacketsReceived = 0;
+      g_decArgo_nbParamPacketsReceived = 0;
       g_decArgo_nbNearSurfacePacketsReceived = 0;
       g_decArgo_nbInAirPacketsReceived = 0;
       
@@ -549,7 +600,7 @@ switch (a_decoderId)
             case 5
                % parameter packet #1
                o_floatParam1 = [o_floatParam1; a_decDataTab(idSbd).decData{:}];
-               g_decArgo_nbParmPacketsReceived = g_decArgo_nbParmPacketsReceived + 1;
+               g_decArgo_nbParamPacketsReceived = g_decArgo_nbParamPacketsReceived + 1;
                
             case 6
                % EV packet
@@ -572,8 +623,8 @@ switch (a_decoderId)
       g_decArgo_nbHydraulicPacketsReceived = 0;
       g_decArgo_nbTech1PacketsReceived = 0;
       g_decArgo_nbTech2PacketsReceived = 0;
-      g_decArgo_nbParm1PacketsReceived = 0;
-      g_decArgo_nbParm2PacketsReceived = 0;
+      g_decArgo_nbParam1PacketsReceived = 0;
+      g_decArgo_nbParam2PacketsReceived = 0;
       g_decArgo_nbNearSurfacePacketsReceived = 0;
       g_decArgo_nbInAirPacketsReceived = 0;
       
@@ -648,7 +699,7 @@ switch (a_decoderId)
             case 5
                % parameter packet #1
                o_floatParam1 = [o_floatParam1; a_decDataTab(idSbd).decData{:}];
-               g_decArgo_nbParm1PacketsReceived = g_decArgo_nbParm1PacketsReceived + 1;
+               g_decArgo_nbParam1PacketsReceived = g_decArgo_nbParam1PacketsReceived + 1;
                
             case 6
                % EV or pump packet
@@ -667,7 +718,7 @@ switch (a_decoderId)
                      g_decArgo_floatNum, g_decArgo_cycleNum, ...
                      g_decArgo_7TypePacketReceivedCyNum);
                else
-                  g_decArgo_nbParm2PacketsReceived = g_decArgo_nbParm2PacketsReceived + 1;
+                  g_decArgo_nbParam2PacketsReceived = g_decArgo_nbParam2PacketsReceived + 1;
                end
          end
       end
@@ -681,8 +732,8 @@ switch (a_decoderId)
       g_decArgo_nbHydraulicPacketsReceived = 0;
       g_decArgo_nbTech1PacketsReceived = 0;
       g_decArgo_nbTech2PacketsReceived = 0;
-      g_decArgo_nbParm1PacketsReceived = 0;
-      g_decArgo_nbParm2PacketsReceived = 0;
+      g_decArgo_nbParam1PacketsReceived = 0;
+      g_decArgo_nbParam2PacketsReceived = 0;
       g_decArgo_nbNearSurfacePacketsReceived = 0;
       g_decArgo_nbInAirPacketsReceived = 0;
       
@@ -757,7 +808,7 @@ switch (a_decoderId)
             case 5
                % parameter packet #1
                o_floatParam1 = [o_floatParam1; a_decDataTab(idSbd).decData{:}];
-               g_decArgo_nbParm1PacketsReceived = g_decArgo_nbParm1PacketsReceived + 1;
+               g_decArgo_nbParam1PacketsReceived = g_decArgo_nbParam1PacketsReceived + 1;
                
             case 6
                % EV or pump packet
@@ -776,7 +827,7 @@ switch (a_decoderId)
                      g_decArgo_floatNum, g_decArgo_cycleNum, ...
                      g_decArgo_7TypePacketReceivedCyNum);
                else
-                  g_decArgo_nbParm2PacketsReceived = g_decArgo_nbParm2PacketsReceived + 1;
+                  g_decArgo_nbParam2PacketsReceived = g_decArgo_nbParam2PacketsReceived + 1;
                end
          end
       end
@@ -806,7 +857,7 @@ switch (a_decoderId)
                g_decArgo_nbAscentPacketsReceived = g_decArgo_nbAscentPacketsReceived + 1;
          end
       end
-      
+
    otherwise
       fprintf('WARNING: Float #%d: Nothing implemented yet in get_decoded_data for decoderId #%d\n', ...
          g_decArgo_floatNum, ...

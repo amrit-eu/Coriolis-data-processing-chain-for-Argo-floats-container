@@ -144,6 +144,15 @@ internalTemp.fmt{end+1} = '%g';
 internalTemp.tech{end+1} = get_cts5_tech_data_init_struct(206, 'Internal temperature (degC)');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+internalTemp2 = init_basic_struct;
+internalTemp2.pattern = 'Ti=%f degC';
+internalTemp2.count = 1;
+internalTemp2.id{end+1} = 1;
+internalTemp2.name{end+1} = 'internal temperature (degC)';
+internalTemp2.fmt{end+1} = '%g';
+internalTemp2.tech{end+1} = get_cts5_tech_data_init_struct(206, 'Internal temperature (degC)');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 o_techInfoStruct.SYSTEM = [];
 o_techInfoStruct.SYSTEM{end+1} = presOffset;
@@ -153,6 +162,7 @@ o_techInfoStruct.SYSTEM{end+1} = minBattVolt;
 o_techInfoStruct.SYSTEM{end+1} = externalTemp;
 o_techInfoStruct.SYSTEM{end+1} = externalPres;
 o_techInfoStruct.SYSTEM{end+1} = internalTemp;
+o_techInfoStruct.SYSTEM{end+1} = internalTemp2;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2838,15 +2848,15 @@ sensorErrorBrokenHYDROC.tech{end+1} = get_cts5_tech_data_init_struct(230, 'BROKE
 sensorErrorBrokenHYDROC.tech{end}.shortSensorName = 'Hydroc';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TO BE IMPLEMENT WHEN THE ALARM WILL BE RAISED
-% sensorErrorSequenceHYDROC = init_basic_struct;
-% sensorErrorSequenceHYDROC.pattern = 'HYDROC sequence (%x)';
-% sensorErrorSequenceHYDROC.count = 1;
-% sensorErrorSequenceHYDROC.id{end+1} = 1;
-% sensorErrorSequenceHYDROC.name{end+1} = 'SEQUENCE ERROR alarm for HYDROC sensor (identification of failure when sending a command to HYDROC sensor)';
-% sensorErrorSequenceHYDROC.fmt{end+1} = '%d';
-% sensorErrorSequenceHYDROC.tech{end+1} = get_cts5_tech_data_init_struct(253, 'SEQUENCE ERROR alarm for HYDROC sensor (identification of failure when sending a command to HYDROC sensor)');
-% sensorErrorSequenceHYDROC.tech{end}.shortSensorName = 'Hydroc';
+sensorErrorSequenceHYDROC = init_basic_struct;
+sensorErrorSequenceHYDROC.pattern = 'HYDROC sequence (%x)';
+sensorErrorSequenceHYDROC.count = 1;
+sensorErrorSequenceHYDROC.id{end+1} = 1;
+sensorErrorSequenceHYDROC.func{end+1} = '@(x) sprintf(''0x%x'', x)';
+sensorErrorSequenceHYDROC.name{end+1} = 'SEQUENCE ERROR alarm for HYDROC sensor (identification of failure when sending a command to HYDROC sensor)';
+sensorErrorSequenceHYDROC.fmt{end+1} = '%s';
+sensorErrorSequenceHYDROC.tech{end+1} = get_cts5_tech_data_init_struct(253, 'SEQUENCE ERROR alarm for HYDROC sensor (identification of failure when sending a command to HYDROC sensor)');
+sensorErrorSequenceHYDROC.tech{end}.shortSensorName = 'Hydroc';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 sensorErrorDataSizeSBE41 = init_basic_struct;
@@ -3064,7 +3074,7 @@ o_techInfoStruct.ALARM{end+1} = sensorErrorBrokenRAMSES;
 o_techInfoStruct.ALARM{end+1} = sensorErrorBrokenOPUS;
 o_techInfoStruct.ALARM{end+1} = sensorErrorBrokenMPE;
 o_techInfoStruct.ALARM{end+1} = sensorErrorBrokenHYDROC;
-% o_techInfoStruct.ALARM{end+1} = sensorErrorSequenceHYDROC;
+o_techInfoStruct.ALARM{end+1} = sensorErrorSequenceHYDROC;
 o_techInfoStruct.ALARM{end+1} = sensorErrorDataSizeSBE41;
 o_techInfoStruct.ALARM{end+1} = sensorErrorDataSizeDO;
 o_techInfoStruct.ALARM{end+1} = sensorErrorDataSizeOCR;

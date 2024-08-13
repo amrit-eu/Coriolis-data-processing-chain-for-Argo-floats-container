@@ -49,10 +49,10 @@ for idField = 1:length(confDataFieldNames)
       case {1, 3, 4, 11, 12, 17, 19, 24, 25, 27, 28, 29, 30, 31, 32}
          o_ncParamIds{idField} = confItemData.CONF_PARAM_DEC_ID;
       case {105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, ...
-            121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133}
+            121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134}
          o_ncParamIds(idField) = str2num(confItemData.CONF_PARAM_DEC_ID);
       case {201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 222, ...
-            213, 214, 215, 216, 217, 218, 219, 220, 221, 223, 224, 225, 226}
+            213, 214, 215, 216, 217, 218, 219, 220, 221, 223, 224, 225, 226, 227, 228}
          o_ncParamIds{idField} = confItemData.CONF_PARAM_DEC_ID;
       case {301, 302, 303}
          o_ncParamIds(idField) = str2num(confItemData.CONF_PARAM_DEC_ID);
@@ -80,7 +80,7 @@ for idField = 1:length(confDataFieldNames)
    o_ncParamDescriptions{idField} = confItemData.CONF_PARAM_DESCRIPTION;
    
    % duplicate entries for <short_sensor_name> not in Argo (Ex: 'Uvp')
-   if (ismember(a_decoderId, [126, 127, 128]))
+   if (ismember(a_decoderId, [126, 127, 128, 134]))
       % for <short_sensor_name> = 'Uvp', 'Opus', 'Ramses', 'Mpe', configuration
       % labels have been duplicated in the JSON config file but we also
       % need to generate all labels (for all depth zones) because META_AUX

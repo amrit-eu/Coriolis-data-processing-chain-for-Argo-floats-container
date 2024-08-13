@@ -87,8 +87,8 @@ if (~isempty(a_tabTech))
       end
       
       tabTech = a_tabTech(idF2(end), :);
-      pres = sensor_2_value_for_pressure_201_203_215_216_218_221(tabTech(10));
-      temp = sensor_2_value_for_temperature_201_to_203_215_216_218_221(tabTech(11));
+      pres = sensor_2_value_for_pressure_201_203_215_216_218_221_228_229(tabTech(10));
+      temp = sensor_2_value_for_temperature_2xx_1_to_3_15_16_18_21_28_29(tabTech(11));
       psal = tabTech(12)/1000;
       if (any([pres temp psal] ~= 0))
          presCutOffProf = pres;
@@ -280,7 +280,7 @@ for idProf = 1:3
       end
       
       % add profile date and location information
-      [profStruct] = add_profile_date_and_location_201_to_226_2001_to_2003( ...
+      [profStruct] = add_profile_date_and_location_201_to_229_2001_to_2003( ...
          profStruct, a_gpsData, a_iridiumMailData, ...
          a_descentToParkStartDate, a_ascentEndDate, a_transStartDate);
       

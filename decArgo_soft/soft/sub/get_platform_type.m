@@ -45,7 +45,7 @@ switch (a_decoderId)
       % PROVOR APMT-OSEAN (CTS5)
       o_platformType = 'PROVOR_IV';
       
-   case {126, 127, 128}
+   case {126, 127, 128, 134}
       % PROVOR APMT-USEA (CTS5)
       o_platformType = 'PROVOR_V';
 
@@ -53,11 +53,11 @@ switch (a_decoderId)
       % PROVOR APMT-USEA JUMBO (CTS5)
       o_platformType = 'PROVOR_V_JUMBO';
       
-   case {201, 202, 203, 215, 216, 218, 221}
+   case {201, 202, 203, 215, 216, 218, 221, 228, 229}
       % DEEP ARVOR
       o_platformType = 'ARVOR_D';
       
-   case {205, 204, 209, 210, 211, 212, 222, 224, 226}
+   case {205, 204, 209, 210, 211, 212, 222, 224, 226, 227}
       % ARVOR Iridium
       o_platformType = 'ARVOR';
       

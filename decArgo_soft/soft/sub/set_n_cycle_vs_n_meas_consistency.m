@@ -307,8 +307,9 @@ for idNCy = 1:length(o_tabTrajNCycle)
          end
       end
    end
-
+   
    % check consistency for GROUNDED
+   idFNMeas = find([o_tabTrajNMeas.outputCycleNumber] == cycleNum);
    grdFlag = 0;
    for idNMeas = 1:length(idFNMeas)
       trajNMeas = o_tabTrajNMeas(idFNMeas(idNMeas));

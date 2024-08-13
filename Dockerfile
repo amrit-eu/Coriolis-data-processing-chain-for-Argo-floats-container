@@ -9,8 +9,7 @@ WORKDIR /tmp
 
 COPY decArgo_soft/exec/run_decode_argo_2_nc_rt.sh .
 COPY decArgo_soft/exec/decode_argo_2_nc_rt .
-COPY decArgo_soft/config/configuration_sample_files_docker/_argo_decoder_conf_ir_sbd.json ./config
-COPY decArgo_soft/config/configuration_sample_files_docker/_argo_decoder_conf_ir_sbd_rem.json ./config
+COPY decArgo_soft/config/configuration_sample_files_docker/*.json ./config
 COPY decArgo_soft/config/_configParamNames ./config/_configParamNames
 COPY decArgo_soft/config/_techParamNames ./config/_techParamNames
 

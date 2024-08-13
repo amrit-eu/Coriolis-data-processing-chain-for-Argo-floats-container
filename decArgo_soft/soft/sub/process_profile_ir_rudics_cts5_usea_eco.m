@@ -56,9 +56,9 @@ end
 
 if (ismember('ECO3', g_decArgo_sensorMountedOnFloat))
    switch (a_decoderId)
-      case {126, 127, 128, 129, 130}
+      case {126, 127, 128, 129, 130, 134}
          [o_tabProfiles, o_tabDrift, o_tabDesc2Prof, o_tabDeepDrift, o_tabSurf] = ...
-            process_profile_ir_rudics_cts5_usea_eco3_126_to_130(a_ecoData, a_timeData, a_gpsData);
+            process_profile_ir_rudics_cts5_usea_eco3_126_to_130_134(a_ecoData, a_timeData, a_gpsData);
       case {131, 132}
          [o_tabProfiles, o_tabDrift, o_tabDesc2Prof, o_tabDeepDrift, o_tabSurf] = ...
             process_profile_ir_rudics_cts5_usea_eco3_131_132(a_ecoData, a_timeData, a_gpsData);

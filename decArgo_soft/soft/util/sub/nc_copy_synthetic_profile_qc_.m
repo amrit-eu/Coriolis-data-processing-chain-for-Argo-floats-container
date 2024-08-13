@@ -56,6 +56,9 @@ global g_cocsq_reportXmlStruct;
 global g_cocsq_reportCsvData;
 g_cocsq_reportCsvData = [];
 
+% name of the current DAC
+global g_cocsq_currentDacName;
+
 % top directory of input NetCDF files containing the Qc values
 % (top directory of the DAC name directories)
 DIR_INPUT_QC_NC_FILES = a_dirInputQcNcFiles;
@@ -118,6 +121,7 @@ for idDir = 1:length(dirNames)
    if (strcmp(dacName, '.') || strcmp(dacName, '..'))
       continue
    end
+   g_cocsq_currentDacName = dacName;
 
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    % process the floats
@@ -419,6 +423,9 @@ global g_decArgo_janFirst1950InMatlab;
 % XML report information structure
 global g_cocsq_reportXmlStruct;
 
+% RT processing flag
+global g_cocsq_realtimeFlag;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % retrieve input file data
@@ -476,6 +483,10 @@ end
 if (isempty(qcHisto))
    fprintf('WARNING: No SCOOP QC in Qc file : %s\n', ...
       a_qcProfFileName);
+
+   if (g_cocsq_realtimeFlag == 1)
+      g_cocsq_reportXmlStruct.input_ko = [g_cocsq_reportXmlStruct.input_ko {a_qcProfFileName}];
+   end
    return
 end
 [~, sortId] = sort([qcHisto.date]);
@@ -525,6 +536,17 @@ qcPresVal = round_argo(qcPresVal, 'PRES');
 % PRES values of S-PROF file
 sPresVal = sProfData.PRES;
 sPresVal = round_argo(sPresVal, 'PRES');
+
+% check that both profiles have the same dimension
+if (length(qcPresVal) ~= length(sPresVal))
+   fprintf('ERROR: Float %d: Number of levels differs between S-PROF (%d) and Qc PROF (%d) [Qc file: %s] - SCOOP QC not reported\n', ...
+      g_cocsq_floatNum, length(sPresVal), length(qcPresVal), a_qcProfFileName);
+
+   if (g_cocsq_realtimeFlag == 1)
+      g_cocsq_reportXmlStruct.input_ko = [g_cocsq_reportXmlStruct.input_ko {a_qcProfFileName}];
+   end
+   return
+end
 
 % list of parameters with SCOOP QC (excluding JULD_QC and POSITION_QC)
 paramListToReport = setdiff(paramListToReport, [{'DAT$'} {'POS$'}]);
@@ -586,6 +608,10 @@ for idParam = 1:length(paramListToReport)
    if (isempty(profId))
       fprintf('WARNING: Float %d: Cannot find profile with %s values [Qc file: %s] - SCOOP QC not reported\n', ...
          g_cocsq_floatNum, paramName, a_qcProfFileName);
+
+      if (g_cocsq_realtimeFlag == 1)
+         g_cocsq_reportXmlStruct.input_ko = [g_cocsq_reportXmlStruct.input_ko {a_qcProfFileName}];
+      end
       continue
    end
 
@@ -618,10 +644,18 @@ for idParam = 1:length(paramListToReport)
          if (isempty(hist.startLev) )
             fprintf('WARNING: Float %d: PRES = %.3f not found in Qc file [Qc file: %s] - SCOOP QC not reported\n', ...
                g_cocsq_floatNum, hist.startPres, a_qcProfFileName);
+
+            if (g_cocsq_realtimeFlag == 1)
+               g_cocsq_reportXmlStruct.input_ko = [g_cocsq_reportXmlStruct.input_ko {a_qcProfFileName}];
+            end
          end
          if (isempty(hist.stopLev))
             fprintf('WARNING: Float %d: PRES = %.3f not found in Qc file [Qc file: %s] - SCOOP QC not reported\n', ...
                g_cocsq_floatNum, hist.stopPres, a_qcProfFileName);
+
+            if (g_cocsq_realtimeFlag == 1)
+               g_cocsq_reportXmlStruct.input_ko = [g_cocsq_reportXmlStruct.input_ko {a_qcProfFileName}];
+            end
          end
          continue
       end
@@ -634,10 +668,18 @@ for idParam = 1:length(paramListToReport)
             if (qcPresVal(hist.startLev) ~=  sPresVal(hist.startLev))
                fprintf('WARNING: Float %d: PRES = %.3f not found in S-PROF file [Qc file: %s] - SCOOP QC not reported\n', ...
                   g_cocsq_floatNum, hist.startPres, a_qcProfFileName);
+
+               if (g_cocsq_realtimeFlag == 1)
+                  g_cocsq_reportXmlStruct.input_ko = [g_cocsq_reportXmlStruct.input_ko {a_qcProfFileName}];
+               end
             end
             if (qcPresVal(hist.stopLev) ~=  sPresVal(hist.stopLev))
                fprintf('WARNING: Float %d: PRES = %.3f not found in S-PROF file [Qc file: %s] - SCOOP QC not reported\n', ...
                   g_cocsq_floatNum, hist.stopPres, a_qcProfFileName);
+
+               if (g_cocsq_realtimeFlag == 1)
+                  g_cocsq_reportXmlStruct.input_ko = [g_cocsq_reportXmlStruct.input_ko {a_qcProfFileName}];
+               end
             end
             continue
          end
@@ -683,6 +725,10 @@ for idParam = 1:length(paramListToReport)
          if (~matchOnce)
             fprintf('WARNING: Float %d: Some %s measurements not found in PROF file [Qc file: %s] - SCOOP QC not reported\n', ...
                g_cocsq_floatNum, paramName, a_qcProfFileName);
+
+            if (g_cocsq_realtimeFlag == 1)
+               g_cocsq_reportXmlStruct.input_ko = [g_cocsq_reportXmlStruct.input_ko {a_qcProfFileName}];
+            end
          end
       end
    end
@@ -885,6 +931,10 @@ global g_cocsq_reportCsvData;
 global g_cocsq_verboseMode;
 VERBOSE_MODE = g_cocsq_verboseMode;
 
+% name of the current DAC
+global g_cocsq_currentDacName;
+
+
 % update the output file(s)
 for idType = 1:2
    updatedFlag = 0;
@@ -956,6 +1006,7 @@ for idType = 1:2
                reportCsvStruct = get_csv_report_init_struct;
 
                reportCsvStruct.DAC_CODE = strtrim(profData.DATA_CENTRE(:, 1)');
+               reportCsvStruct.DAC_NAME = g_cocsq_currentDacName;
                reportCsvStruct.CV_NUMBER = profData.CYCLE_NUMBER(1);
                reportCsvStruct.DIRECTION = profData.DIRECTION(1);
                reportCsvStruct.PARAMETER = 'DAT$';
@@ -1009,6 +1060,7 @@ for idType = 1:2
                reportCsvStruct = get_csv_report_init_struct;
 
                reportCsvStruct.DAC_CODE = strtrim(profData.DATA_CENTRE(:, 1)');
+               reportCsvStruct.DAC_NAME = g_cocsq_currentDacName;
                reportCsvStruct.CV_NUMBER = profData.CYCLE_NUMBER(1);
                reportCsvStruct.DIRECTION = profData.DIRECTION(1);
                reportCsvStruct.PARAMETER = 'POS$';
@@ -1063,6 +1115,7 @@ for idType = 1:2
                   reportCsvStruct = get_csv_report_init_struct;
 
                   reportCsvStruct.DAC_CODE = strtrim(profData.DATA_CENTRE(:, profId)');
+                  reportCsvStruct.DAC_NAME = g_cocsq_currentDacName;
                   reportCsvStruct.CV_NUMBER = profData.CYCLE_NUMBER(profId);
                   reportCsvStruct.DIRECTION = profData.DIRECTION(profId);
                   reportCsvStruct.PARAMETER = paramName;
@@ -1460,7 +1513,8 @@ o_reportStruct = struct( ...
    'input_ok', '', ...
    'output_ok', '', ...
    'profNum_ok', '', ...
-   'input_ko', '');
+   'input_ko', '' ...
+   );
 
 return
 
@@ -1494,6 +1548,7 @@ global g_cocsq_nowUtc;
 % output parameters initialization
 o_reportStruct = struct( ...
    'DAC_CODE', '', ...
+   'DAC_NAME', 'UNKNOWN_DAC', ...
    'PLATFORM_CODE', g_cocsq_floatNum, ...
    'CV_NUMBER', '', ...
    'DATE_UPDATE', datestr(g_cocsq_nowUtc, 'dd/mm/yyyy HH:MM:SS'), ...
@@ -1651,8 +1706,14 @@ for idDac = 1:length(uDacCode)
    dacCode = uDacCode{idDac};
    idForDac = find(strcmp({g_cocsq_reportCsvData.DAC_CODE}, dacCode));
 
+   % create DAC directory
+   outputDirName = [a_dirCsvFile '/' g_cocsq_reportCsvData(idForDac(1)).DAC_NAME];
+   if ~(exist(outputDirName, 'dir') == 7)
+      mkdir(outputDirName);
+   end
+
    % CSV output file path name
-   csvFilepathName = [a_dirCsvFile '/ar_scoop_' dacCode '_' datestr(g_cocsq_nowUtc, 'yyyymmddTHHMMSS') '.csv'];
+   csvFilepathName = [outputDirName '/ar_scoop_' dacCode '_' datestr(g_cocsq_nowUtc, 'yyyymmddHHMMSS') '.csv'];
 
    % write CSV report
    fId = fopen(csvFilepathName, 'wt');
