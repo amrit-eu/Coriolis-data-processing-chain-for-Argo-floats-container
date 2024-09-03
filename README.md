@@ -43,28 +43,29 @@ graph TD
 
 ## Run image in your environment
 
+- Prepare your data
 - Define next variables to configure the decoder on your environment
 
 ```bash
-DECODER_IMAGE=<decoder image path>
-DECODER_IMAGE_TAG=<decoder image tag>
+DECODER_IMAGE=ghcr.io/euroargodev/coriolis-data-processing-chain-for-argo-floats-container # decoder image path
+DECODER_IMAGE_TAG=<decoder image tag> # example : 066a
 
-DECODER_RUNTIME_DIR=<path to runtime directory>
-DECODER_DATA_INPUT=<path to input directory>
-DECODER_DATA_CONF=<path to conf directory>
-DECODER_DATA_OUTPUT=<path to output directory>
-DECODER_REF_GEBCO=<path to gebco file> # Optionnal
-DECODER_REF_GREYLIST=<path to gebco file> # Optionnal
+DECODER_RUNTIME_VOLUME=<path to runtime directory>
+DECODER_DATA_INPUT_VOLUME=<path to input directory>
+DECODER_DATA_CONF_VOLUME=<path to conf directory>
+DECODER_DATA_OUTPUT_VOLUME=<path to output directory>
+DECODER_REF_GEBCO_FILE=<path to gebco file> # optionnal
+DECODER_REF_GREYLIST_FILE=<path to gebco file> # optionnal
 
-USER_ID=<uid volumes owner>
-GROUP_ID=<gid volumes owner>
+USER_ID=<uid volumes owner> # must match with volumes owner
+GROUP_ID=<gid volumes owner> # must match with volumes owner
+
+FLOAT_WMO=<float wmo to decode> # example : 6902892
 ```
 
 - Run the following script as an example to decode a single float.
 
 ```bash
-FLOAT_WMO=6902892
-
 rm -rf $DATA_OUTPUT/iridium/*$FLOAT_WMO 
 rm -rf $DATA_OUTPUT/nc/$FLOAT_WMO
 
@@ -72,10 +73,10 @@ docker run -it --rm \
 --name "argo-decoder-container" \
 --user $USER_ID:$GROUP_ID \
 --group-add gbatch \
--v $DECODER_RUNTIME_DIR:/mnt/runtime:ro \
--v $DECODER_DATA_INPUT:/mnt/data/rsync:rw \
--v $DECODER_DATA_CONF:/mnt/data/config:ro \
--v $DECODER_DATA_OUTPUT:/mnt/data/output:rw \
+-v $DECODER_RUNTIME_VOLUME:/mnt/runtime:ro \
+-v $DECODER_DATA_INPUT_VOLUME:/mnt/data/rsync:rw \
+-v $DECODER_DATA_CONF_VOLUME:/mnt/data/config:ro \
+-v $DECODER_DATA_OUTPUT_VOLUME:/mnt/data/output:rw \
 $DECODER_IMAGE:$DECODER_IMAGE_TAG /mnt/runtime 'rsynclog' 'all' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd.json' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd_rem.json' 'xmlreport' 'co041404_'$(date +"%Y%m%dT%H%M%SZ")'_'$FLOAT_WMO'.xml' 'floatwmo' ''$FLOAT_WMO'' 'PROCESS_REMAINING_BUFFERS' '1'
 ```
 
