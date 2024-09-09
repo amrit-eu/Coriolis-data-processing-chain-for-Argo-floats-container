@@ -1,8 +1,9 @@
-FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 AS prepare
+FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 AS development
 
 RUN \
     apt-get -y update && \
     apt-get -y install wget unzip && \
+    apt-get clean && \
     mkdir -p /tmp/config
 
 WORKDIR /tmp
@@ -13,7 +14,7 @@ COPY decArgo_soft/config/configuration_sample_files_docker/*.json ./config
 COPY decArgo_soft/config/_configParamNames ./config/_configParamNames
 COPY decArgo_soft/config/_techParamNames ./config/_techParamNames
 
-FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 AS runtime-base
+FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 AS runtime
 
 # confifurable arguments
 ARG RUN_FILE=run_decode_argo_2_nc_rt.sh
@@ -54,7 +55,7 @@ RUN \
 
 WORKDIR ${APP_DIR}
 
-COPY --from=prepare /tmp/ .
+COPY --from=development /tmp/ .
 COPY entrypoint.sh .
 
 # adjust rights
