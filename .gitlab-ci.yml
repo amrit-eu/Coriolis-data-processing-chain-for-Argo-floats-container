@@ -10,7 +10,7 @@ include:
 
 # Déploiement du livrable docker sur la registry docker du hithub euroargo lors d'un tag
 container-image:github:euroargo 🐳:
-  stage: container-image
+  stage: build-image
   extends:
     - .container-image:docker:build-tag-push:socket
   variables:
