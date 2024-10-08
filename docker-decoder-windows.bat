@@ -1,15 +1,15 @@
 @echo off
 setlocal enabledelayedexpansion
 
-set DECODER_IMAGE=ghcr.io/euroargodev/coriolis-data-processing-chain-for-argo-floats-container
-set DECODER_IMAGE_TAG=066a
+set "DECODER_IMAGE=ghcr.io/euroargodev/coriolis-data-processing-chain-for-argo-floats-container"
+set "DECODER_IMAGE_TAG=066a"
 
-set DECODER_RUNTIME_VOLUME=C:\path-to-matlab-runtime\R2022b
-set DECODER_DATA_INPUT_VOLUME=C:\path-to-unzip-directory\data_inputs
-set DECODER_DATA_CONF_VOLUME=C:\path-to-unzip-directory\data_config
-set DECODER_DATA_OUTPUT_VOLUME=C:\path-to-unzip-directory\data_outputs
-REM set DECODER_REF_GEBCO_FILE=C:\path-to-gebco-file # optionnal
-REM set DECODER_REF_GREYLIST_FILE=C:\path-to-greylist-file # optionnal
+set "DECODER_RUNTIME_VOLUME=C:\path-to-matlab-runtime\R2022b"
+set "DECODER_DATA_INPUT_VOLUME=.\decArgo_demo\input"
+set "DECODER_DATA_CONF_VOLUME=.\decArgo_demo\config"
+set "DECODER_DATA_OUTPUT_VOLUME=.\decArgo_demo\output"
+REM" set DECODER_REF_GEBCO_FILE=C:\path-to-gebco-file" # optionnal
+REM "set DECODER_REF_GREYLIST_FILE=C:\path-to-greylist-file" # optionnal
 
 REM Define float to decode
 set "FLOAT_WMO=%~1"

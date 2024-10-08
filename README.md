@@ -167,9 +167,9 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
       sudo apt install git
       ```
 
-### Run demo with docker compose
+### Run demo on Linux operating system
 
-1. Upload the project with demonstration dataset
+- Upload the project with demonstration dataset
 
    - Option 1 : Using Git
 
@@ -188,12 +188,30 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
    cd Coriolis-data-processing-chain-for-Argo-floats
    ```
 
-2. Copy `.env.docs` as `.env` file to configure the decoder for the demonstration.
+#### with local runtime environment
 
-3. Run decoder demo with matlab runtime thanks to docker compose
+1. Costumize following variables to configure the decoder for the demonstration in `docker-decoder-linux.sh` file.
 
       ```bash
-      docker compose -f compose.yaml -f compose.matlab-runtime.yaml up
+      DECODER_RUNTIME_VOLUME=<path to runtime directory>
       ```
 
-4. Check next directory to see decoder outputs : `./decArgo_demo/output`
+2. Run the following script as an example to decode a single float.
+
+      ```bash
+      ./docker-decoder-linux.sh 6902892
+      ```
+
+3. Check next directory to see decoder outputs : `./decArgo_demo/output`
+
+#### with Dockerized runtime environment
+
+1. Copy `.env.docs` as `.env` file to configure the decoder for the demonstration.
+
+2. Run decoder demo with matlab runtime thanks to docker compose
+
+      ```bash
+      ./docker-decoder-matlab-linux.sh 6902892
+      ```
+
+3. Check next directory to see decoder outputs : `./decArgo_demo/output`
