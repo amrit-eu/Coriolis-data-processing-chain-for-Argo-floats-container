@@ -137,7 +137,7 @@ docker buildx build -t decoder:development .
 
 - Run see run section to run the image.
 
-## Demo
+## Demo on Linux operating system
 
 This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats based on a Dockerised Matlab Runtime on two Argo floats :
 
@@ -167,7 +167,7 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
       sudo apt install git
       ```
 
-### Run demo on Linux operating system
+### Run demo
 
 - Upload the project with demonstration dataset
 
