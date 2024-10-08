@@ -46,20 +46,22 @@ graph TD
 Several use cases exist to run the decoder :
 
 1. **The runtime environment is available on your server** : Then you will just need to reference it through an environment variable, the first execution will be quick.
-2. **You don't have access to the runtime environment** : Then the runtime environment will be loaded into a Docker image and uploaded on first execution which could take some time (as an example the Matlab environment size is around 12GB).
+2. **You don't have access to the runtime environment** : Then the runtime environment will be loaded into a Docker image and uploaded on first execution which could take some time (as an example the Matlab environment size is around 15GB).
 
 In this section we propose two ways to run the decoder, it's up to you to choose the one you prefer :
 
 1. using only Docker (is documented only if you have the decoder runtime environment on your server)
 2. using Docker compose plugin (is documented in both cases)
 
-### Using Docker
+### Using a local runtime environment with Docker
 
 - Prepare your data.
-- Define next variables to configure the decoder on your environment.
+
+**Linux Operating system** :
+
+- Costumize following variables to configure the decoder for your environment in `docker-decoder-linux.sh` file.
 
 ```bash
-DECODER_IMAGE=ghcr.io/euroargodev/coriolis-data-processing-chain-for-argo-floats-container # decoder image path
 DECODER_IMAGE_TAG=<decoder image tag> # example : 066a
 
 DECODER_RUNTIME_VOLUME=<path to runtime directory>
@@ -71,48 +73,57 @@ DECODER_REF_GREYLIST_FILE=<path to gebco file> # optionnal
 
 USER_ID=<uid volumes owner> # must match with volumes owner
 GROUP_ID=<gid volumes owner> # must match with volumes owner
-
-FLOAT_WMO=<float wmo to decode> # example : 6902892
 ```
 
 - Run the following script as an example to decode a single float.
 
 ```bash
-rm -rf $DECODER_DATA_OUTPUT_VOLUME/iridium/*$FLOAT_WMO 
-rm -rf $DECODER_DATA_OUTPUT_VOLUME/nc/$FLOAT_WMO
-
-docker run -it --rm \
---name "argo-decoder-container" \
---user $USER_ID:$GROUP_ID \
---group-add gbatch \
--v $DECODER_RUNTIME_VOLUME:/mnt/runtime:ro \
--v $DECODER_DATA_INPUT_VOLUME:/mnt/data/rsync:rw \
--v $DECODER_DATA_CONF_VOLUME:/mnt/data/config:ro \
--v $DECODER_DATA_OUTPUT_VOLUME:/mnt/data/output:rw \
-$DECODER_IMAGE:$DECODER_IMAGE_TAG /mnt/runtime 'rsynclog' 'all' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd.json' 'configfile' '/app/config/_argo_decoder_conf_ir_sbd_rem.json' 'xmlreport' 'co041404_'$(date +"%Y%m%dT%H%M%SZ")'_'$FLOAT_WMO'.xml' 'floatwmo' ''$FLOAT_WMO'' 'PROCESS_REMAINING_BUFFERS' '1'
+./docker-decoder-linux.sh 6902892
 ```
 
-### Using Docker compose plugin
+**Windows Operating system** :
+
+- Costumize following variables to configure the decoder for your environment in `docker-decoder-windows.bat` file.
+
+```batch
+set DECODER_IMAGE_TAG=<decoder image tag>
+
+set DECODER_RUNTIME_VOLUME=<path to runtime directory>
+set DECODER_DATA_INPUT_VOLUME=<path to input directory>
+set DECODER_DATA_CONF_VOLUME=<path to conf directory>
+set DECODER_DATA_OUTPUT_VOLUME=<path to output directory>
+set DECODER_REF_GEBCO_FILE=<path to gebco file> # optionnal
+set DECODER_REF_GREYLIST_FILE=<path to gebco file> # optionnal
+```
+
+- Run the following script as an example to decode a single float.
+
+```batch
+./docker-decoder-windows.bat 6902892
+```
+
+### Using a Dockerized runtime environment with Docker Compose
+
+#### Matlab runtime environment
 
 - Prepare your data.
 - Copy `.env.docs` as `.env` file, and costumize variables to configure the decoder for your environment.
-      
-      ```bash
-      cp .env.docs .env
-      vim .env
-      ```
 
-- Run the following command as an example to decode a single float.
-    1. if you **have** the **runtime environment on your server**.
+**Linux Operating system** :
 
-            ```bash
-            docker compose up
-            ```
-    2. if you **do not have** the **runtime environment on your server**.
+- Run the following script to decode a single float.
 
-            ```bash
-            docker compose -f compose.yaml -f compose.matlab-runtime.yaml up
-            ```
+```bash
+./docker-decoder-matlab-linux.sh 6902892
+```
+
+**Windows Operating system** :
+
+- Run the following script to decode a single float.
+
+```batch
+./docker-decoder-matlab-windows.bat 6902892
+```
 
 ## Development
 
@@ -177,18 +188,12 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
    cd Coriolis-data-processing-chain-for-Argo-floats
    ```
 
-2. Edit environment variables `.env.demo` file with your favorite text editor to setup your configuration, or use the next commands :
-
-      ```bash
-      # or at least these commands tu setup your user
-      sed -i "s/REPLACE_BY_USER_ID/$UID/g" .env
-      sed -i "s/REPLACE_BY_GROUP_ID/$(id -g $UID)/g" .env
-      ```
+2. Copy `.env.docs` as `.env` file to configure the decoder for the demonstration.
 
 3. Run decoder demo with matlab runtime thanks to docker compose
 
       ```bash
-      docker compose --env-file .env.demo -f compose.base.yaml -f compose.matlab-runtime.yaml up
+      docker compose -f compose.yaml -f compose.matlab-runtime.yaml up
       ```
 
 4. Check next directory to see decoder outputs : `./decArgo_demo/output`
