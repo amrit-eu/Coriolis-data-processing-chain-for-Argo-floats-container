@@ -27,12 +27,12 @@ if [ ! -d ${REF_DIR} ]; then
     exit 3
 fi
 
-# Download ar_greylist and move it in /app/ref 
-wget -O /tmp/ar_greylist.txt https://data-argo.ifremer.fr/ar_greylist.txt || rm -f /tmp/ar_greylist.txt
-if [ ! -f /tmp/ar_greylist.txt ]; then
-    echo "[ERROR] TEST015_GREY_LIST_FILE file not found: file should had have downloaded here 'https://data-argo.ifremer.fr/ar_greylist.txt', please check if that this URL is reachable" >&2
-    exit 3
-fi
+# Comment this code as greylist no longer being available publicly, need to be mount on the container directly
+# wget -O /tmp/ar_greylist.txt https://data-argo.ifremer.fr/ar_greylist.txt || rm -f /tmp/ar_greylist.txt
+# if [ ! -f /tmp/ar_greylist.txt ]; then
+#     echo "[ERROR] TEST015_GREY_LIST_FILE file not found: file should had have downloaded here 'https://data-argo.ifremer.fr/ar_greylist.txt', please check if that this URL is reachable" >&2
+#     exit 3
+# fi
 
 # JAVA_OPTS="-D${APP_NAME}.basedir=${BASEDIR}"
 echo "*** Starting ${APP_NAME} batch ***"
