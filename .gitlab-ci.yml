@@ -7,8 +7,8 @@ include:
       container_image_registry: "ghcr.io"
       container_image_namespace: "euroargodev"
       container_image_name: "coriolis-data-processing-chain-for-argo-floats-container"
-      container_image_login_token: "coriolis-data-processing-chain-package-rw"
-      container_image_login_user: "$EUROARGODEV_PACKAGE_TOKEN"
+      container_image_login_token: "$EUROARGODEV_PACKAGE_TOKEN"
+      container_image_login_user: "coriolis-data-processing-chain-package-rw"
 
 # Pas de contrôle du formattage de la version car le decodeur argo à une convention de nommage des versions bien spécifique
 .release:rules:
