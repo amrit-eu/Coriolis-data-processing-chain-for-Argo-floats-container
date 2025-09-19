@@ -1,7 +1,7 @@
 include:
   - component: $CI_SERVER_FQDN/dev-ops/templates/automatisation/ci-cd/pipeline-generic-container-image@~latest
     inputs:
-      container_image_name: "ifremer-coriolis-data-processing-chain-for-argo-floats-container"
+      container_image_name: "coriolis-data-processing-chain-for-argo-floats-container/ifremer"
   - component: $CI_SERVER_FQDN/dev-ops/templates/automatisation/ci-cd/pipeline-build-container-image@feature/override-registry
     inputs:
       container_image_registry: "ghcr.io"
