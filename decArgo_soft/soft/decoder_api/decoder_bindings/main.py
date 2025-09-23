@@ -94,6 +94,6 @@ if __name__ == "__main__":  # pragma: no cover
         pass
 
 # Example command
-# ./run_decode_argo_2_nc_rt.sh rsynclog all configfile /mnt/data/config/decoder_conf.json. xmlreport float.xml floatwmo 1234567 PROCESS_REMAINING_BUFFERS 1
+# ./run_decode_argo_2_nc_rt.sh rsynclog all configfile /mnt/data/config/decoder_conf.json. xmlreport float.xml floatwmo 6902892 PROCESS_REMAINING_BUFFERS 1
 
 

@@ -12,7 +12,7 @@ echo "------------------------------------------"
 echo "Setting up environment variables"
 
 # hardcode MCR root for your container
-MCRROOT="/mnt/runtime"   # <— your actual runtime location
+MCRROOT="/mnt/runtime"
 
 # build LD_LIBRARY_PATH
 LD_LIBRARY_PATH=.:${MCRROOT}/runtime/glnxa64
