@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+
+  runtime-matlab:
+    container_name: decoder-runtime-matlab
+    image: ghcr.io/euroargodev/coriolis-data-processing-chain-for-argo-floats/runtime/matlab:R2022b
+    user: root
+    volumes:
+      - runtime-matlab-volume:/matlab/runtime:rw
+
+  decode-float:
+    container_name: decode-floatwmo
+    image: decoder_matlab_tool:latest
+    user: root
+    env_file:
+      - .env
+    volumes:
+      - runtime-matlab-volume:/mnt/runtime:ro
+      - runtime-cache:/mnt/runtime-cache:rw
+      - ./decArgo_demo/input:/mnt/data/rsync:rw
+      - ./decArgo_demo/config:/mnt/data/config:ro
+      - ./decArgo_demo/output:/mnt/data/output:rw
+    depends_on:
+      - runtime-matlab
+
+volumes:
+  runtime-matlab-volume:
+  runtime-cache:
