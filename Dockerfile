@@ -70,11 +70,13 @@ FROM python:3.11-slim AS python-runtime
 
 
 COPY  decArgo_soft/soft/decoder_api /app/
+
 WORKDIR /app
 RUN pip install "poetry~=1.8.0" && \
     poetry config virtualenvs.create false && \
     poetry install
 
+COPY --from=development /tmp /app
 
 CMD ["python", "decoder_bindings/main.py"]
 

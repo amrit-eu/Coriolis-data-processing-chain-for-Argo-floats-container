@@ -88,7 +88,9 @@ if __name__ == "__main__":  # pragma: no cover
     #     raise ExecutionError("Usage: main.py <WMONUM>")
     print("Running!")
     # These are hardcoded for now, but will likely be passed by the calling code.
-    decoder = Decoder("/mnt/data/rsync", "/mnt/data/output", "/mnt/data/config")
-    decoder.decode(str(wmo[1]))
+    # decoder = Decoder("/mnt/data/rsync", "/mnt/data/output", "/mnt/data/config")
+    # decoder.decode(str(wmo[1]))
+    while True:
+        pass
 
-
+# rsynclog all configfile /mnt/data/config/decoder_conf.json. xmlreport float.xml floatwmo $FLOAT_1234567WMO PROCESS_REMAINING_BUFFERS 1
