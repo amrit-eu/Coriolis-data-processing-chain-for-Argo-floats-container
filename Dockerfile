@@ -76,7 +76,7 @@ FROM runtime AS python-api
 # 2. Set up a Gunicorn entrypoint to replace the original script
 
 ENTRYPOINT ["/path/to/gunicorn"]
-CMD: ["your", "gunicorn", "args"]
+# CMD: ["your", "gunicorn", "args"]
 
 
 # classique runtime image
