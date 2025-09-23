@@ -1,0 +1,37 @@
+name: Publish Python Package to GitHub Packages
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"   # or whichever version(s) you want to support
+
+      - name: Build package
+        run: |
+          cd decArgo_soft/soft/decoder_api
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry build
+      
+      # - name: Publish to GitHub Packages
+      #   env:
+      #     TWINE_USERNAME: __token__
+      #     TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     cd python_bindings
+      #     python -m twine upload \
+      #       --repository github \
+      #       dist/*
+
