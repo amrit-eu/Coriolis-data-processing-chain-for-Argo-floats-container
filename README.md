@@ -49,7 +49,9 @@ In this section we propose two ways to run the decoder, it's up to you to choose
 
 1. using only Docker (is documented only if you have the decoder runtime environment on your server)
 2. using Docker compose plugin (is documented in both cases)
+
 ---
+
 ### Using a local runtime environment with Docker
 
 ## Prepare your data
@@ -57,10 +59,11 @@ In this section we propose two ways to run the decoder, it's up to you to choose
 | **Linux Operating System** | **Windows Operating System** |
 |----------------------------|-------------------------------|
 | Customize the following variables in `docker-decoder-linux.sh`: | Customize the following variables in `docker-decoder-windows.bat`: |
-| ```bashDECODER_IMAGE_TAG=<decoder image tag> # example : 066aDECODER_RUNTIME_VOLUME=<path to runtime directory>DECODER_DATA_INPUT_VOLUME=<path to input directory>DECODER_DATA_CONF_VOLUME=<path to conf directory>DECODER_DATA_OUTPUT_VOLUME=<path to output directory>DECODER_REF_GEBCO_FILE=<path to gebco file> # optionalDECODER_REF_GREYLIST_FILE=<path to greylist file> # optionalUSER_ID=<uid volumes owner> # must match with volumes ownerGROUP_ID=<gid volumes owner> # must match with volumes owner``` | ```batchset DECODER_IMAGE_TAG=<decoder image tag>set DECODER_RUNTIME_VOLUME=<path to runtime directory>set DECODER_DATA_INPUT_VOLUME=<path to input directory>set DECODER_DATA_CONF_VOLUME=<path to conf directory>set DECODER_DATA_OUTPUT_VOLUME=<path to output directory>set DECODER_REF_GEBCO_FILE=<path to gebco file> # optionalset DECODER_REF_GREYLIST_FILE=<path to greylist file> # optional``` |
-| Run the script to decode a single float:```bash./docker-decoder-linux.sh 6902892``` | Run the script to decode a single float:```batch./docker-decoder-windows.bat 6902892``` |
+| `DECODER_IMAGE_TAG=<decoder image tag> # example : 066a`<br>`DECODER_RUNTIME_VOLUME=<path to runtime directory>`<br>`DECODER_DATA_INPUT_VOLUME=<path to input directory>`<br>`DECODER_DATA_CONF_VOLUME=<path to conf directory>`<br>`DECODER_DATA_OUTPUT_VOLUME=<path to output directory>`<br>`DECODER_REF_GEBCO_FILE=<path to gebco file> # optional`<br>`DECODER_REF_GREYLIST_FILE=<path to greylist file> # optional`<br>`USER_ID=<uid volumes owner> # must match with volumes owner`<br>`GROUP_ID=<gid volumes owner> # must match with volumes owner` | `set DECODER_IMAGE_TAG=<decoder image tag>`<br>`set DECODER_RUNTIME_VOLUME=<path to runtime directory>`<br>`set DECODER_DATA_INPUT_VOLUME=<path to input directory>`<br>`set DECODER_DATA_CONF_VOLUME=<path to conf directory>`<br>`set DECODER_DATA_OUTPUT_VOLUME=<path to output directory>`<br>`set DECODER_REF_GEBCO_FILE=<path to gebco file> # optional`<br>`set DECODER_REF_GREYLIST_FILE=<path to greylist file> # optional` |
+| Run the script to decode a single float:`./docker-decoder-linux.sh 6902892` | Run the script to decode a single float:`./docker-decoder-windows.bat 6902892` |
 
 ---
+
 ### Using a Dockerized runtime environment with Docker Compose
 
 #### Matlab runtime environment
@@ -70,8 +73,10 @@ In this section we propose two ways to run the decoder, it's up to you to choose
 
 | **Linux Operating System** | **Windows Operating System** |
 |----------------------------|-------------------------------|
-| Run the following script to decode a single float:<br><br>```bash./docker-decoder-matlab-linux.sh 6902892``` | Run the following script to decode a single float:```batch./docker-decoder-matlab-windows.bat 6902892``` |
+| Run the following script to decode a single float:<br><br>`./docker-decoder-matlab-linux.sh 6902892` | Run the following script to decode a single float:`./docker-decoder-matlab-windows.bat 6902892` |
+
 ---
+
 ## Development
 
 ### Build image locally
