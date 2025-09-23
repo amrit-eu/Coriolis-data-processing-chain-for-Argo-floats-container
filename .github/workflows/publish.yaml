@@ -30,7 +30,7 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd python_bindings
+           d decArgo_soft/soft/decoder_api
           python -m twine upload \
             --repository github \
             dist/*
