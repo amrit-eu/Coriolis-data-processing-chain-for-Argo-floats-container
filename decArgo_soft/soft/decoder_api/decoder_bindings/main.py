@@ -2,6 +2,7 @@
 
 import sys
 from pathlib import Path
+import os
 
 import subprocess
 from pydantic import BaseModel, field_validator
@@ -63,13 +64,12 @@ class Decoder:
 
         cmd = [
             "/app/run_decode_argo_2_nc_rt.sh",
-            "/mnt/runtime",
             "rsynclog",
             "all",
             "configfile",
             "/mnt/data/config/decoder_conf.json",
             "xmlreport",
-            "co041404_20250919T122855Z_6902892.xml",
+            "logfilexml.xml",
             "floatwmo",
             wmonum,
             "PROCESS_REMAINING_BUFFERS",
@@ -77,7 +77,7 @@ class Decoder:
         ]
         print("Running command:", cmd)
         try:
-            result = subprocess.run(cmd)
+            result = subprocess.run(cmd, env=os.environ.copy(), check=True)
         except subprocess.CalledProcessError as e:
             print("Command failed with return code:", e.returncode)
             print("STDERR:", e.stderr)
@@ -94,8 +94,8 @@ if __name__ == "__main__":  # pragma: no cover
     # These are hardcoded for now, but will likely be passed by the calling code.
     decoder = Decoder("/mnt/data/rsync", "/mnt/data/output", "/mnt/data/config")
     decoder.decode("6902892")
-    # print(decoder)
-
+    while True:
+        pass
 
 # Example command
 # ./run_decode_argo_2_nc_rt.sh rsynclog all configfile /mnt/data/config/decoder_conf.json. xmlreport float.xml floatwmo 6902892 PROCESS_REMAINING_BUFFERS 1
