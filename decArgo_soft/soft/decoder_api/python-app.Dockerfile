@@ -30,6 +30,3 @@ RUN chown -R decoderuser:appgroup /app
 
 # Switch to non-root user
 USER decoderuser
-
-# Run the application
-CMD ["python", "-u", "decoder_bindings/main.py"]
