@@ -3,7 +3,7 @@
 import sys
 from pathlib import Path
 
-import docker
+import subprocess
 from pydantic import BaseModel, field_validator
 
 
@@ -60,8 +60,7 @@ class Decoder:
 
     def decode(self, wmonum: str) -> None:
         """Run the Coriolis Decoder."""
-        client = docker.from_env()
-        container = client.containers.get("decode-floatwmo")
+
         cmd = [
             "/app/run_decode_argo_2_nc_rt.sh",
             "/mnt/runtime",
@@ -76,22 +75,27 @@ class Decoder:
             "PROCESS_REMAINING_BUFFERS",
             "1",
         ]
-        print("CMD", cmd)
-        exec_id = container.exec_run(cmd, stream=True, stdout=True, stderr=True, tty=True)
-        for chunk in exec_id.output:
-            print(chunk.decode(), end="")
+        print("Running command:", cmd)
+        try:
+            result = subprocess.run(cmd)
+        except subprocess.CalledProcessError as e:
+            print("Command failed with return code:", e.returncode)
+            print("STDERR:", e.stderr)
+        except FileNotFoundError:
+            print("Invalid command")
+        else:
+            print("Decoding ran:", result)
 
 
 if __name__ == "__main__":  # pragma: no cover
-    wmo = sys.argv
+    # wmo = sys.argv
     # if len(sys.argv) < 2:
     #     raise ExecutionError("Usage: main.py <WMONUM>")
-    print("Running!")
     # These are hardcoded for now, but will likely be passed by the calling code.
-    # decoder = Decoder("/mnt/data/rsync", "/mnt/data/output", "/mnt/data/config")
-    # decoder.decode(str(wmo[1]))
-    while True:
-        pass
+    decoder = Decoder("/mnt/data/rsync", "/mnt/data/output", "/mnt/data/config")
+    decoder.decode("6902892")
+    # print(decoder)
+
 
 # Example command
 # ./run_decode_argo_2_nc_rt.sh rsynclog all configfile /mnt/data/config/decoder_conf.json. xmlreport float.xml floatwmo 6902892 PROCESS_REMAINING_BUFFERS 1
