@@ -66,16 +66,25 @@ RUN \
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 
-FROM runtime AS python-api
-# First ticket, add the Python wrapper:
-# 1. Install Python
-# 2. Install Python wrapper package
+FROM python:3.11-slim AS python-runtime
+
+
+COPY  decArgo_soft/soft/decoder_api /app/
+WORKDIR /app
+RUN pip install "poetry~=1.8.0" && \
+    poetry config virtualenvs.create false && \
+    poetry install
+
+
+CMD ["python", "decoder_bindings/main.py"]
+
+
 
 # Second ticket, add the API layer:
 # 1. Install the API package
 # 2. Set up a Gunicorn entrypoint to replace the original script
 
-ENTRYPOINT ["/path/to/gunicorn"]
+# ENTRYPOINT ["/path/to/gunicorn"]
 # CMD: ["your", "gunicorn", "args"]
 
 
