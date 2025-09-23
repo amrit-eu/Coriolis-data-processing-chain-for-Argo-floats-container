@@ -58,7 +58,6 @@ WORKDIR ${APP_DIR}
 COPY --from=development /tmp/ .
 COPY entrypoint.sh .
 
-# adjust rights
 RUN \
     chown -R root:gbatch ${APP_DIR} /mnt && \
     chmod -R 770 ${APP_DIR} /mnt

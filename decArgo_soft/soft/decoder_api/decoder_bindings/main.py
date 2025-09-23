@@ -93,4 +93,7 @@ if __name__ == "__main__":  # pragma: no cover
     while True:
         pass
 
-# rsynclog all configfile /mnt/data/config/decoder_conf.json. xmlreport float.xml floatwmo $FLOAT_1234567WMO PROCESS_REMAINING_BUFFERS 1
+# Example command
+# ./run_decode_argo_2_nc_rt.sh rsynclog all configfile /mnt/data/config/decoder_conf.json. xmlreport float.xml floatwmo 1234567 PROCESS_REMAINING_BUFFERS 1
+
+
