@@ -62,23 +62,23 @@ RUN \
     chown -R root:gbatch ${APP_DIR} /mnt && \
     chmod -R 770 ${APP_DIR} /mnt
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+FROM runtime AS python-runtime
 
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    python3 -m pip install --upgrade pip && \
+    rm -rf /var/lib/apt/lists/*
 
-FROM python:3.11-slim AS python-runtime
-
-
-COPY  decArgo_soft/soft/decoder_api /app/
-
+COPY decArgo_soft/soft/decoder_api /app/
 WORKDIR /app
+
 RUN pip install "poetry~=1.8.0" && \
     poetry config virtualenvs.create false && \
     poetry install
 
 COPY --from=development /tmp /app
 
-CMD ["python", "decoder_bindings/main.py"]
-
+CMD ["python3", "-u", "decoder_bindings/main.py"]
 
 
 # Second ticket, add the API layer:
