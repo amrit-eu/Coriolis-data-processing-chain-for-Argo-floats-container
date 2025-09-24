@@ -58,5 +58,5 @@ export DECODER_COMMAND=$(
     PROCESS_REMAINING_BUFFERS 1
 )
 
-docker compose -f compose.yml down
-docker compose -f compose.yml up --build
+docker compose down
+docker compose up --build
