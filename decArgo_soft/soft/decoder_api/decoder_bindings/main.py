@@ -89,8 +89,7 @@ class Decoder:
 if __name__ == "__main__":  # pragma: no cover
     print("Running...")
 
-    # These are commented out for now, but we'll want to raise an error if no WMONUM is passed.
-
+    # This is commented out for now, but we'll want to raise an error if no WMONUM is passed.
     # wmo = sys.argv
     # if len(sys.argv) < 2:
     #     raise ExecutionError("Usage: main.py <WMONUM>")
@@ -98,9 +97,4 @@ if __name__ == "__main__":  # pragma: no cover
     # These are hardcoded for now, but will likely be passed by the calling code.
     decoder = Decoder("/mnt/data/rsync", "/mnt/data/output", "/mnt/data/config")
     decoder.decode("6902892")
-
-
-### Example command that is passed to the decoder.
-# ./run_decode_argo_2_nc_rt.sh rsynclog all configfile /mnt/data/config/decoder_conf.json xmlreport float.xml floatwmo 6902892 PROCESS_REMAINING_BUFFERS 1
-
 
