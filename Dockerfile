@@ -79,9 +79,8 @@ RUN pip install "poetry~=1.8.0" && \
     poetry config virtualenvs.create false && \
     poetry install
 
+   
 COPY --from=development /tmp /app
-
-CMD ["python3", "-u", "decoder_bindings/main.py"]
 
 
 # Second ticket, add the API layer:
