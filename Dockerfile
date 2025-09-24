@@ -16,7 +16,7 @@ COPY decArgo_soft/config/_techParamNames ./config/_techParamNames
 
 FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 AS runtime
 
-# confifurable arguments
+# configurable arguments
 ARG RUN_FILE=run_decode_argo_2_nc_rt.sh
 ARG GROUPID=9999
 ARG DATA_DIR=/mnt/data
