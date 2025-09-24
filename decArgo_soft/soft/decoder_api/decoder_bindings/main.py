@@ -6,7 +6,7 @@ import os
 
 from typing import Optional, Dict, Any
 import re
-from datetime import datetime
+
 
 import subprocess
 from pydantic import BaseModel, field_validator, computed_field
@@ -17,7 +17,7 @@ from utilities.setup_dir import (
      get_volume_paths_for_float,
      cleanup_old_float_directories,
      list_existing_float_directories,
-     copy_rsync_list_files
+     copy_input_files
 )
 from mock_data import float1_info as info_dict, float1_meta as meta_dict, float1_conf as decoder_conf
 
@@ -141,15 +141,8 @@ class Decoder:
         """Run the Coriolis Decoder."""
         if not wmonum:
             raise ValueError("FLOAT_WMO required!")
-        # Build decoder command (matches shell script)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        decoder_command = (
-            f"/mnt/runtime rsynclog all "
-            f"configfile /mnt/data/config/decoder_conf.json "
-            f"xmlreport co041404_{timestamp}_{wmonum}.xml "
-            f"floatwmo {wmonum} PROCESS_REMAINING_BUFFERS 1"
-        )
-        write_env_file(wmonum, directories, decoder_command, ".env")
+
+        write_env_file(wmonum, directories, ".env")
 
         # Point docker compose to your two files
         compose_files = [
@@ -179,16 +172,19 @@ if __name__ == "__main__":  # pragma: no cover
     #     raise ExecutionError("Usage: main.py <WMONUM>")
 
     
-    
+    # This is only to test if the data is correctly creating the sub directories and running the decoder.
+    # trying to use the demo data as input
     input_dir = "./decArgo_demo/input"
     output_dir = "./decArgo_demo/output"  
     config_dir = "./decArgo_demo/config"
-    base_dir = "./decArgo_workspace"#replace this with ./tmp/decArgo_workspace for passing to decoder container
+    base_dir = "./decArgo_workspace" #replace this with ./tmp/decArgo_workspace for passing to decoder container
 
 
     decoder = Decoder(input_dir, output_dir, config_dir, base_dir, info_dict, meta_dict )
     config_directories = setup_decoder_directories_for_float(decoder.config.wmo, decoder.config.base_dir, timestamp=True)
-    copy_rsync_list_files(f"{input_dir}/rsync_list", config_directories["rsync_list"])
+    copy_input_files(f"{input_dir}/rsync_list", config_directories["rsync_list"])
+    copy_input_files(f"{input_dir}/archive/cycle", config_directories["archive_cycle"])
+    
     config_files = save_info_meta_conf(
         decoder.config.wmo,
         decoder.config.ptt,
@@ -198,8 +194,9 @@ if __name__ == "__main__":  # pragma: no cover
         decoder_conf)
     print(f"Saved info to {config_files['info_file']} and meta to {config_files['meta_file']}")
    
+    # test with a sample which is in the demo direcrtory
     decoder.run_decoder("6902892", directories=config_directories)
-    #decoder.cleanup_old_runs()
+    decoder.cleanup_old_runs()
 
 # Example command
 # ./run_decode_argo_2_nc_rt.sh rsynclog all configfile /mnt/data/config/decoder_conf.json xmlreport float.xml floatwmo 6902892 PROCESS_REMAINING_BUFFERS 1

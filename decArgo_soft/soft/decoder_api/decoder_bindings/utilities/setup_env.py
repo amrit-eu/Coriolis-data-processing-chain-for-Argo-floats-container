@@ -1,9 +1,17 @@
 import os
+from datetime import datetime
 
 def write_env_file(wmonum:str, directories:dict, decoder_command:str,  env_path: str = ".env"):
     """
     Write the given environment variables to a .env file.
     """
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    decoder_command = (
+            f"/mnt/runtime rsynclog all "
+            f"configfile /mnt/data/config/decoder_conf.json "
+            f"xmlreport co041404_{timestamp}_{wmonum}.xml "
+            f"floatwmo {wmonum} PROCESS_REMAINING_BUFFERS 1"
+        )
     env = {
             "FLOAT_WMO": str(wmonum),
             "DECODER_COMMAND": str(decoder_command),

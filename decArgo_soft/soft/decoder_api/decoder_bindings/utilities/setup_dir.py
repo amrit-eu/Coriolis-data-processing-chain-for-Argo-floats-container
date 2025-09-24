@@ -41,6 +41,7 @@ def setup_decoder_directories_for_float(float_wmo, base_dir="./decArgo", timesta
         'config': float_path / "config",
         'input': float_path / "input", 
         'output': float_path / "output",
+        'output_log': float_path / "output"/ "log",
         'config_floats': float_path / "config" / "decArgo_config_floats",
         'json_float_info': float_path / "config" / "decArgo_config_floats" / "json_float_info",
         'json_float_meta': float_path / "config" / "decArgo_config_floats" / "json_float_meta_ir_sbd",
@@ -84,7 +85,7 @@ def get_volume_paths_for_float(float_dir_path):
         'rsync_list_dir': str(float_path / "input" / "rsync_list")
     }
 
-def copy_rsync_list_files(src_dir: str, dst_dir: str):
+def copy_input_files(src_dir: str, dst_dir: str):
     """Copy all files from src_dir into dst_dir."""
     os.makedirs(dst_dir, exist_ok=True)
     for item in os.listdir(src_dir):
