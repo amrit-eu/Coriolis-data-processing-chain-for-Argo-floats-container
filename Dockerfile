@@ -63,7 +63,6 @@ RUN \
     chown -R root:gbatch ${APP_DIR} /mnt && \
     chmod -R 770 ${APP_DIR} /mnt
 
-
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 FROM runtime AS python-runtime
