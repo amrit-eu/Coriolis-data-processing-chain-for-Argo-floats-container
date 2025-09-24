@@ -16,7 +16,7 @@ COPY decArgo_soft/config/_techParamNames ./config/_techParamNames
 
 FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 AS runtime
 
-# configurable arguments
+# confifurable arguments
 ARG RUN_FILE=run_decode_argo_2_nc_rt.sh
 ARG GROUPID=9999
 ARG DATA_DIR=/mnt/data
@@ -82,7 +82,6 @@ RUN pip install "poetry~=1.8.0" && \
 COPY --from=development /tmp /app
 
 CMD ["python3", "-u", "decoder_bindings/main.py"]
-
 
 # Second ticket, add the API layer:
 # 1. Install the API package
