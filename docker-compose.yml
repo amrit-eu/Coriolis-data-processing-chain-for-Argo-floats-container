@@ -12,6 +12,7 @@ services:
   decode-float:
     container_name: decode-floatwmo
     image: decoder_matlab_tool:latest
+    entrypoint: []
     user: root
     env_file:
       - .env
