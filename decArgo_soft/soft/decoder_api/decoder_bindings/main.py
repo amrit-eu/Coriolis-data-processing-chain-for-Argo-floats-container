@@ -74,6 +74,7 @@ class Decoder:
             "PROCESS_REMAINING_BUFFERS",
             "1",
         ]
+        # Regarding the 'except' clauses, these will return various non 200 status codes when integrated into the API.
         try:
             result = subprocess.run(cmd, env=os.environ.copy(), check=True)
         except subprocess.CalledProcessError as e:
@@ -98,7 +99,8 @@ if __name__ == "__main__":  # pragma: no cover
     decoder = Decoder("/mnt/data/rsync", "/mnt/data/output", "/mnt/data/config")
     decoder.decode("6902892")
 
-# Example command
+
+### Example command that is passed to the decoder.
 # ./run_decode_argo_2_nc_rt.sh rsynclog all configfile /mnt/data/config/decoder_conf.json xmlreport float.xml floatwmo 6902892 PROCESS_REMAINING_BUFFERS 1
 
 
