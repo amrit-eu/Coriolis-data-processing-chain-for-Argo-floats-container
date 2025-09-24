@@ -4,5 +4,4 @@ services:
     build:
       context: .
       target: python-runtime
-    entrypoint: [""]
-    command: "python3 -u decoder_bindings/main.py"
+    entrypoint: ["python3", "-u", "decoder_bindings/main.py"]

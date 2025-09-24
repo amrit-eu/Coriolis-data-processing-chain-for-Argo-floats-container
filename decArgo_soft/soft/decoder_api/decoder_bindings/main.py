@@ -1,10 +1,9 @@
 """Decoder Bindings."""
 
-import sys
-from pathlib import Path
 import os
-
 import subprocess
+from pathlib import Path
+
 from pydantic import BaseModel, field_validator
 
 
@@ -21,7 +20,6 @@ class DecoderConfiguration(BaseModel):
 
     input_files_directory: Path
     output_files_directory: Path
-    configuration_files_directory: Path
 
     @field_validator("input_files_directory", mode="before")
     def check_input_files_directory(cls, input_directory: Path):
@@ -40,23 +38,14 @@ class DecoderConfiguration(BaseModel):
             raise ValueError(f"{output_directory} is not a valid output directory!")
         return output_directory.resolve()
 
-    @field_validator("configuration_files_directory", mode="before")
-    def check_config_files_directory(cls, configuration_files_directory: Path):
-        """Validate then resolve the config files directory."""
-        if not configuration_files_directory.is_dir():
-            raise ValueError(f"{configuration_files_directory} is not a valid configuration directory!")
-        return configuration_files_directory.resolve()
-
 
 class Decoder:
     """Decoder Bindings."""
 
-    def __init__(self, input_files_directory: str, output_files_directory: str, configurations_directory: str):
+    def __init__(self, input_files_directory: str, output_files_directory: str):
         """Initialise the bindings instance."""
         self.config = DecoderConfiguration(
-            input_files_directory=Path(input_files_directory),
-            output_files_directory=Path(output_files_directory),
-            configuration_files_directory=Path(configurations_directory),
+            input_files_directory=Path(input_files_directory), output_files_directory=Path(output_files_directory)
         )
 
     def decode(self, wmonum: str) -> None:
@@ -73,6 +62,10 @@ class Decoder:
             wmonum,
             "PROCESS_REMAINING_BUFFERS",
             "1",
+            "DIR_INPUT_RSYNC_DATA",
+            str(self.config.input_files_directory),
+            "DIR_OUTPUT_NETCDF_FILE",
+            str(self.config.output_files_directory),
         ]
         # Regarding the 'except' clauses, these will return various non 200 status codes when integrated into the API.
         try:
@@ -89,18 +82,11 @@ class Decoder:
 if __name__ == "__main__":  # pragma: no cover
     print("Running...")
 
-    # These are commented out for now, but we'll want to raise an error if no WMONUM is passed.
-
+    # This is commented out for now, but we'll want to raise an error if no WMONUM is passed.
     # wmo = sys.argv
     # if len(sys.argv) < 2:
     #     raise ExecutionError("Usage: main.py <WMONUM>")
 
     # These are hardcoded for now, but will likely be passed by the calling code.
-    decoder = Decoder("/mnt/data/rsync", "/mnt/data/output", "/mnt/data/config")
+    decoder = Decoder("/mnt/data/rsync/archive/cycle", "/mnt/data/output/nc/")
     decoder.decode("6902892")
-
-
-### Example command that is passed to the decoder.
-# ./run_decode_argo_2_nc_rt.sh rsynclog all configfile /mnt/data/config/decoder_conf.json xmlreport float.xml floatwmo 6902892 PROCESS_REMAINING_BUFFERS 1
-
-
