@@ -77,3 +77,21 @@ def test_decoder_initialisation(tmp_path: Path):
     assert(isinstance(decoder_instance.config.input_files_directory, Path))
     assert(isinstance(decoder_instance.config.output_files_directory, Path))
 
+
+def test_subprocess_call(mocker, tmp_path: Path):
+    """Test the subprocess call fires correctly."""
+    input_path = tmp_path / "input"
+    output_path = tmp_path / "output"
+
+    input_path.mkdir()
+    output_path.mkdir()
+
+    (input_path / "test.txt").write_text("test")
+
+    decoder_instance = Decoder(input_files_directory=input_path,
+                               output_files_directory=output_path)
+    subprocess_call = mocker.patch("decoder_bindings.main.subprocess.run")
+    decoder_instance.decode("123")
+
+
+    subprocess_call.assert_called_once()
