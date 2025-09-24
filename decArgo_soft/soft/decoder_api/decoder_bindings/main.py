@@ -1,10 +1,9 @@
 """Decoder Bindings."""
 
-import sys
-from pathlib import Path
 import os
-
 import subprocess
+from pathlib import Path
+
 from pydantic import BaseModel, field_validator
 
 
@@ -46,8 +45,8 @@ class Decoder:
     def __init__(self, input_files_directory: str, output_files_directory: str):
         """Initialise the bindings instance."""
         self.config = DecoderConfiguration(
-            input_files_directory=Path(input_files_directory),
-            output_files_directory=Path(output_files_directory))
+            input_files_directory=Path(input_files_directory), output_files_directory=Path(output_files_directory)
+        )
 
     def decode(self, wmonum: str) -> None:
         """Run the Coriolis Decoder."""
@@ -66,7 +65,7 @@ class Decoder:
             "DIR_INPUT_RSYNC_DATA",
             str(self.config.input_files_directory),
             "DIR_OUTPUT_NETCDF_FILE",
-            str(self.config.output_files_directory)
+            str(self.config.output_files_directory),
         ]
         # Regarding the 'except' clauses, these will return various non 200 status codes when integrated into the API.
         try:
@@ -91,4 +90,3 @@ if __name__ == "__main__":  # pragma: no cover
     # These are hardcoded for now, but will likely be passed by the calling code.
     decoder = Decoder("/mnt/data/rsync/archive/cycle", "/mnt/data/output/nc/")
     decoder.decode("6902892")
-
