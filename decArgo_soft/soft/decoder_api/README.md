@@ -1,5 +1,3 @@
-Decoder Bindings
-================
+# Decoder Bindings
 
-This Python package exists to bind to the dockerised Coriolis Decoder.
-
+This Python package exists to access the Coriolis Decoder via Python.

@@ -1,15 +1,15 @@
-Python Bindings
----------------
+## Python Bindings
 
 The Python app is located under: decArgo_soft/soft/decoder_api
 
-
 To run the decoder with its associated bindings, run the following steps.
 
+1. Copy `.env.demo` as `.env` file to configure the decoder for the demonstration.
 
-1. Build the image: `docker build -f Dockerfile -t  decoder_matlab_tool:latest .`
+2. Run decoder demo with matlab runtime thanks to docker compose
 
-2. Run the containers: `docker compose -f .\docker-compose.yml up -d --build`
+   ```bash
+   ./docker-decoder-python-binding-linux.sh 6902892
+   ```
 
-The logs and files are written to the area: decArgo_demo/output.
-
+3. Check next directory to see decoder outputs : `./decArgo_demo/output`

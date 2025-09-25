@@ -58,27 +58,30 @@ WORKDIR ${APP_DIR}
 COPY --from=development /tmp/ .
 COPY entrypoint.sh .
 
+# adjust rights
 RUN \
     chown -R root:gbatch ${APP_DIR} /mnt && \
     chmod -R 770 ${APP_DIR} /mnt
 
+ENTRYPOINT ["/app/entrypoint.sh"]
+
 FROM runtime AS python-runtime
+
+WORKDIR /app
+
+COPY decArgo_soft/soft/decoder_api .
 
 RUN apt-get update && \
     apt-get install -y python3 python3-pip && \
     python3 -m pip install --upgrade pip && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY decArgo_soft/soft/decoder_api /app/
-WORKDIR /app
-
-RUN pip install "poetry~=1.8.0" && \
+    rm -rf /var/lib/apt/lists/* && \ 
+    pip install "poetry~=1.8.0" && \
     poetry config virtualenvs.create false && \
     poetry install
 
-COPY --from=development /tmp /app
-
-CMD ["python3", "-u", "decoder_bindings/main.py"]
+COPY --from=development /tmp .
+# TODO : need to be remove after fix
+COPY decArgo_soft/exec/run_decode_argo_2_nc_rt.tmp.sh run_decode_argo_2_nc_rt.sh   
 
 
 # Second ticket, add the API layer:
