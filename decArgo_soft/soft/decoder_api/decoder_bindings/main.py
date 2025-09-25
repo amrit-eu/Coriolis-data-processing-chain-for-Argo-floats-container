@@ -5,6 +5,8 @@ import subprocess
 from pathlib import Path
 
 from pydantic import BaseModel, field_validator
+from utilities.dict2json import save_info_meta_conf
+from mock_data import info_dict, meta_dict, conf_dict # Used for testing purposes only.
 
 
 class EmptyInputDirectoryError(Exception):
@@ -101,7 +103,22 @@ if __name__ == "__main__":  # pragma: no cover
     #     raise ExecutionError("Usage: main.py <WMONUM>")
 
     # These are hardcoded for now, but will likely be passed by the calling code.
+    try:
+        float_info = save_info_meta_conf(
+            config_dir="./decArgo_demo/config", 
+            float_info_dir="./decArgo_demo/config/decArgo_config_floats2/json_float_info",
+            float_meta_dir="./decArgo_demo/config/decArgo_config_floats2/json_float_meta_ir_sbd",
+            info=info_dict,
+            meta=meta_dict,
+            decoder_conf=conf_dict
+        )
+        for key, value in float_info.items():
+                print(f"  {key}: {value}")
+    except Exception as e:
+        print(f"Error saving float info : {e}")
+    
     decoder = Decoder(input_files_directory=None,
                       output_files_directory=None,
                       decoder_conf_file="/home/airflow/decoder_project/config_files/decoder_conf.json")
     decoder.decode("6902892")
+   
