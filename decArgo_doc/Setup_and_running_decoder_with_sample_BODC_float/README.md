@@ -1,4 +1,4 @@
-## Running the Argo decoder
+# Running the Argo decoder
 
 Instructions for running the decoder and testing floats are given in the [main README.md](Coriolis-data-processing-chain-for-Argo-floats-container\README.md)
 
