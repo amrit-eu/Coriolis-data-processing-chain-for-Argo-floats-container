@@ -112,7 +112,7 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
    sudo docker run hello-world
    ```
 
-3. Install Git (_Optionnal_)
+3. Install Git (_Optional_)
 
    ```bash
    sudo apt update
