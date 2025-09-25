@@ -20,7 +20,7 @@ jobs:
 
       - name: Python Build
         run: |
-          cd decArgo_soft/soft/decoder_api
+          cd decArgo_api
           python -m pip install --upgrade pip
           pip install poetry
           poetry build
@@ -30,7 +30,7 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
 
-          cd decArgo_soft/soft/decoder_api
+          cd decArgo_api
           python -m pip install --upgrade pip
           pip install twine
           python -m twine upload \
