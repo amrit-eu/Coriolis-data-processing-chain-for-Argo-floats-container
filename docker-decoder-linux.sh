@@ -20,12 +20,12 @@ if [[ -z "${FLOAT_WMO}" ]]; then
     exit 1
 fi
 # Define the decoder configuration file
-DECODER_CONFIG_FILE=${2:-"/mnt/data/config/decoder_conf.json"}
-if [[ ! -f "${DECODER_CONFIG_FILE}" ]]; then
-    DECODER_CONFIG_FILE="/app/config/_argo_decoder_conf_ir_sbd.json"
-    echo "[WARN] no specific configuration file defined - Using the default configuration file  ${DECODER_CONFIG_FILE} !" >&2
-    exit 2
-fi
+# DECODER_CONFIG_FILE=${2:-"/mnt/data/config/decoder_conf.json"}
+# if [[ ! -f "${DECODER_CONFIG_FILE}" ]]; then
+#     DECODER_CONFIG_FILE="/app/config/_argo_decoder_conf_ir_sbd.json"
+#     echo "[WARN] no specific configuration file defined - Using the default configuration file  ${DECODER_CONFIG_FILE} !" >&2
+#     exit 2
+# fi
 
 
 # Remove output directories (use rmdir for directories)
