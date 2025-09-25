@@ -1,6 +1,8 @@
+# Python decoder API
+
 ## Python Bindings
 
-The Python app is located under: decArgo_soft/soft/decoder_api
+The Python app is located under: `decArgo_api/`
 
 To run the decoder with its associated bindings, run the following steps.
 
@@ -13,3 +15,5 @@ To run the decoder with its associated bindings, run the following steps.
    ```
 
 3. Check next directory to see decoder outputs : `./decArgo_demo/output`
+
+## FastAPI
