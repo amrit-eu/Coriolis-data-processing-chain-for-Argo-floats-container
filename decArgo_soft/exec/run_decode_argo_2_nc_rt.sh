@@ -6,11 +6,7 @@ exe_dir=$(dirname "$0")
 
 DEFAULT_MCRROOT="/mnt/runtime"
 
-# Detect if first argument is a valid directory (absolute path) for MCR
-if [ -d "$1" ] && [ -f "$1/runtime/glnxa64/libmwlaunchermain.so" ]; then
-    MCRROOT="$1"
-    shift 1
-else
+if [ -z "$MCRROOT" ]; then
     MCRROOT="$DEFAULT_MCRROOT"
 fi
 
