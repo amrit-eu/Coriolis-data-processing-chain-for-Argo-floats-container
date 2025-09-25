@@ -413,7 +413,7 @@ conf_dict = {
     "DIR_INPUT_RSYNC_LOG": "/mnt/data/rsync/rsync_list/",
     "DIR_INPUT_JSON_TECH_LABEL_FILE": "/app/config/_techParamNames/",
     "DIR_INPUT_JSON_CONF_LABEL_FILE": "/app/config/_configParamNames/",
-    "DIR_INPUT_JSON_FLOAT_META_DATA_FILE": "/mnt/data/config/decArgo_config_floats/json_float_meta_ir_sbd/",
+    "DIR_INPUT_JSON_FLOAT_META_DATA_FILE": "/mnt/data/config/decArgo_config_floats/json_float_meta/",
     "DIR_INPUT_DM_BUFFER_LIST": "/mnt/data/config/decArgo_config_floats/float_dm_buffer_lists",
     "IRIDIUM_DATA_DIRECTORY": "/mnt/data/output/iridium/",
     "DIR_OUTPUT_LOG_FILE": "/mnt/data/output/log/",
