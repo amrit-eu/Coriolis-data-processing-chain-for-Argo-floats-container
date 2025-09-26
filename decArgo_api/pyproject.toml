@@ -25,9 +25,6 @@ decoder = "decoder_bindings.main:main"
 [tool.poetry.group.lint]
 optional = true
 
-[tool.poetry.group.lint.dependencies]
-ruff = "^0.4.2"
-
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.2"
