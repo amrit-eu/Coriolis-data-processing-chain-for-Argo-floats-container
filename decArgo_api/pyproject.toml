@@ -1,3 +1,17 @@
+[project]
+name = "decargo-api"
+version = "0.1.0"
+description = "Decoder API for Argo floats"
+authors = [
+  { name="Ton Nom", email="ton.email@ifremer.fr" }
+]
+dependencies = [
+  "requests",
+  "pydantic"
+]
+requires-python = ">=3.10"
+
+
 [tool.poetry]
 name = "decoder_bindings"
 version = "0.1.0"
