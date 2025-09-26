@@ -101,11 +101,11 @@ class Decoder:
 
     def __init__(
         self,
-        input_files_directory: str | Path | None,
-        output_files_directory: str | Path | None,
         decoder_conf_file: str | Path,
         decoder_executable: str | Path = None,
         matlab_runtime: str | Path = None,
+        input_files_directory: str | Path | None = Field(default=None),
+        output_files_directory: str | Path | None = Field(default=None),
         timeout_seconds: int | None = 3600,
         hold_after_run: int | None = None,
     ):

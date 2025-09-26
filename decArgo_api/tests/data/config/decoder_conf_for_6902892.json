@@ -5,31 +5,31 @@
     
     "FLOAT_TRANSMISSION_TYPE" : "3",
     
-    "DIR_INPUT_JSON_FLOAT_DECODING_PARAMETERS_FILE" : "/mnt/data/config/decArgo_config_floats/json_float_info/",
+    "DIR_INPUT_JSON_FLOAT_DECODING_PARAMETERS_FILE" : "../decArgo_demo/config/decArgo_config_floats/json_float_info/",
  
     "HEX_ARGOS_FILE_FORMAT" : "",
     "DIR_INPUT_HEX_ARGOS_FILE_FORMAT_1" : "",
     "DIR_INPUT_HEX_ARGOS_FILE_FORMAT_2" : "",
     "HEX_ARGOS_DATA_DIRECTORY_STRUCTURE" : "",
     
-    "DIR_INPUT_RSYNC_DATA" : "/mnt/data/rsync/archive/",
-    "DIR_INPUT_RSYNC_LOG" : "/mnt/data/rsync/rsync_list/",
+    "DIR_INPUT_RSYNC_DATA" : "../decArgo_demo/input/archive/",
+    "DIR_INPUT_RSYNC_LOG" : "../decArgo_demo/input/rsync_list/",
  
-    "DIR_INPUT_JSON_TECH_LABEL_FILE" : "/app/config/_techParamNames/",
-    "DIR_INPUT_JSON_CONF_LABEL_FILE" : "/app/config/_configParamNames/",
+    "DIR_INPUT_JSON_TECH_LABEL_FILE" : "../decArgo_soft/config/_techParamNames/",
+    "DIR_INPUT_JSON_CONF_LABEL_FILE" : "../decArgo_soft/config/_configParamNames/",
  
-    "DIR_INPUT_JSON_FLOAT_META_DATA_FILE" : "/mnt/data/config/decArgo_config_floats/json_float_meta/",
+    "DIR_INPUT_JSON_FLOAT_META_DATA_FILE" : "../decArgo_demo/config/decArgo_config_floats/json_float_meta/",
     
     "DIR_INPUT_DM_BUFFER_LIST" : "/mnt/data/config/decArgo_config_floats/float_dm_buffer_lists",
  
-    "IRIDIUM_DATA_DIRECTORY" : "/mnt/data/output/iridium/",
+    "IRIDIUM_DATA_DIRECTORY" : "../decArgo_demo/output/iridium/",
  
-    "DIR_OUTPUT_LOG_FILE" : "/mnt/data/output/log/",
-    "DIR_OUTPUT_CSV_FILE" : "/mnt/data/output/csv/",
-    "DIR_OUTPUT_XML_FILE" : "/mnt/data/output/xml/",
-    "DIR_OUTPUT_NETCDF_FILE" : "/mnt/data/output/nc/",
-    "DIR_OUTPUT_NETCDF_TRAJ_3_2_FILE" : "/mnt/data/output/nc/",
- 
+    "DIR_OUTPUT_LOG_FILE" : "../decArgo_demo/output/log/",
+    "DIR_OUTPUT_CSV_FILE" : "../decArgo_demo/output/csv/",
+    "DIR_OUTPUT_XML_FILE" : "../decArgo_demo/output/xml/",
+    "DIR_OUTPUT_NETCDF_FILE" : "../decArgo_demo/output/nc/",
+    "DIR_OUTPUT_NETCDF_TRAJ_3_2_FILE" : "../decArgo_demo/output/nc/",
+
     "PROCESS_REMAINING_BUFFERS" : "0",
  
     "GENERATE_NC_MULTI_PROF" : "0",

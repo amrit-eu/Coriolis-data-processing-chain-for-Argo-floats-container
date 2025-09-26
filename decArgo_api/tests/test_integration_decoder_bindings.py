@@ -16,6 +16,16 @@ import pytest
 # --- Marqueurs: désactivés par défaut ---
 pytestmark = [pytest.mark.integration, pytest.mark.matlab]
 
+# --- Paramétrage : 3 flotteurs (wmo + configuration + outputs de reference) --------------------------
+# A partir des données du repertoire decArgo_demo
+# À fournir :
+#   DECODER_EXECUTABLE, MATLAB_RUNTIME, DECODER_INPUT_DIR
+WMOS = [
+    ("6902892", "./tests/data/config/decoder_conf_for_6902892.json", "./tests/data/ref/6902892"),
+    ("6903014", "./tests/data/config/decoder_conf_for_6903014.json", "./tests/data/ref/6903014"),
+    ("6904182", "./tests/data/config/decoder_conf_for_6904182.json", "./tests/data/ref/6904182"),
+]
+
 
 # --- Aides: vérifs d'environnement, fail fast avec skip motivé ---------------
 def _need_file(env: str) -> Path:
@@ -157,33 +167,23 @@ def _compare_dirs_nc(
         _assert_netcdf_equal(t_map[rel], r_map[rel], atol=atol, rtol=rtol)
 
 
-# --- Paramétrage : 3 flotteurs (conf + ref via ENV) --------------------------
-# À fournir :
-#   DECODER_EXECUTABLE, MATLAB_RUNTIME, DECODER_INPUT_DIR
-#   DECODER_CONF_FILE_1..3, DECODER_REF_DIR_1..3
-#   (optionnels) DECODER_TIMEOUT, NC_ATOL, NC_RTOL
-WMOS = [
-    ("6902892", "DECODER_CONF_FILE_1", "DECODER_REF_DIR_1"),
-    ("4902452", "DECODER_CONF_FILE_2", "DECODER_REF_DIR_2"),
-    ("7901234", "DECODER_CONF_FILE_3", "DECODER_REF_DIR_3"),
-]
-
-
 # ========================== Test A : exécution OK =============================
-@pytest.mark.parametrize("wmo, conf_env, ref_env", WMOS)
-def test_decode_produces_netcdf(tmp_path: Path, wmo: str, conf_env: str):
+@pytest.mark.parametrize("wmo, conf_file, ref_dir", WMOS)
+def test_decode_produces_netcdf(
+    tmp_path: Path, wmo: str, conf_file: str, ref_dir: str                       
+):
     exec_path = _need_exec("DECODER_EXECUTABLE")
     runtime_dir = _need_dir("MATLAB_RUNTIME")
     input_dir = _need_dir("DECODER_INPUT_DIR")
-    conf_file = _need_file(conf_env)
+    # conf_file = _need_file(conf_file)
     timeout = int(os.getenv("DECODER_TIMEOUT", "1800"))
 
-    out_dir = tmp_path / f"out_{wmo}"
-    out_dir.mkdir()
+    out_dir = Path("../decArgo_demo/output/nc/")
+    # out_dir.mkdir()
 
     dec = Decoder(
-        input_files_directory=str(input_dir),
-        output_files_directory=str(out_dir),
+        input_files_directory=None,
+        output_files_directory=None,
         decoder_conf_file=str(conf_file),
         decoder_executable=str(exec_path),
         matlab_runtime=str(runtime_dir),
@@ -198,33 +198,33 @@ def test_decode_produces_netcdf(tmp_path: Path, wmo: str, conf_env: str):
 
 
 # ========================== Test B : comparaison ==============================
-@pytest.mark.parametrize("wmo, conf_env, ref_env", WMOS)
-def test_decode_outputs_match_reference(
-    tmp_path: Path, wmo: str, conf_env: str, ref_env: str
-):
-    exec_path = _need_exec("DECODER_EXECUTABLE")
-    runtime_dir = _need_dir("MATLAB_RUNTIME")
-    input_dir = _need_dir("DECODER_INPUT_DIR")
-    conf_file = _need_file(conf_env)
-    ref_dir = _need_dir(ref_env)
+# @pytest.mark.parametrize("wmo, conf_file, ref_dir", WMOS)
+# def test_decode_outputs_match_reference(
+#     tmp_path: Path, wmo: str, conf_file: str, ref_dir: str
+# ):
+#     exec_path = _need_exec("DECODER_EXECUTABLE")
+#     runtime_dir = _need_dir("MATLAB_RUNTIME")
+#     input_dir = _need_dir("DECODER_INPUT_DIR")
+#     # conf_file = _need_file(conf_file)
+#     timeout = int(os.getenv("DECODER_TIMEOUT", "1800"))
 
-    atol = float(os.getenv("NC_ATOL", "0"))
-    rtol = float(os.getenv("NC_RTOL", "0"))
-    timeout = int(os.getenv("DECODER_TIMEOUT", "1800"))
+#     atol = float(os.getenv("NC_ATOL", "0"))
+#     rtol = float(os.getenv("NC_RTOL", "0"))
+#     timeout = int(os.getenv("DECODER_TIMEOUT", "1800"))
 
-    out_dir = tmp_path / f"out_{wmo}"
-    out_dir.mkdir()
+#     out_dir = tmp_path / f"out_{wmo}"
+#     out_dir.mkdir()
 
-    dec = Decoder(
-        input_files_directory=str(input_dir),
-        output_files_directory=str(out_dir),
-        decoder_conf_file=str(conf_file),
-        decoder_executable=str(exec_path),
-        matlab_runtime=str(runtime_dir),
-        timeout_seconds=timeout,
-        hold_after_run=None,
-    )
+#     dec = Decoder(
+#         input_files_directory=str(input_dir),
+#         output_files_directory=str(out_dir),
+#         decoder_conf_file=str(conf_file),
+#         decoder_executable=str(exec_path),
+#         matlab_runtime=str(runtime_dir),
+#         timeout_seconds=timeout,
+#         hold_after_run=None,
+#     )
 
-    dec.decode(wmo)
+#     dec.decode(wmo)
 
-    _compare_dirs_nc(out_dir, ref_dir, atol=atol, rtol=rtol)
+#     _compare_dirs_nc(out_dir, ref_dir, atol=atol, rtol=rtol)

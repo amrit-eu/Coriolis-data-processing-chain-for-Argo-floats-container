@@ -32,15 +32,15 @@ ruff = "^0.4.2"
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.4.2"
 pyright = "1.1.401"
-pytest = "^7.3.0"
+pytest = "^8.3.3"
 pytest-mock= "3.15.1"
 pytest-cov = "^4.0.0"
 coverage = {extras = ["xml"], version = "^7.2.5"}
 twine = "^4.0.2"
 taskipy = "^1.14.1"
 numpy = "^2.3.3"
+pytest-env = "^1.1.5"
 
-# pyproject.toml
 [tool.pytest.ini_options]
 markers = [
   "integration: slow, requires external tools/data",
@@ -49,15 +49,8 @@ markers = [
 env = [
     "DECODER_EXECUTABLE=../decArgo_soft/exec/run_decode_argo_2_nc_rt.sh",
     "MATLAB_RUNTIME=/home/lbruvryl/development/tmp/tmp_tc/matlab_runtime/R2022b",
-    "DECODER_INPUT_DIR=../decArgo_demo/input",
-
-    "DECODER_CONF_FILE_1=./tests/data/mock/decoder_conf_for_6902892.json",
-    "DECODER_CONF_FILE_2=./tests/data/mock/decoder_conf_for_6903014.json",
-    "DECODER_CONF_FILE_3=./tests/data/mock/decoder_conf_for_6904182.json",
-
-    "DECODER_REF_DIR_1=./tests/data/ref/6902892",
-    "DECODER_REF_DIR_2=./tests/data/ref/6903014",
-    "DECODER_REF_DIR_3=./tests/data/ref/6904182",
+    "DECODER_INPUT_DIR=../decArgo_demo/input/archive",
+    "DECODER_OUTPUT_DIR=../decArgo_demo/output/nc",
 ]
 
 [tool.taskipy.tasks]
