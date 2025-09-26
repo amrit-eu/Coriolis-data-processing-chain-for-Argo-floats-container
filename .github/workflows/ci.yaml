@@ -1,0 +1,37 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      # Run on our main branch
+      - main
+    paths:
+      - decArgo_api/**
+  pull_request:
+    # Run for any pull requests
+    paths:
+      - decArgo_api/**
+  release:
+    types: [created]
+
+jobs:
+  python-linting:
+    uses: amrit-eu/ci-cd/.github/workflows/component-python-lint.yml
+    with:
+      context: example-python
+  python-security:
+    uses: amrit-eu/ci-cd/.github/workflows/component-python-security.yml
+    with:
+      context: example-python 
+  container-image-build:
+    needs: [python-linting, python-security]
+    uses: amrit-eu/ci-cd/.github/workflows/component-container-image.yml
+    with:
+      context: example-python
+      image-path: ghcr.io/british-oceanographic-data-centre/amrit-repos/python/app
+  container-image-security:
+    needs: [container-image-build]
+    uses: amrit-eu/ci-cd/.github/workflows/component-container-image-security.yml
+    with:
+      context: example-python
+      image-path: ghcr.io/british-oceanographic-data-centre/amrit-repos/python/app
