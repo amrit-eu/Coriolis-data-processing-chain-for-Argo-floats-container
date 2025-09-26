@@ -41,6 +41,23 @@ taskipy = "^1.14.1"
 numpy = "^2.3.3"
 pytest-env = "^1.1.5"
 
+[tool.poetry.group.test.dependencies]
+pyright = "1.1.401"
+pytest = "^8.3.3"
+pytest-mock= "3.15.1"
+pytest-cov = "^4.0.0"
+pytest-env = "^1.1.5"
+coverage = {extras = ["xml"], version = "^7.2.5"}
+
+[tool.poetry.group.lint.dependencies]
+ruff = "^0.13.2"
+
+[tool.poetry.group.build.dependencies]
+twine = "^6.2.0"
+
+[tool.poetry.group.type.dependencies]
+mypy = "^1.18.2"
+
 [tool.tox]
 env_list = ["test", "lint", "type", "build"]
 requires = ["tox>=4.12"]
