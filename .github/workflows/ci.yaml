@@ -28,13 +28,14 @@ jobs:
     uses: amrit-eu/ci-cd/.github/workflows/component-container-image.yml@1.0.0
     with:
       context: example-python
-      image-path: ghcr.io/british-oceanographic-data-centre/amrit-repos/python/app@1.0.0
+      image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api@1.0.0
   container-image-security:
     needs: [container-image-build]
-    uses: amrit-eu/ci-cd/.github/workflows/component-container-image-security.yml
+    uses: amrit-eu/ci-cd/.github/workflows/component-container-image-security.yml@1.0.0
     with:
       context: example-python
-      image-path: ghcr.io/british-oceanographic-data-centre/amrit-repos/python/app@1.0.0
+      image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api@1.0.0
+
 #   publish-to-github-registry:
 #     runs-on: ubuntu-latest
 
