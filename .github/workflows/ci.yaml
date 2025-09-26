@@ -29,12 +29,12 @@ jobs:
     with:
       context: example-python
       image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api@1.0.0
-  container-image-security:
-    needs: [container-image-build]
-    uses: amrit-eu/ci-cd/.github/workflows/component-container-image-security.yml@1.0.0
-    with:
-      context: example-python
-      image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api@1.0.0
+  # container-image-security:
+  #   needs: [container-image-build]
+  #   uses: amrit-eu/ci-cd/.github/workflows/component-container-image-security.yml@1.0.0
+  #   with:
+  #     context: example-python
+  #     image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api@1.0.0
 
 #   publish-to-github-registry:
 #     runs-on: ubuntu-latest
