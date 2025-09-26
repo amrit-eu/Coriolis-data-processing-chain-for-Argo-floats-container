@@ -41,6 +41,37 @@ taskipy = "^1.14.1"
 numpy = "^2.3.3"
 pytest-env = "^1.1.5"
 
+[tool.tox]
+env_list = ["test", "lint", "type", "build"]
+requires = ["tox>=4.12"]
+
+[tool.tox.env.test]
+description = "Run unit tests"
+commands_pre = ["poetry install --no-root --with dev"]
+commands = ["pytest -q --disable-warnings --maxfail=1 --cov --cov-report=term-missing"]
+setenv = { PYTHONPATH = "{toxinidir}" }
+
+[tool.tox.env.lint]
+description = "Ruff lint"
+commands_pre = ["poetry install --no-root --with dev"]
+commands = [
+  "ruff format --check .",
+  "ruff check ."
+]
+
+[tool.tox.env.type]
+description = "Mypy type-check"
+commands_pre = ["poetry install --no-root --with dev"]
+commands = ["mypy src/"]  # adapte le chemin
+
+[tool.tox.env.build]
+description = "Build & verify dist"
+commands_pre = ["poetry install --no-root --with build"]
+commands = [
+  "python -m build",
+  "twine check dist/*"
+]
+
 [tool.pytest.ini_options]
 addopts = "-m 'not integration and not matlab'"
 markers = [
