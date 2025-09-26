@@ -42,6 +42,7 @@ numpy = "^2.3.3"
 pytest-env = "^1.1.5"
 
 [tool.pytest.ini_options]
+addopts = "-m 'not integration and not matlab'"
 markers = [
   "integration: slow, requires external tools/data",
   "matlab: requires MATLAB Runtime and decoder executable"

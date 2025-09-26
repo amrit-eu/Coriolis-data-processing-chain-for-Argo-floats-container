@@ -23,14 +23,18 @@ poetry install
 
 ```bash
 python3 -u decoder_bindings/main.py
-python3 -m decoder_bindings
 ```
 
-- Run tests
+- Run unit tests
 
 ```bash
-poetry install
+pytest
+```
+
+- Run integration tests
+
+```bash
+pytest -m "integration and matlab"
 ```
 
 ## FastAPI
-

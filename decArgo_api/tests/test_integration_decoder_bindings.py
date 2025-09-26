@@ -21,9 +21,21 @@ pytestmark = [pytest.mark.integration, pytest.mark.matlab]
 # À fournir :
 #   DECODER_EXECUTABLE, MATLAB_RUNTIME, DECODER_INPUT_DIR
 WMOS = [
-    ("6902892", "./tests/data/config/decoder_conf_for_6902892.json", "./tests/data/ref/6902892"),
-    ("6903014", "./tests/data/config/decoder_conf_for_6903014.json", "./tests/data/ref/6903014"),
-    ("6904182", "./tests/data/config/decoder_conf_for_6904182.json", "./tests/data/ref/6904182"),
+    (
+        "6902892",
+        "./tests/data/config/decoder_conf_for_6902892.json",
+        "./tests/data/ref/6902892",
+    ),
+    (
+        "6903014",
+        "./tests/data/config/decoder_conf_for_6903014.json",
+        "./tests/data/ref/6903014",
+    ),
+    (
+        "6904182",
+        "./tests/data/config/decoder_conf_for_6904182.json",
+        "./tests/data/ref/6904182",
+    ),
 ]
 
 
@@ -169,21 +181,16 @@ def _compare_dirs_nc(
 
 # ========================== Test A : exécution OK =============================
 @pytest.mark.parametrize("wmo, conf_file, ref_dir", WMOS)
-def test_decode_produces_netcdf(
-    tmp_path: Path, wmo: str, conf_file: str, ref_dir: str                       
-):
+def test_decode_produces_netcdf(tmp_path: Path, wmo: str, conf_file: str, ref_dir: str):
     exec_path = _need_exec("DECODER_EXECUTABLE")
     runtime_dir = _need_dir("MATLAB_RUNTIME")
-    input_dir = _need_dir("DECODER_INPUT_DIR")
-    # conf_file = _need_file(conf_file)
     timeout = int(os.getenv("DECODER_TIMEOUT", "1800"))
 
-    out_dir = Path("../decArgo_demo/output/nc/")
-    # out_dir.mkdir()
+    out_dir = Path(f"../decArgo_demo/output/nc/{wmo}")
 
     dec = Decoder(
-        input_files_directory=None,
-        output_files_directory=None,
+        input_files_directory=None,  # from configuration file
+        output_files_directory=None,  # from configuration file
         decoder_conf_file=str(conf_file),
         decoder_executable=str(exec_path),
         matlab_runtime=str(runtime_dir),
@@ -197,6 +204,7 @@ def test_decode_produces_netcdf(
     assert produced, f"Aucun NetCDF produit pour WMO {wmo} dans {out_dir}"
 
 
+# TODO : Compare results to output from decoder in DAC infrastructure ?
 # ========================== Test B : comparaison ==============================
 # @pytest.mark.parametrize("wmo, conf_file, ref_dir", WMOS)
 # def test_decode_outputs_match_reference(
@@ -205,7 +213,7 @@ def test_decode_produces_netcdf(
 #     exec_path = _need_exec("DECODER_EXECUTABLE")
 #     runtime_dir = _need_dir("MATLAB_RUNTIME")
 #     input_dir = _need_dir("DECODER_INPUT_DIR")
-#     # conf_file = _need_file(conf_file)
+#     conf_file = _need_file(conf_file)
 #     timeout = int(os.getenv("DECODER_TIMEOUT", "1800"))
 
 #     atol = float(os.getenv("NC_ATOL", "0"))
