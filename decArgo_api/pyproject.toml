@@ -80,7 +80,10 @@ description = "Run unit tests"
 allowlist_externals = ["poetry", "pytest"]
 setenv = { PYTHONPATH = "{toxinidir}" }
 commands_pre = [["poetry", "install", "--no-root", "--with", "test"]]
-commands = [["pytest", "-q", "--disable-warnings", "--maxfail=1", "--cov", "--cov-report=term-missing"]]
+commands = [
+  ["pytest", "-q", "--disable-warnings", "--maxfail=1", "--cov", "--cov-report=term-missing"]  # unit tests
+#  ["pytest", "-m", "integration and matlab",  "-q", "--disable-warnings", "--maxfail=1", "--cov", "--cov-report=term-missing"]  # integration tests
+]
 
 [tool.tox.env.lint]
 description = "Ruff lint + format check"
