@@ -12,7 +12,7 @@
     "DIR_INPUT_HEX_ARGOS_FILE_FORMAT_2" : "",
     "HEX_ARGOS_DATA_DIRECTORY_STRUCTURE" : "",
     
-    "DIR_INPUT_RSYNC_DATA" : "/mnt/data/rsync/archive/cycle/",
+    "DIR_INPUT_RSYNC_DATA" : "/mnt/data/rsync/archive/",
     "DIR_INPUT_RSYNC_LOG" : "/mnt/data/rsync/rsync_list/",
  
     "DIR_INPUT_JSON_TECH_LABEL_FILE" : "/app/config/_techParamNames/",
