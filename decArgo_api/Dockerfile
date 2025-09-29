@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.13-slim AS decoder_bindings
 
 # Create a system user
 RUN addgroup --system appgroup && \
@@ -33,3 +33,8 @@ USER decoderuser
 
 # Run the application
 CMD ["python", "-u", "decoder_bindings/main.py"]
+
+
+FROM decoder_bindings AS api
+
+CMD ["python", "-u", "decoder_api/main.py"]
