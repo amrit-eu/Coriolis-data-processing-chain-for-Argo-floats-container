@@ -1,5 +1,5 @@
 [project]
-name = "decargo-api"
+name = "decoder_bindings"
 version = "0.1.0"
 description = "Decoder API for Argo floats"
 authors = [
