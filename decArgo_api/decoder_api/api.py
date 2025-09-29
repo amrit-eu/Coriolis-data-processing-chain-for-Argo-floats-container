@@ -1,19 +1,21 @@
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Optional
+import os
+from uuid import uuid4
 
 from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-from decoder_bindings import save_info_meta_conf, Decoder
+from decoder_bindings.main import Decoder
+from decoder_bindings.utilities.dict2json import save_info_meta_conf
 from decoder_bindings.settings import Settings  # <- pydantic-settings
-import os
-from uuid import uuid4
 
 
 # -------- App & settings --------
 ROOT_PATH = os.getenv("API_ROOT_PATH", "")
 app = FastAPI(root_path=ROOT_PATH)
+
 
 @lru_cache
 def get_settings() -> Settings:
@@ -31,6 +33,7 @@ class DecodeRequest(BaseModel):
     info_dict: Optional[dict[str, Any]] = Field(default=None)
     meta_dict: Optional[dict[str, Any]] = Field(default=None)
 
+
 class DecodeResponse(BaseModel):
     status: str
     request_id: str
@@ -44,7 +47,8 @@ class DecodeResponse(BaseModel):
 def app_status():
     return {"status": "OK"}
 
-@app.post("/decode-files", response_model=DecodeResponse, tags=["decode"])
+
+@app.post("/decoder/decode-float", response_model=DecodeResponse, tags=["decode"])
 def decode_files(payload: DecodeRequest, settings: Settings = Depends(get_settings)):
     """
     Lance un décodage synchrone. Pour des runs longs, envisager un BackgroundTask
@@ -59,7 +63,9 @@ def decode_files(payload: DecodeRequest, settings: Settings = Depends(get_settin
         config_dir.mkdir(parents=True, exist_ok=True)
         output_dir.mkdir(parents=True, exist_ok=True)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to create output dirs: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to create output dirs: {e}"
+        )
 
     # 1) Persister les JSON de conf/meta/info pour le décodeur
     try:
@@ -95,4 +101,15 @@ def decode_files(payload: DecodeRequest, settings: Settings = Depends(get_settin
         output_dir=str(output_dir),
         config_dir=str(config_dir),
         float_info=float_info,
+    )
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        "decoder_bindings.api:app",  # chemin module:variable
+        host="0.0.0.0",
+        port=8000,
+        reload=True,  # hot reload pour dev
     )

@@ -6,11 +6,11 @@ import time
 import subprocess
 from pathlib import Path
 
-from settings import Settings
+from decoder_bindings.settings import Settings
+from decoder_bindings.mock_data import info_dict, meta_dict, conf_dict  # Used for testing purposes only.
+from decoder_bindings.utilities.dict2json import save_info_meta_conf
 
 from pydantic import BaseModel, Field, field_validator
-from utilities.dict2json import save_info_meta_conf
-from mock_data import info_dict, meta_dict, conf_dict  # Used for testing purposes only.
 
 
 class EmptyInputDirectoryError(Exception):
@@ -127,7 +127,9 @@ class Decoder:
         if not isinstance(wmonum, str):
             raise WmoValidationError("WMOnum must be a string.")
         if not Decoder._WMO_RE.match(wmonum):
-            raise WmoValidationError(f"Invalid WMO '{wmonum}'. Expected 7 digits (e.g., '6902892').")
+            raise WmoValidationError(
+                f"Invalid WMO '{wmonum}'. Expected 7 digits (e.g., '6902892')."
+            )
 
     def _build_cmd(self, wmonum: str) -> list[str]:
         cmd: list[str] = [
@@ -206,11 +208,17 @@ if __name__ == "__main__":  # pragma: no cover
     print("Running...")
     # read settings
     settings = Settings()
+    request_root: Path = Path(settings.DECODER_OUTPUT_DIR)
+    config_dir = request_root / "config"
+    output_dir = request_root / "files"
+
     try:
+        config_dir.mkdir(parents=True, exist_ok=True)
+        output_dir.mkdir(parents=True, exist_ok=True)
         float_info = save_info_meta_conf(
-            config_dir="./tmp/config",
-            float_info_dir="./tmp/config/decArgo_config_floats2/json_float_info",
-            float_meta_dir="./tmp/config/decArgo_config_floats2/json_float_meta",
+            config_dir=str(config_dir),
+            float_info_dir=str(config_dir / "decArgo_config_floats2/json_float_info"),
+            float_meta_dir=str(config_dir / "decArgo_config_floats2/json_float_meta"),
             info=info_dict,
             meta=meta_dict,
             decoder_conf=conf_dict,
@@ -222,11 +230,11 @@ if __name__ == "__main__":  # pragma: no cover
 
     # These are hardcoded for now, but will likely be passed by the calling code.
     decoder = Decoder(
-        decoder_executable="../decArgo_soft/exec/run_decode_argo_2_nc_rt.sh",
-        matlab_runtime="/home/lbruvryl/development/tmp/tmp_tc/matlab_runtime/R2022b",
-        decoder_conf_file="../decArgo_demo/config/decoder_conf.json",
-        input_files_directory="../decArgo_demo/input",
-        output_files_directory="../decArgo_demo/output",
-        timeout_seconds=3600,
+        decoder_executable=str(settings.DECODER_EXECUTABLE),
+        matlab_runtime=str(settings.MATLAB_RUNTIME),
+        decoder_conf_file=str(config_dir / "decoder_conf.json"),
+        input_files_directory=str(settings.DECODER_INPUT_DIR),
+        output_files_directory=str(output_dir),
+        timeout_seconds=settings.DECODER_TIMEOUT,  # ← configurable
     )
     decoder.decode("6902892")

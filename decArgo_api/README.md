@@ -19,7 +19,13 @@ cd decArgo_api
 poetry install
 ```
 
-- Run application
+- Run application bindings on predefine float
+
+```bash
+python3 -u decoder_bindings/main.py
+```
+
+- Run application API
 
 ```bash
 python3 -u decoder_bindings/main.py
