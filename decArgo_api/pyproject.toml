@@ -1,3 +1,17 @@
+[project]
+name = "decoder_bindings"
+version = "0.1.0"
+description = "Decoder API for Argo floats"
+authors = [
+  { name="Léo Bruvry-Lagadec", email="leo.bruvry.lagadecl@ifremer.fr" }
+]
+dependencies = [
+  "requests",
+  "pydantic"
+]
+requires-python = ">=3.10"
+
+
 [tool.poetry]
 name = "decoder_bindings"
 version = "0.1.0"
@@ -6,7 +20,7 @@ authors = ["James Clare <jamclar@noc.ac.uk>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.10,<4.0"
 poetry-dynamic-versioning = "^1.1.0"
 pydantic = "^2.11.9"
 docker = "^7.1.0"
@@ -25,19 +39,88 @@ decoder = "decoder_bindings.main:main"
 [tool.poetry.group.lint]
 optional = true
 
-[tool.poetry.group.lint.dependencies]
-ruff = "^0.4.2"
-
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.4.2"
+ruff = "^0.13.2"
 pyright = "1.1.401"
-pytest = "^7.3.0"
+pytest = "^8.3.3"
 pytest-mock= "3.15.1"
 pytest-cov = "^4.0.0"
 coverage = {extras = ["xml"], version = "^7.2.5"}
-twine = "^4.0.2"
+twine = "^6.2.0"
 taskipy = "^1.14.1"
+numpy = "^1.26.4"
+pytest-env = "^1.1.5"
+
+[tool.poetry.group.test.dependencies]
+pyright = "1.1.401"
+pytest = "^8.3.3"
+pytest-mock= "3.15.1"
+pytest-cov = "^4.0.0"
+pytest-env = "^1.1.5"
+coverage = {extras = ["xml"], version = "^7.2.5"}
+
+[tool.poetry.group.lint.dependencies]
+ruff = "^0.13.2"
+bandit = "^1.8.6"
+bandit-sarif-formatter = "^1.1.1"
+
+[tool.poetry.group.build.dependencies]
+twine = "^6.2.0"
+
+[tool.poetry.group.type.dependencies]
+mypy = "^1.18.2"
+
+[tool.tox]
+env_list = ["test", "lint", "type", "build"]
+requires = ["tox>=4.12"]
+
+[tool.tox.env.test]
+description = "Run unit tests"
+allowlist_externals = ["poetry", "pytest"]
+setenv = { PYTHONPATH = "{toxinidir}" }
+commands_pre = [["poetry", "install", "--no-root", "--with", "test"]]
+commands = [
+  ["pytest", "-q", "--disable-warnings", "--maxfail=1", "--cov", "--cov-report=term-missing"]  # unit tests
+#  ["pytest", "-m", "integration and matlab",  "-q", "--disable-warnings", "--maxfail=1", "--cov", "--cov-report=term-missing"]  # integration tests
+]
+
+[tool.tox.env.lint]
+description = "Ruff lint + format check"
+allowlist_externals = ["poetry", "ruff"]
+commands_pre = [["poetry", "install", "--no-root", "--with", "lint"]]
+commands = [
+  ["ruff", "format", "--check", "."],
+#  ["ruff", "check", "."]
+]
+
+[tool.tox.env.type]
+description = "Mypy type-check"
+allowlist_externals = ["poetry", "mypy"]
+commands_pre = [["poetry", "install", "--no-root", "--with", "type"]]
+commands = [
+# ["mypy", "decoder_bindings", "tests"]
+]
+
+[tool.tox.env.build]
+description = "Build & verify dist"
+commands_pre = [["poetry", "install", "--no-root", "--with", "build"]]
+allowlist_externals = ["poetry", "python", "twine", "bash", "ls"]
+commands = [
+  ["poetry", "build", "--format", "wheel"],
+]
+[tool.pytest.ini_options]
+addopts = "-m 'not integration and not matlab'"
+markers = [
+  "integration: slow, requires external tools/data",
+  "matlab: requires MATLAB Runtime and decoder executable"
+]
+env = [
+    "DECODER_EXECUTABLE=../decArgo_soft/exec/run_decode_argo_2_nc_rt.sh",
+    "MATLAB_RUNTIME=/home/lbruvryl/development/tmp/tmp_tc/matlab_runtime/R2022b",
+    "DECODER_INPUT_DIR=../decArgo_demo/input/archive",
+    "DECODER_OUTPUT_DIR=../decArgo_demo/output/nc",
+]
 
 [tool.taskipy.tasks]
 lint = "ruff check decoder_bindings"
