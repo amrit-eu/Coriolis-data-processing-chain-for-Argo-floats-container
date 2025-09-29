@@ -100,7 +100,7 @@ commands = [["mypy", "decoder_bindings", "tests"]]
 [tool.tox.env.build]
 description = "Build & verify dist"
 commands_pre = [["poetry", "install", "--no-root", "--with", "build"]]
-allowlist_externals = ["python", "twine", "bash", "ls"]
+allowlist_externals = ["poetry", "python", "twine", "bash", "ls"]
 commands = [
   # 1) Build (sdist + wheel)
   ["python", "-m", "build", "--sdist", "--wheel", "--no-isolation"],
