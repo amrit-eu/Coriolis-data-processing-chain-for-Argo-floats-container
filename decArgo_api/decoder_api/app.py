@@ -1,9 +1,9 @@
 import os
-from fastapi import FastAPI, UploadFile
 from pathlib import Path
 from uuid import uuid4
 
 from argofilechecker_python_wrapper import FileChecker
+from fastapi import FastAPI, UploadFile
 
 ROOT_PATH = os.getenv("API_ROOT_PATH", "")
 
@@ -20,9 +20,7 @@ def app_status():
 
 
 @app.post("/decode-files")
-def check_file_list(
-    wmonum: str, conf_dict: dict, info_dict: dict = None, meta_dict: dict = None
-):
+def check_file_list(wmonum: str, conf_dict: dict, info_dict: dict = None, meta_dict: dict = None):
     """
     Main endpoint to decode files.
     :param files:
