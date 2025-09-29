@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from uuid import uuid4
 
+from decoder_bindings import save_info_meta_conf, Decoder
 from argofilechecker_python_wrapper import FileChecker
 from fastapi import FastAPI, UploadFile
 
@@ -60,4 +61,4 @@ def check_file_list(wmonum: str, conf_dict: dict, info_dict: dict = None, meta_d
     )
     decoder.decode(wmonum)
 
-    return results
+    # return results
