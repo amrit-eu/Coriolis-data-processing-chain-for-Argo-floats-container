@@ -63,9 +63,7 @@ def decode_files(payload: DecodeRequest, settings: Settings = Depends(get_settin
         config_dir.mkdir(parents=True, exist_ok=True)
         output_dir.mkdir(parents=True, exist_ok=True)
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Failed to create output dirs: {e}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to create output dirs: {e}")
 
     # 1) Persister les JSON de conf/meta/info pour le décodeur
     try:
