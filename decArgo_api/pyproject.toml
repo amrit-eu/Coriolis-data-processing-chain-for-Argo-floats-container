@@ -99,13 +99,21 @@ commands = [["mypy", "decoder_bindings", "tests"]]
 
 [tool.tox.env.build]
 description = "Build & verify dist"
-allowlist_externals = ["poetry", "twine", "python"]
 commands_pre = [["poetry", "install", "--no-root", "--with", "build"]]
+allowlist_externals = ["python", "twine", "bash", "ls"]
 commands = [
-  ["python", "-m", "build"],
+  # 1) Build (sdist + wheel)
+  ["python", "-m", "build", "--sdist", "--wheel", "--no-isolation"],
+
+  # 2) Affiche ce qui a été produit (debug)
+  ["bash", "-c", "ls -lah dist || true"],
+
+  # 3) Échoue proprement si dist est vide (sinon twine échoue sans message clair)
+  ["bash", "-c", "[ -n \"$(ls -A dist 2>/dev/null)\" ] || { echo 'ERROR: dist/ est vide, build a échoué'; exit 2; }"],
+
+  # 4) Vérifie les artefacts
   ["twine", "check", "dist/*"]
 ]
-
 [tool.pytest.ini_options]
 addopts = "-m 'not integration and not matlab'"
 markers = [
