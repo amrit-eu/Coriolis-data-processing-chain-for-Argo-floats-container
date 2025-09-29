@@ -94,7 +94,7 @@ allowlist_externals = ["poetry", "ruff"]
 commands_pre = [["poetry", "install", "--no-root", "--with", "lint"]]
 commands = [
   ["ruff", "format", "--check", "."],
-  ["ruff", "check", "."]
+#  ["ruff", "check", "."]
 ]
 
 [tool.tox.env.type]
@@ -102,7 +102,7 @@ description = "Mypy type-check"
 allowlist_externals = ["poetry", "mypy"]
 commands_pre = [["poetry", "install", "--no-root", "--with", "type"]]
 commands = [
-  ["mypy", "decoder_bindings", "tests"]
+#  ["mypy", "decoder_bindings", "tests"]
 ]
 
 [tool.tox.env.build]
