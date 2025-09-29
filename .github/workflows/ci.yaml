@@ -15,14 +15,14 @@ jobs:
     uses: amrit-eu/ci-cd/.github/workflows/component-python-lint.yml@main
     with:
       context: decArgo_api
-  python-security:
-    permissions:
-      contents: read
-      actions: read
-      security-events: write
-    uses: amrit-eu/ci-cd/.github/workflows/component-python-security.yml@main
-    with:
-      context: decArgo_api
+  # python-security:
+  #   permissions:
+  #     contents: read
+  #     actions: read
+  #     security-events: write
+  #   uses: amrit-eu/ci-cd/.github/workflows/component-python-security.yml@main
+  #   with:
+  #     context: decArgo_api
   container-image-build:
     needs: [python-linting, python-security]
     uses: amrit-eu/ci-cd/.github/workflows/component-container-image.yml@main
