@@ -4,6 +4,24 @@
 
 This Python package exists to access the Coriolis Decoder via Python API.
 
+## Get Started
+
+- Run API with Docker and local MATLAB runtime
+
+```bash
+./docker-decoder-api-linux.sh 6904182 /absolute-path-to/matlab/runtime/R2022b
+```
+
+- Decode demonstration float 6904182 with next command
+
+```bash
+# Browsing files
+curl -X POST "http://localhost:8000/browse/decode-float" \
+-F wmonum=6904182 -F conf_file=@tests/data/config/docker_decoder_conf_for_6904182.json \
+-F info_file=@../decArgo_demo/config/decArgo_config_floats/json_float_info/6904182_300125061965370_info.json \
+-F meta_file=@../decArgo_demo/config/decArgo_config_floats/json_float_meta/6904182_meta.json
+```
+
 ### Development
 
 - Create vitual environment
@@ -31,21 +49,14 @@ python3 -u decoder_bindings/main.py
 python3 -u decoder_api/main.py
 ```
 
-access API documentation at <http://localhost:8080/docs>
+access API at <http://localhost:8000>
 
-- Request API with Documentation GUI ou with `curl`
+- Example curl command to decode float :
 
 ```bash
-# JSON content
 curl -X POST "http://localhost:8000/decode-float" \
 -H "Content-Type: application/json" \
--d '{"wmonum":"6904182","conf_dict":'"$(cat tests/data/config/decoder_conf_for_6904182.json)"', "info_dict":'"$(cat ../decArgo_demo/config/decArgo_config_floats/json_float_info/6904182_300125061965370_info.json)"', "meta_dict":'"$(cat ../decArgo_demo/config/decArgo_config_floats/json_float_meta/6904182_meta.json)"'}'
-
-# Browsing files
-curl -X POST "http://localhost:8000/browse/decode-float" \
--F wmonum=6904182 -F conf_file=@tests/data/config/decoder_conf_for_6904182.json \
--F info_file=@../decArgo_demo/config/decArgo_config_floats/json_float_info/6904182_300125061965370_info.json \
--F meta_file=@../decArgo_demo/config/decArgo_config_floats/json_float_meta/6904182_meta.json
+-d '{"wmonum":"6904182","conf_dict":'"$(cat tests/data/config/docker_decoder_conf_for_6904182.json)"', "info_dict":'"$(cat ../decArgo_demo/config/decArgo_config_floats/json_float_info/6904182_300125061965370_info.json)"', "meta_dict":'"$(cat ../decArgo_demo/config/decArgo_config_floats/json_float_meta/6904182_meta.json)"'}'
 ```
 
 - Run unit tests

@@ -1,7 +1,21 @@
 services:
   decode-float:
-    image: coriolis-data-processing-chain-for-argo-floats-container-python-binding
+    image: coriolis-data-processing-chain-for-argo-floats-container-python-api
     build:
       context: .
       target: python-runtime
-    entrypoint: ["python3", "-u", "decoder_bindings/main.py"]
+    ports:
+      - 8000:8000
+    volumes:
+      - ${DECODER_RUNTIME_VOLUME:-runtime-matlab-volume}:/mnt/runtime:ro
+      - ${DECODER_DATA_INPUT_VOLUME}:/mnt/data/rsync:rw
+      - ${DECODER_DATA_CONF_VOLUME}:/mnt/data/config:ro
+      - ${DECODER_DATA_OUTPUT_VOLUME}:/mnt/data/output:rw
+      - ${DECODER_REF_GREYLIST_FILE}:/tmp/ar_greylist.txt:ro
+    environment:
+      DECODER_OUTPUT_DIR: "/mnt/data/output"
+      DECODER_CONFIG_DIR: "/mnt/data/config"
+      DECODER_INPUT_DIR: "/mnt/data/rsync"
+      DECODER_EXECUTABLE: "/app/run_decode_argo_2_nc_rt.sh"
+      MATLAB_RUNTIME: "/mnt/runtime"
+    entrypoint: ["python3", "-u", "decoder_api/main.py"]
