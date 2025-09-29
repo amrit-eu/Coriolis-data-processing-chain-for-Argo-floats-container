@@ -6,6 +6,8 @@ import time
 import subprocess
 from pathlib import Path
 
+from settings import Settings
+
 from pydantic import BaseModel, Field, field_validator
 from utilities.dict2json import save_info_meta_conf
 from mock_data import info_dict, meta_dict, conf_dict  # Used for testing purposes only.
@@ -202,7 +204,8 @@ class Decoder:
 
 if __name__ == "__main__":  # pragma: no cover
     print("Running...")
-
+    # read settings
+    settings = Settings()
     try:
         float_info = save_info_meta_conf(
             config_dir="./tmp/config",

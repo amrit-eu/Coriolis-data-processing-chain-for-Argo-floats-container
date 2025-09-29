@@ -3,8 +3,8 @@ from pathlib import Path
 from uuid import uuid4
 
 from decoder_bindings import save_info_meta_conf, Decoder
-from argofilechecker_python_wrapper import FileChecker
-from fastapi import FastAPI, UploadFile
+from decoder_bindings.settings import Settings
+from fastapi import FastAPI
 
 ROOT_PATH = os.getenv("API_ROOT_PATH", "")
 
@@ -33,9 +33,10 @@ def check_file_list(
     :return:
         { "results": ValidationResult object }
     """
+    settings = Settings()
 
     request_id = uuid4()
-    request_output_file_dir = Path(f"/tmp/decoder_output/{request_id}")
+    request_output_file_dir = Path(f"{settings.DECODER_OUTPUT_DIR}/{request_id}")
     os.makedirs(request_output_file_dir)
 
     try:
@@ -54,11 +55,11 @@ def check_file_list(
 
     # These are hardcoded for now, but will likely be passed by the calling code.
     decoder = Decoder(
-        decoder_executable="../decArgo_soft/exec/run_decode_argo_2_nc_rt.sh",
-        matlab_runtime="/home/lbruvryl/development/tmp/tmp_tc/matlab_runtime/R2022b",
-        decoder_conf_file="../decArgo_demo/config/decoder_conf.json",
-        input_files_directory="../decArgo_demo/input",
-        output_files_directory="../decArgo_demo/output",
+        decoder_executable=settings.DECODER_EXECUTABLE,
+        matlab_runtime=settings.MATLAB_RUNTIME,
+        decoder_conf_file=f"{request_output_file_dir}/config/decoder_conf.json",
+        input_files_directory=settings.DECODER_INPUT_DIR,
+        output_files_directory=f"{request_output_file_dir}/output",
         timeout_seconds=3600,
     )
     decoder.decode(wmonum)

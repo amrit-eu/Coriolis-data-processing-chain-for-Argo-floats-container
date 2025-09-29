@@ -1,5 +1,5 @@
 [project]
-name = "decoder_bindings"
+name = "decoder_api"
 version = "0.1.0"
 description = "Decoder API for Argo floats"
 authors = [
@@ -13,7 +13,7 @@ requires-python = ">=3.10"
 
 
 [tool.poetry]
-name = "decoder_bindings"
+name = "decoder_api"
 version = "0.1.0"
 description = "Bindings for the Decoder written in Python"
 authors = ["James Clare <jamclar@noc.ac.uk>"]
@@ -91,7 +91,7 @@ allowlist_externals = ["poetry", "ruff"]
 commands_pre = [["poetry", "install", "--no-root", "--with", "lint"]]
 commands = [
   ["ruff", "format", "--check", "."],
-#  ["ruff", "check", "."]
+  ["ruff", "check", "."]
 ]
 
 [tool.tox.env.type]
@@ -99,7 +99,7 @@ description = "Mypy type-check"
 allowlist_externals = ["poetry", "mypy"]
 commands_pre = [["poetry", "install", "--no-root", "--with", "type"]]
 commands = [
-# ["mypy", "decoder_bindings", "tests"]
+  ["mypy", "decoder_bindings", "tests"]
 ]
 
 [tool.tox.env.build]
