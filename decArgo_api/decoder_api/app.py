@@ -22,13 +22,13 @@ def app_status():
 
 
 @app.post("/decode-files")
-def check_file_list(files: list[UploadFile], dac: str):
+def check_file_list(wmonum: str, conf_dict: dict):
     """
-    Main endpoint to upload files to be checked.
+    Main endpoint to decode files.
     :param files:
-        List of files uploaded as multipart/form-data
-    :param dac:
-        Relevant DAC for the files, e.g. coriolis, bodc, aoml, etc. Must be the same DAC for all files
+        WMO of float to decode
+    :param conf_dict:
+        Decoding configuration
     :return:
         { "results": ValidationResult object }
     """
