@@ -1,8 +1,6 @@
 import os
-import shutil
 from fastapi import FastAPI, UploadFile
 from pathlib import Path
-from typing import Annotated
 from uuid import uuid4
 
 from argofilechecker_python_wrapper import FileChecker
@@ -22,7 +20,9 @@ def app_status():
 
 
 @app.post("/decode-files")
-def check_file_list(wmonum: str, conf_dict: dict):
+def check_file_list(
+    wmonum: str, conf_dict: dict, info_dict: dict = None, meta_dict: dict = None
+):
     """
     Main endpoint to decode files.
     :param files:
@@ -32,16 +32,34 @@ def check_file_list(wmonum: str, conf_dict: dict):
     :return:
         { "results": ValidationResult object }
     """
+
     request_id = uuid4()
     request_file_dir = Path(f"/home/app/input/{request_id}")
     os.makedirs(request_file_dir)
-    for upload_file in files:
-        try:
-            with request_file_dir.joinpath(upload_file.filename).open("wb") as buffer:
-                shutil.copyfileobj(upload_file.file, buffer)
-        finally:
-            upload_file.file.close()
-    file_checker = FileChecker(specs_path='/home/app/file_checker_spec')
-    results = {"results": file_checker.check_files(request_file_dir.glob("*"), dac)}
-    shutil.rmtree(request_file_dir)
+
+    try:
+        float_info = save_info_meta_conf(
+            config_dir="./tmp/config",
+            float_info_dir="./tmp/config/decArgo_config_floats2/json_float_info",
+            float_meta_dir="./tmp/config/decArgo_config_floats2/json_float_meta",
+            info=info_dict,
+            meta=meta_dict,
+            decoder_conf=conf_dict,
+        )
+        for key, value in float_info.items():
+            print(f"  {key}: {value}")
+    except Exception as e:
+        print(f"Error saving float info : {e}")
+
+    # These are hardcoded for now, but will likely be passed by the calling code.
+    decoder = Decoder(
+        decoder_executable="../decArgo_soft/exec/run_decode_argo_2_nc_rt.sh",
+        matlab_runtime="/home/lbruvryl/development/tmp/tmp_tc/matlab_runtime/R2022b",
+        decoder_conf_file="../decArgo_demo/config/decoder_conf.json",
+        input_files_directory="../decArgo_demo/input",
+        output_files_directory="../decArgo_demo/output",
+        timeout_seconds=3600,
+    )
+    decoder.decode(wmonum)
+
     return results
