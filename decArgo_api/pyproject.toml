@@ -92,7 +92,7 @@ commands = [
 
 [tool.tox.env.type]
 description = "Mypy type-check"
-commands_pre = ["poetry install --no-root --with dev"]
+commands_pre = ["poetry install --no-root --with type"]
 commands = ["mypy src/"]  # adapte le chemin
 
 [tool.tox.env.build]
