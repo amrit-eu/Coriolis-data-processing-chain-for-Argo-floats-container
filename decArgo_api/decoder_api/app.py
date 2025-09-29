@@ -21,7 +21,7 @@ def app_status():
     return {"status": "OK"}
 
 
-@app.post("/check-files")
+@app.post("/decode-files")
 def check_file_list(files: list[UploadFile], dac: str):
     """
     Main endpoint to upload files to be checked.
