@@ -67,9 +67,7 @@ def _need_exec(env: str) -> Path:
 # --- Import du module testé + alias des imports plats utilisés dans main.py ---
 # Le module 'decoder_bindings.main' fait des imports "plats" (utilities, mock_data).
 # On crée des alias vers les sous-modules du package pour que l'import réussisse.
-sys.modules.setdefault(
-    "utilities", importlib.import_module("decoder_bindings.utilities")
-)
+sys.modules.setdefault("utilities", importlib.import_module("decoder_bindings.utilities"))
 sys.modules.setdefault(
     "utilities.dict2json",
     importlib.import_module("decoder_bindings.utilities.dict2json"),
@@ -79,9 +77,7 @@ from decoder_bindings.main import Decoder  # noqa: E402
 
 
 # --- Comparaison NetCDF robuste (échec au moindre écart par défaut) ----------
-def _assert_netcdf_equal(
-    test_path: Path, ref_path: Path, *, atol: float, rtol: float
-) -> None:
+def _assert_netcdf_equal(test_path: Path, ref_path: Path, *, atol: float, rtol: float) -> None:
     """
     Compare deux fichiers NetCDF:
       - dimensions (noms, tailles)
@@ -108,18 +104,12 @@ def _assert_netcdf_equal(
 
     with Dataset(test_path, "r") as tds, Dataset(ref_path, "r") as rds:
         # Dimensions
-        assert set(tds.dimensions.keys()) == set(
-            rds.dimensions.keys()
-        ), "Different dimension names"
+        assert set(tds.dimensions.keys()) == set(rds.dimensions.keys()), "Different dimension names"
         for name in tds.dimensions.keys():
-            assert len(tds.dimensions[name]) == len(
-                rds.dimensions[name]
-            ), f"Dimension size mismatch: {name}"
+            assert len(tds.dimensions[name]) == len(rds.dimensions[name]), f"Dimension size mismatch: {name}"
 
         # Variables
-        assert set(tds.variables.keys()) == set(
-            rds.variables.keys()
-        ), "Different variable names"
+        assert set(tds.variables.keys()) == set(rds.variables.keys()), "Different variable names"
         for vname in tds.variables.keys():
             tv = tds.variables[vname]
             rv = rds.variables[vname]
@@ -136,9 +126,7 @@ def _assert_netcdf_equal(
                 if np.ma.isMaskedArray(rdata):
                     rdata = rdata.filled(np.nan)
                 # tout écart au-delà des tolérances = échec
-                assert np.allclose(
-                    tdata, rdata, atol=atol, rtol=rtol, equal_nan=True
-                ), f"value mismatch in var {vname}"
+                assert np.allclose(tdata, rdata, atol=atol, rtol=rtol, equal_nan=True), f"value mismatch in var {vname}"
             else:
                 # strings, bytes: égalité stricte
                 assert np.array_equal(tdata, rdata), f"value mismatch in var {vname}"
@@ -157,9 +145,7 @@ def _iter_nc(dirpath: Path) -> Iterable[Path]:
     return sorted(dirpath.rglob("*.nc"))
 
 
-def _compare_dirs_nc(
-    test_dir: Path, ref_dir: Path, *, atol: float, rtol: float
-) -> None:
+def _compare_dirs_nc(test_dir: Path, ref_dir: Path, *, atol: float, rtol: float) -> None:
     """
     Compare l'ensemble des .nc produits vs la référence:
       - mêmes fichiers (noms relatifs)

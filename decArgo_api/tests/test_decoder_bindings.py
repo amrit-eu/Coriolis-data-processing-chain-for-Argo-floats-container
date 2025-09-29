@@ -47,16 +47,12 @@ _inject_stubs_for_top_level_imports()
 
 # Aligne les imports "plats" utilisés dans main.py
 # (main.py fait `from utilities...` et `from mock_data...`)
-sys.modules.setdefault(
-    "utilities", importlib.import_module("decoder_bindings.utilities")
-)
+sys.modules.setdefault("utilities", importlib.import_module("decoder_bindings.utilities"))
 sys.modules.setdefault(
     "utilities.dict2json",
     importlib.import_module("decoder_bindings.utilities.dict2json"),
 )
-sys.modules.setdefault(
-    "mock_data", importlib.import_module("decoder_bindings.mock_data")
-)
+sys.modules.setdefault("mock_data", importlib.import_module("decoder_bindings.mock_data"))
 
 MODULE_NAME = "decoder_bindings.main"
 m = importlib.import_module(MODULE_NAME)
@@ -167,9 +163,7 @@ def test_decode_builds_cmd_with_exec_and_runtime_and_io(
         assert isinstance(kwargs["env"], dict)
 
 
-def test_decode_without_io_does_not_add_dirs(
-    tmp_conf_file, tmp_runtime_dir, tmp_exec_file
-):
+def test_decode_without_io_does_not_add_dirs(tmp_conf_file, tmp_runtime_dir, tmp_exec_file):
     dec = m.Decoder(
         input_files_directory=None,
         output_files_directory=None,
@@ -186,9 +180,7 @@ def test_decode_without_io_does_not_add_dirs(
         assert "DIR_OUTPUT_NETCDF_FILE" not in cmd
 
 
-def test_decode_input_without_output_raises(
-    tmp_conf_file, tmp_runtime_dir, tmp_exec_file, tmp_input_dir
-):
+def test_decode_input_without_output_raises(tmp_conf_file, tmp_runtime_dir, tmp_exec_file, tmp_input_dir):
     dec = m.Decoder(
         input_files_directory=str(tmp_input_dir),
         output_files_directory=None,
@@ -225,9 +217,7 @@ def test_conf_file_missing_raises(tmp_path: Path, tmp_runtime_dir, tmp_exec_file
         )
 
 
-def test_executable_must_exist_and_be_executable(
-    tmp_conf_file, tmp_runtime_dir, tmp_nonexec_file
-):
+def test_executable_must_exist_and_be_executable(tmp_conf_file, tmp_runtime_dir, tmp_nonexec_file):
     # non exécutable -> ValueError
     with pytest.raises(ValueError):
         m.Decoder(
@@ -264,9 +254,7 @@ def test_calledprocesserror_is_caught_and_hold_runs(
         hold_after_run=2,
     )
 
-    with patch.object(m.subprocess, "run") as mock_run, patch.object(
-        m.time, "sleep"
-    ) as mock_sleep:
+    with patch.object(m.subprocess, "run") as mock_run, patch.object(m.time, "sleep") as mock_sleep:
         mock_run.side_effect = m.subprocess.CalledProcessError(returncode=42, cmd=["x"])
         dec.decode("6902892")  # ne doit pas lever
         mock_sleep.assert_called_once_with(2)
@@ -281,17 +269,13 @@ def test_hold_after_run_none_no_sleep(tmp_conf_file, tmp_runtime_dir, tmp_exec_f
         matlab_runtime=str(tmp_runtime_dir),
         hold_after_run=None,
     )
-    with patch.object(m.subprocess, "run") as mock_run, patch.object(
-        m.time, "sleep"
-    ) as mock_sleep:
+    with patch.object(m.subprocess, "run") as mock_run, patch.object(m.time, "sleep") as mock_sleep:
         mock_run.return_value = types.SimpleNamespace(returncode=0)
         dec.decode("6902892")
         mock_sleep.assert_not_called()
 
 
-def test_hold_after_run_forever_loops_but_is_mocked(
-    tmp_conf_file, tmp_runtime_dir, tmp_exec_file
-):
+def test_hold_after_run_forever_loops_but_is_mocked(tmp_conf_file, tmp_runtime_dir, tmp_exec_file):
     dec = m.Decoder(
         input_files_directory=None,
         output_files_directory=None,
@@ -310,18 +294,14 @@ def test_hold_after_run_forever_loops_but_is_mocked(
         if call_count["n"] >= 3:
             raise StopIteration  # on coupe le test ici
 
-    with patch.object(m.subprocess, "run") as mock_run, patch.object(
-        m.time, "sleep", side_effect=fake_sleep
-    ):
+    with patch.object(m.subprocess, "run") as mock_run, patch.object(m.time, "sleep", side_effect=fake_sleep):
         mock_run.return_value = types.SimpleNamespace(returncode=0)
         with pytest.raises(StopIteration):
             dec.decode("6902892")
         assert call_count["n"] >= 3
 
 
-def test_decoder_configuration_with_valid_directories(
-    tmp_input_dir, tmp_output_dir, tmp_conf_file, tmp_exec_file
-):
+def test_decoder_configuration_with_valid_directories(tmp_input_dir, tmp_output_dir, tmp_conf_file, tmp_exec_file):
     """Test que la config se construit correctement avec des chemins valides."""
     cfg = m.DecoderConfiguration(
         input_files_directory=tmp_input_dir,
@@ -334,9 +314,7 @@ def test_decoder_configuration_with_valid_directories(
     assert cfg.output_files_directory == tmp_output_dir.resolve()
 
 
-def test_decoder_with_empty_input_directory(
-    tmp_path: Path, tmp_output_dir, tmp_conf_file, tmp_exec_file
-):
+def test_decoder_with_empty_input_directory(tmp_path: Path, tmp_output_dir, tmp_conf_file, tmp_exec_file):
     """Dossier d'entrée vide -> EmptyInputDirectoryError."""
     empty_input = tmp_path / "empty_in"
     empty_input.mkdir()

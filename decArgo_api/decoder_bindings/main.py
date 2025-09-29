@@ -125,9 +125,7 @@ class Decoder:
         if not isinstance(wmonum, str):
             raise WmoValidationError("WMOnum must be a string.")
         if not Decoder._WMO_RE.match(wmonum):
-            raise WmoValidationError(
-                f"Invalid WMO '{wmonum}'. Expected 7 digits (e.g., '6902892')."
-            )
+            raise WmoValidationError(f"Invalid WMO '{wmonum}'. Expected 7 digits (e.g., '6902892').")
 
     def _build_cmd(self, wmonum: str) -> list[str]:
         cmd: list[str] = [
