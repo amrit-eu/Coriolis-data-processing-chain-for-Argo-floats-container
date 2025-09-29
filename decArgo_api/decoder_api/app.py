@@ -21,7 +21,9 @@ def app_status():
 
 
 @app.post("/decode-files")
-def check_file_list(wmonum: str, conf_dict: dict, info_dict: dict = None, meta_dict: dict = None):
+def check_file_list(
+    wmonum: str, conf_dict: dict, info_dict: dict = None, meta_dict: dict = None
+):
     """
     Main endpoint to decode files.
     :param files:
@@ -33,14 +35,14 @@ def check_file_list(wmonum: str, conf_dict: dict, info_dict: dict = None, meta_d
     """
 
     request_id = uuid4()
-    request_file_dir = Path(f"/home/app/input/{request_id}")
-    os.makedirs(request_file_dir)
+    request_output_file_dir = Path(f"/tmp/decoder_output/{request_id}")
+    os.makedirs(request_output_file_dir)
 
     try:
         float_info = save_info_meta_conf(
-            config_dir="./tmp/config",
-            float_info_dir="./tmp/config/decArgo_config_floats2/json_float_info",
-            float_meta_dir="./tmp/config/decArgo_config_floats2/json_float_meta",
+            config_dir=f"{request_output_file_dir}/config",
+            float_info_dir=f"{request_output_file_dir}/config/decArgo_config_floats2/json_float_info",
+            float_meta_dir=f"{request_output_file_dir}/config/decArgo_config_floats2/json_float_meta",
             info=info_dict,
             meta=meta_dict,
             decoder_conf=conf_dict,
