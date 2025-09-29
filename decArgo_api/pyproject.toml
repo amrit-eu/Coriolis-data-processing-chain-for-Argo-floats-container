@@ -3,7 +3,7 @@ name = "decargo-api"
 version = "0.1.0"
 description = "Decoder API for Argo floats"
 authors = [
-  { name="Ton Nom", email="ton.email@ifremer.fr" }
+  { name="Léo Bruvry-Lagadec", email="leo.bruvry.lagadecl@ifremer.fr" }
 ]
 dependencies = [
   "requests",
@@ -62,6 +62,8 @@ coverage = {extras = ["xml"], version = "^7.2.5"}
 
 [tool.poetry.group.lint.dependencies]
 ruff = "^0.13.2"
+bandit = "^1.8.6"
+bandit-sarif-formatter = "^1.1.1"
 
 [tool.poetry.group.build.dependencies]
 twine = "^6.2.0"
