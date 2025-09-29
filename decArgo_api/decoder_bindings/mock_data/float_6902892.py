@@ -23,9 +23,7 @@ meta_dict = {
     "TRANS_SYSTEM": [{"TRANS_SYSTEM_1": "IRIDIUM"}],
     "TRANS_SYSTEM_ID": [{"TRANS_SYSTEM_ID_1": "n/a"}],
     "TRANS_FREQUENCY": [{"TRANS_FREQUENCY_1": "n/a"}],
-    "POSITIONING_SYSTEM": [
-        {"POSITIONING_SYSTEM_1": "GPS", "POSITIONING_SYSTEM_2": "IRIDIUM"}
-    ],
+    "POSITIONING_SYSTEM": [{"POSITIONING_SYSTEM_1": "GPS", "POSITIONING_SYSTEM_2": "IRIDIUM"}],
     "PLATFORM_FAMILY": "FLOAT_DEEP",
     "PLATFORM_TYPE": "ARVOR_D",
     "PLATFORM_MAKER": "NKE",
@@ -353,11 +351,7 @@ meta_dict = {
             "CALIB_RT_EQUATION_1": "PPOX_DOXY_ADJUSTED = PPOX_DOXY_ADJUSTED = (SLOPE * (1+DRIFT/100*prof_date_juld y launch_date_juld)/365) + INCLINE_T * TEMP)(PPOX_DOXY + OFFSET)"
         }
     ],
-    "CALIB_RT_COEFFICIENT": [
-        {
-            "CALIB_RT_COEFFICIENT_1": "slope=1.0784,offset=0.00,drift=0.000,incline_t=0.000000"
-        }
-    ],
+    "CALIB_RT_COEFFICIENT": [{"CALIB_RT_COEFFICIENT_1": "slope=1.0784,offset=0.00,drift=0.000,incline_t=0.000000"}],
     "CALIB_RT_COMMENT": [
         {
             "CALIB_RT_COMMENT_1": "initial assessment by coriolis according to https://doi.org/10.13155/76709 based on case1_2 (cycles 2  3  4  5  6)"
@@ -383,9 +377,7 @@ meta_dict = {
             }
         }
     ],
-    "SENSOR_MOUNTED_ON_FLOAT": [
-        {"SENSOR_MOUNTED_ON_FLOAT_1": "CTD", "SENSOR_MOUNTED_ON_FLOAT_2": "OPTODE"}
-    ],
+    "SENSOR_MOUNTED_ON_FLOAT": [{"SENSOR_MOUNTED_ON_FLOAT_1": "CTD", "SENSOR_MOUNTED_ON_FLOAT_2": "OPTODE"}],
     "CP_COR": [],
     "RT_OFFSET": [
         {
