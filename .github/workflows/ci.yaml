@@ -24,7 +24,8 @@ jobs:
   #   with:
   #     context: decArgo_api
   container-image-build:
-    needs: [python-linting, python-security]
+    # needs: [python-linting, python-security]
+    needs: [python-linting]
     uses: amrit-eu/ci-cd/.github/workflows/component-container-image.yml@main
     with:
       context: decArgo_api
