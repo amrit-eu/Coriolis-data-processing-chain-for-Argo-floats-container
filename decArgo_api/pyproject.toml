@@ -95,7 +95,7 @@ commands = [
 description = "Mypy type-check"
 allowlist_externals = ["poetry", "mypy"]
 commands_pre = [["poetry", "install", "--no-root", "--with", "type"]]
-commands = [["mypy", "src/"]]
+commands = [["mypy", "decoder_bindings", "tests"]]
 
 [tool.tox.env.build]
 description = "Build & verify dist"
