@@ -5,9 +5,14 @@ import re
 import time
 import subprocess
 from pathlib import Path
+from datetime import datetime
 
 from decoder_bindings.settings import Settings
-from decoder_bindings.mock_data import info_dict, meta_dict, conf_dict  # Used for testing purposes only.
+from decoder_bindings.mock_data import (
+    info_dict,
+    meta_dict,
+    conf_dict,
+)  # Used for testing purposes only.
 from decoder_bindings.utilities.dict2json import save_info_meta_conf
 
 from pydantic import BaseModel, Field, field_validator
@@ -29,8 +34,8 @@ class DecoderConfiguration(BaseModel):
     """Configuration used to pass to the decoder, with validation applied."""
 
     # Dossiers optionnels
-    input_files_directory: Path | None = Field(default=None)
-    output_files_directory: Path | None = Field(default=None)
+    input_files_directory: Path | None = None
+    output_files_directory: Path | None = None
 
     # Fichier de conf OBLIGATOIRE
     decoder_conf_file: Path
@@ -106,8 +111,8 @@ class Decoder:
         decoder_conf_file: str | Path,
         decoder_executable: str | Path = None,
         matlab_runtime: str | Path = None,
-        input_files_directory: str | Path | None = Field(default=None),
-        output_files_directory: str | Path | None = Field(default=None),
+        input_files_directory: str | Path | None = None,
+        output_files_directory: str | Path | None = None,
         timeout_seconds: int | None = 3600,
         hold_after_run: int | None = None,
     ):
@@ -120,6 +125,7 @@ class Decoder:
             matlab_runtime=matlab_runtime,
             timeout_seconds=timeout_seconds,
         )
+
         self.hold_after_run = hold_after_run
 
     @staticmethod
@@ -127,9 +133,12 @@ class Decoder:
         if not isinstance(wmonum, str):
             raise WmoValidationError("WMOnum must be a string.")
         if not Decoder._WMO_RE.match(wmonum):
-            raise WmoValidationError(f"Invalid WMO '{wmonum}'. Expected 7 digits (e.g., '6902892').")
+            raise WmoValidationError(
+                f"Invalid WMO '{wmonum}'. Expected 7 digits (e.g., '6902892')."
+            )
 
     def _build_cmd(self, wmonum: str) -> list[str]:
+        file_date = datetime.now().strftime("%Y%m%d_%H%M%S")
         cmd: list[str] = [
             str(self.config.decoder_executable),
             str(self.config.matlab_runtime),
@@ -138,28 +147,54 @@ class Decoder:
             "configfile",
             str(self.config.decoder_conf_file),
             "xmlreport",
-            "logfilexml.xml",
+            f"xmlreport_{wmonum}_{file_date}.xml",
             "floatwmo",
             wmonum,
             "PROCESS_REMAINING_BUFFERS",
             "1",
         ]
 
-        # Si l’utilisateur veut imposer les chemins I/O, on ne les ajoute que s’ils sont tous deux fournis
-        if self.config.input_files_directory is not None:
-            if self.config.output_files_directory is None:
-                raise ValueError(
-                    "If 'input_files_directory' is provided, 'output_files_directory' must also be provided."
-                )
+        # TODO : Need to be improve before uncomment, maybe we need on entry in the conf by attribut ?
+        # if self.config.input_files_directory is not None:
+        #     cmd.extend(
+        #         [
+        #             "DIR_INPUT_RSYNC_DATA",
+        #             f"{self.config.input_files_directory}/archive/cycle",
+        #             "DIR_INPUT_RSYNC_LOG",
+        #             f"{self.config.input_files_directory}/rsync_list/",
+        #         ]
+        #     )
+
+        if self.config.output_files_directory is not None:
+            iridium_data_dir = self.config.output_files_directory / "iridium"
+            log_dir = self.config.output_files_directory / "log"
+            csv_dir = self.config.output_files_directory / "csv"
+            xml_dir = self.config.output_files_directory / "xml"
+            data_dir = self.config.output_files_directory / "nc"
             cmd.extend(
                 [
-                    "DIR_INPUT_RSYNC_DATA",
-                    str(self.config.input_files_directory),
+                    "IRIDIUM_DATA_DIRECTORY",
+                    str(iridium_data_dir),
+                    "DIR_OUTPUT_LOG_FILE",
+                    str(log_dir),
+                    "DIR_OUTPUT_CSV_FILE",
+                    str(csv_dir),
+                    "DIR_OUTPUT_XML_FILE",
+                    str(xml_dir),
                     "DIR_OUTPUT_NETCDF_FILE",
-                    str(self.config.output_files_directory),
+                    str(data_dir),
+                    "DIR_OUTPUT_NETCDF_TRAJ_3_2_FILE",
+                    str(data_dir),
                 ]
             )
+            iridium_data_dir.mkdir(parents=True, exist_ok=True)
+            log_dir.mkdir(parents=True, exist_ok=True)
+            csv_dir.mkdir(parents=True, exist_ok=True)
+            xml_dir.mkdir(parents=True, exist_ok=True)
+            data_dir.mkdir(parents=True, exist_ok=True)
+
         return cmd
+
 
     def _post_run_hold(self) -> None:
         """Remplace la boucle infinie par un hold optionnel et contrôlable."""
@@ -175,6 +210,7 @@ class Decoder:
     def decode(
         self,
         wmonum: str,
+        capture_output: bool = False
     ) -> subprocess.CompletedProcess[str]:
         """Run the Coriolis Decoder."""
         if self.config.check_wmo_format:
@@ -182,13 +218,13 @@ class Decoder:
 
         cmd = self._build_cmd(wmonum)
         try:
-            print(cmd)
             result = subprocess.run(
                 cmd,
                 env=os.environ.copy(),
                 check=True,
                 text=True,
                 timeout=self.config.timeout_seconds,
+                capture_output=capture_output,
             )
         except subprocess.CalledProcessError as e:
             print("Command failed with return code:", e.returncode)
@@ -200,6 +236,7 @@ class Decoder:
 
         # << remplace `while True: pass`
         self._post_run_hold()
+        return result.stdout
 
 
 if __name__ == "__main__":  # pragma: no cover
