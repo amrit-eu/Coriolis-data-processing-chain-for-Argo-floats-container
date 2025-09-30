@@ -53,14 +53,14 @@ _inject_stubs_for_top_level_imports()
 
 # Align "flat" imports used inside main.py so the module can import cleanly.
 # (main.py does `from utilities...` and `from mock_data...`)
-sys.modules.setdefault("utilities", importlib.import_module("decoder_bindings.utilities"))
+sys.modules.setdefault("utilities", importlib.import_module("decoder_wrapper.utilities"))
 sys.modules.setdefault(
     "utilities.dict2json",
-    importlib.import_module("decoder_bindings.utilities.dict2json"),
+    importlib.import_module("decoder_wrapper.utilities.dict2json"),
 )
-sys.modules.setdefault("settings", importlib.import_module("decoder_bindings.settings"))
+sys.modules.setdefault("settings", importlib.import_module("decoder_wrapper.settings"))
 
-MODULE_NAME = "decoder_bindings.main"
+MODULE_NAME = "decoder_wrapper.main"
 m = importlib.import_module(MODULE_NAME)
 
 
@@ -129,7 +129,7 @@ def tmp_output_dir(tmp_path: Path) -> Path:
 def test_decode_builds_cmd_with_exec_and_runtime_and_io(
     wmo, tmp_conf_file, tmp_runtime_dir, tmp_exec_file, tmp_input_dir, tmp_output_dir
 ):
-    """Build the decoder CLI with exec/runtime and I/O bindings."""
+    """Build the decoder CLI with exec/runtime and I/O wrapper."""
     # Arrange: Decoder with both input and output directories configured.
     dec = m.Decoder(
         input_files_directory=str(tmp_input_dir),
@@ -213,7 +213,7 @@ def test_decode_without_io_does_not_add_dirs(tmp_conf_file, tmp_runtime_dir, tmp
         # Act
         dec.decode("6902892")
 
-        # Assert: command must not contain any I/O binding flags
+        # Assert: command must not contain any I/O wrapper flags
         cmd = mock_run.call_args[0][0]
         forbidden_flags = {
             # input flags (currently commented out in implementation)

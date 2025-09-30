@@ -1,1 +1,1 @@
-"""Tests for the decoder bindings."""
+"""Tests for the decoder wrapper."""

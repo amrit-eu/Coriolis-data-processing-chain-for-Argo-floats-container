@@ -14,12 +14,12 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-# --- Marqueurs: désactivés par défaut ---
+# --- Markers: disabled by default ---
 pytestmark = [pytest.mark.integration, pytest.mark.matlab]
 
-# --- Paramétrage : 3 flotteurs (wmo + configuration + outputs de reference) --------------------------
-# A partir des données du repertoire decArgo_demo
-# À fournir :
+# --- Parameters: 3 floats (wmo + configuration + reference outputs) --------------------------
+# From data in the decArgo_demo directory
+# Must provide:
 #   DECODER_EXECUTABLE, MATLAB_RUNTIME, DECODER_INPUT_DIR
 WMOS = [
     (
@@ -40,7 +40,7 @@ WMOS = [
 ]
 
 
-# --- Aides: vérifs d'environnement, fail fast avec skip motivé ---------------
+# --- Helpers: environment checks, fail fast with motivated skip ---------------
 def _need_file(env: str) -> Path:
     p = os.getenv(env)
     if not p:
@@ -65,19 +65,19 @@ def _need_exec(env: str) -> Path:
     return p
 
 
-# --- Import du module testé + alias des imports plats utilisés dans main.py ---
-# Le module 'decoder_bindings.main' fait des imports "plats" (utilities, mock_data).
-# On crée des alias vers les sous-modules du package pour que l'import réussisse.
-sys.modules.setdefault("utilities", importlib.import_module("decoder_bindings.utilities"))
+# --- Import tested module + alias flat imports used in main.py ---
+# The module 'decoder_bindings.main' uses "flat" imports (utilities, mock_data).
+# We create aliases to the package submodules so that the import works.
+sys.modules.setdefault("utilities", importlib.import_module("decoder_wrapper.utilities"))
 sys.modules.setdefault(
     "utilities.dict2json",
-    importlib.import_module("decoder_bindings.utilities.dict2json"),
+    importlib.import_module("decoder_wrapper.utilities.dict2json"),
 )
 
-from decoder_bindings.main import Decoder  # noqa: E402
+from decoder_wrapper.main import Decoder  # noqa: E402
 
 
-# --- Comparaison NetCDF robuste (échec au moindre écart par défaut) ----------
+# --- Robust NetCDF comparison (fail on any difference by default) ----------
 def _assert_netcdf_equal(test_path: Path, ref_path: Path, *, atol: float, rtol: float) -> None:
     """Comparer deux fichiers NetCDF.
 
@@ -118,22 +118,22 @@ def _assert_netcdf_equal(test_path: Path, ref_path: Path, *, atol: float, rtol: 
             # dtype + shape
             assert tv.dtype == rv.dtype, f"dtype mismatch for var {vname}"
             assert tv.shape == rv.shape, f"shape mismatch for var {vname}"
-            # valeurs (avec tolérances pour numériques)
+            # values (with tolerances for numeric)
             tdata = np.array(tv[:])
             rdata = np.array(rv[:])
             if np.issubdtype(tv.dtype, np.number):
-                # ma/masques -> on remplit avec NaN pour comparer
+                # ma/masks -> fill with NaN for comparison
                 if np.ma.isMaskedArray(tdata):
                     tdata = tdata.filled(np.nan)
                 if np.ma.isMaskedArray(rdata):
                     rdata = rdata.filled(np.nan)
-                # tout écart au-delà des tolérances = échec
+                # any difference beyond tolerances = failure
                 assert np.allclose(tdata, rdata, atol=atol, rtol=rtol, equal_nan=True), f"value mismatch in var {vname}"
             else:
-                # strings, bytes: égalité stricte
+                # strings, bytes: strict equality
                 assert np.array_equal(tdata, rdata), f"value mismatch in var {vname}"
 
-        # Attributs globaux (hors volatiles)
+        # Global attributes (excluding volatile ones)
         tga = {k: getattr(tds, k) for k in tds.ncattrs() if k not in volatile_globals}
         rga = {k: getattr(rds, k) for k in rds.ncattrs() if k not in volatile_globals}
         assert tga == rga, "global attributes mismatch (non-volatile)"
@@ -153,7 +153,7 @@ def _compare_dirs_nc(test_dir: Path, ref_dir: Path, *, atol: float, rtol: float)
     - mêmes fichiers (noms relatifs)
     - contenu égal (cf. `_assert_netcdf_equal`)
     """
-    # map par chemin relatif (pour supporter des sous-répertoires identiques)
+    # map by relative path (to support identical subdirectories)
     t_map = {p.relative_to(test_dir): p for p in _iter_nc_files(test_dir)}
     r_map = {p.relative_to(ref_dir): p for p in _iter_nc_files(ref_dir)}
 
@@ -167,7 +167,7 @@ def _compare_dirs_nc(test_dir: Path, ref_dir: Path, *, atol: float, rtol: float)
         _assert_netcdf_equal(t_map[rel], r_map[rel], atol=atol, rtol=rtol)
 
 
-# ========================== Test A : exécution OK =============================
+# ========================== Test A: successful execution =============================
 @pytest.mark.parametrize("wmo, conf_file, ref_dir", WMOS)
 def test_decode_produces_netcdf(tmp_path: Path, wmo: str, conf_file: str, ref_dir: str):
     """Vérifie que le décodeur produit au moins un fichier NetCDF pour le WMO donné."""
@@ -193,8 +193,8 @@ def test_decode_produces_netcdf(tmp_path: Path, wmo: str, conf_file: str, ref_di
     assert produced, f"Aucun NetCDF produit pour WMO {wmo} dans {out_dir}"
 
 
-# TODO : Compare results to output from decoder in DAC infrastructure ?
-# ========================== Test B : comparaison ==============================
+# TODO: Compare results to output from decoder in DAC infrastructure ?
+# ========================== Test B: comparison ==============================
 # @pytest.mark.parametrize("wmo, conf_file, ref_dir", WMOS)
 # def test_decode_outputs_match_reference(
 #     tmp_path: Path, wmo: str, conf_file: str, ref_dir: str

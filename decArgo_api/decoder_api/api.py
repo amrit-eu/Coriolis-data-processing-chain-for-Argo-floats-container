@@ -17,9 +17,9 @@ from uuid import uuid4
 from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 
-from decoder_bindings.main import Decoder
-from decoder_bindings.settings import Settings  # <- pydantic-settings
-from decoder_bindings.utilities.dict2json import save_info_meta_conf
+from decoder_wrapper.main import Decoder
+from decoder_wrapper.settings import Settings  # <- pydantic-settings
+from decoder_wrapper.utilities.dict2json import save_info_meta_conf
 
 # --------------------------------------------------------------------------------------
 # App & settings (OpenAPI metadata only; no functional changes)
@@ -299,16 +299,19 @@ def decode_float_json(
     description=(
         "Launches a decode run using **uploaded JSON files**. "
         "Send `wmonum` as a text field, and upload `conf_file` (required) plus "
-        "`info_file`/`meta_file` (optional).\n\n"
-        "**Content-Type:** `multipart/form-data`"
+        "`info_file`/`meta_file` (optional)."
     ),
 )
 async def decode_float_upload(
-    wmonum: Annotated[str, Form(..., description="WMO of float to decode")],
-    conf_file: Annotated[UploadFile, File(..., description="JSON file for conf_dict")],
-    info_file: Annotated[UploadFile | None, File(None, description="JSON file for info_dict")],
-    meta_file: Annotated[UploadFile | None, File(None, description="JSON file for meta_dict")],
+    # Requis : pas de default dans Annotated, pas de valeur par défaut -> requis
+    wmonum: Annotated[str, Form(description="WMO of float to decode")],
+    conf_file: Annotated[UploadFile, File(description="JSON file for conf_dict")],
+
     settings: Annotated[Settings, Depends(get_settings)],
+
+    # Optionnels : pas de default dans File(...). Le “None” est mis après le `=`.
+    info_file: Annotated[UploadFile | None, File(description="JSON file for info_dict")] = None,
+    meta_file: Annotated[UploadFile | None, File(description="JSON file for meta_dict")] = None,
 ):
     """Multipart/form-data decode entrypoint.
 
