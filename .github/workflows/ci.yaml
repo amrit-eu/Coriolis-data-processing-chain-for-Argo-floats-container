@@ -19,7 +19,7 @@ jobs:
     needs: [python-linting]
     uses: amrit-eu/ci-cd/.github/workflows/component-container-image.yml@main
     with:
-      context: decArgo_api
+      context: .
       image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api
   container-image-security:
     needs: [container-image-build]
