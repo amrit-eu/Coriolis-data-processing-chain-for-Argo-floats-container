@@ -15,18 +15,9 @@ jobs:
     uses: amrit-eu/ci-cd/.github/workflows/component-python-lint.yml@main
     with:
       context: decArgo_api
-  # python-security:
-  #   permissions:
-  #     contents: read
-  #     actions: read
-  #     security-events: write
-  #   uses: amrit-eu/ci-cd/.github/workflows/component-python-security.yml@main
-  #   with:
-  #     context: decArgo_api
   container-image-build:
-    # needs: [python-linting, python-security]
     needs: [python-linting]
-    uses: amrit-eu/ci-cd/.github/workflows/component-container-image.yml@main
+    uses: amrit-eu/ci-cd/.github/workflows/component-container-image.yml@~latest
     with:
       context: decArgo_api
       image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api
@@ -36,7 +27,8 @@ jobs:
       contents: read
       actions: read
       security-events: write
-    uses: amrit-eu/ci-cd/.github/workflows/component-container-image-security.yml@main
+    uses: amrit-eu/ci-cd/.github/workflows/component-container-image-security.yml@m~latest
     with:
+      context: .
       image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api
 
