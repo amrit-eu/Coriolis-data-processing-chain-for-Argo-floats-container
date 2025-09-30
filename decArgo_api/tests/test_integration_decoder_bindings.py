@@ -1,5 +1,7 @@
-"""Intégration: lance réellement le décodeur sur 3 flotteurs, compare les sorties
-avec des références validées (golden outputs). Toute divergence = échec.
+"""Tests d'intégration du décodeur.
+
+Lance réellement le décodeur sur 3 flotteurs, compare les sorties avec des
+références validées (golden outputs). Toute divergence = échec.
 Lancer explicitement:  pytest -m "integration and matlab" -q
 """
 
@@ -77,11 +79,13 @@ from decoder_bindings.main import Decoder  # noqa: E402
 
 # --- Comparaison NetCDF robuste (échec au moindre écart par défaut) ----------
 def _assert_netcdf_equal(test_path: Path, ref_path: Path, *, atol: float, rtol: float) -> None:
-    """Compare deux fichiers NetCDF:
+    """Comparer deux fichiers NetCDF.
+
+    Vérifie :
       - dimensions (noms, tailles)
       - variables (noms, dtypes, shapes, valeurs)
-      - attributs globaux (sauf liste ignorée)
-    Echec si la moindre différence est détectée.
+      - attributs globaux (hors liste 'volatile')
+    Échec si la moindre différence est détectée.
     """
     try:
         from netCDF4 import Dataset
@@ -102,13 +106,13 @@ def _assert_netcdf_equal(test_path: Path, ref_path: Path, *, atol: float, rtol: 
 
     with Dataset(test_path, "r") as tds, Dataset(ref_path, "r") as rds:
         # Dimensions
-        assert set(tds.dimensions.keys()) == set(rds.dimensions.keys()), "Different dimension names"
-        for name in tds.dimensions.keys():
+        assert set(tds.dimensions) == set(rds.dimensions), "Different dimension names"
+        for name in tds.dimensions:
             assert len(tds.dimensions[name]) == len(rds.dimensions[name]), f"Dimension size mismatch: {name}"
 
         # Variables
-        assert set(tds.variables.keys()) == set(rds.variables.keys()), "Different variable names"
-        for vname in tds.variables.keys():
+        assert set(tds.variables) == set(rds.variables), "Different variable names"
+        for vname in tds.variables:
             tv = tds.variables[vname]
             rv = rds.variables[vname]
             # dtype + shape
@@ -144,9 +148,10 @@ def _iter_nc(dirpath: Path) -> Iterable[Path]:
 
 
 def _compare_dirs_nc(test_dir: Path, ref_dir: Path, *, atol: float, rtol: float) -> None:
-    """Compare l'ensemble des .nc produits vs la référence:
+    """Comparer l'ensemble des fichiers NetCDF produits à la référence.
+
     - mêmes fichiers (noms relatifs)
-    - contenu égal (cf _assert_netcdf_equal)
+    - contenu égal (cf. `_assert_netcdf_equal`)
     """
     # map par chemin relatif (pour supporter des sous-répertoires identiques)
     t_map = {p.relative_to(test_dir): p for p in _iter_nc_files(test_dir)}
@@ -165,6 +170,7 @@ def _compare_dirs_nc(test_dir: Path, ref_dir: Path, *, atol: float, rtol: float)
 # ========================== Test A : exécution OK =============================
 @pytest.mark.parametrize("wmo, conf_file, ref_dir", WMOS)
 def test_decode_produces_netcdf(tmp_path: Path, wmo: str, conf_file: str, ref_dir: str):
+    """Vérifie que le décodeur produit au moins un fichier NetCDF pour le WMO donné."""
     exec_path = _need_exec("DECODER_EXECUTABLE")
     runtime_dir = _need_dir("MATLAB_RUNTIME")
     timeout = int(os.getenv("DECODER_TIMEOUT", "1800"))
@@ -198,14 +204,14 @@ def test_decode_produces_netcdf(tmp_path: Path, wmo: str, conf_file: str, ref_di
 #     input_dir = _need_dir("DECODER_INPUT_DIR")
 #     conf_file = _need_file(conf_file)
 #     timeout = int(os.getenv("DECODER_TIMEOUT", "1800"))
-
+#
 #     atol = float(os.getenv("NC_ATOL", "0"))
 #     rtol = float(os.getenv("NC_RTOL", "0"))
 #     timeout = int(os.getenv("DECODER_TIMEOUT", "1800"))
-
+#
 #     out_dir = tmp_path / f"out_{wmo}"
 #     out_dir.mkdir()
-
+#
 #     dec = Decoder(
 #         input_files_directory=str(input_dir),
 #         output_files_directory=str(out_dir),
@@ -215,7 +221,7 @@ def test_decode_produces_netcdf(tmp_path: Path, wmo: str, conf_file: str, ref_di
 #         timeout_seconds=timeout,
 #         hold_after_run=None,
 #     )
-
+#
 #     dec.decode(wmo)
-
+#
 #     _compare_dirs_nc(out_dir, ref_dir, atol=atol, rtol=rtol)

@@ -69,6 +69,7 @@ m = importlib.import_module(MODULE_NAME)
 # -----------------------------------------------------------------------------
 @pytest.fixture
 def tmp_conf_file(tmp_path: Path) -> Path:
+    """Create a temporary decoder_conf.json file."""
     p = tmp_path / "decoder_conf.json"
     p.write_text('{"some":"config"}', encoding="utf-8")
     return p
@@ -76,6 +77,7 @@ def tmp_conf_file(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def tmp_runtime_dir(tmp_path: Path) -> Path:
+    """Create a temporary MATLAB runtime directory."""
     d = tmp_path / "matlab_runtime"
     d.mkdir()
     return d
@@ -83,6 +85,7 @@ def tmp_runtime_dir(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def tmp_exec_file(tmp_path: Path) -> Path:
+    """Create a temporary executable bash wrapper script."""
     f = tmp_path / "run_decode.sh"
     f.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
     # make it executable for validators relying on +x
@@ -92,6 +95,7 @@ def tmp_exec_file(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def tmp_nonexec_file(tmp_path: Path) -> Path:
+    """Create a non-executable file to trigger exec-path validation."""
     f = tmp_path / "not_exec.sh"
     f.write_text("echo nope\n", encoding="utf-8")
     # ensure it is NOT executable (validator should fail)
@@ -101,6 +105,7 @@ def tmp_nonexec_file(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def tmp_input_dir(tmp_path: Path) -> Path:
+    """Create a temporary non-empty input directory."""
     d = tmp_path / "input"
     d.mkdir()
     (d / "dummy.bin").write_bytes(b"\x00\x01")
@@ -109,6 +114,7 @@ def tmp_input_dir(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def tmp_output_dir(tmp_path: Path) -> Path:
+    """Create a temporary output directory."""
     d = tmp_path / "output"
     d.mkdir()
     return d
@@ -123,6 +129,7 @@ def tmp_output_dir(tmp_path: Path) -> Path:
 def test_decode_builds_cmd_with_exec_and_runtime_and_io(
     wmo, tmp_conf_file, tmp_runtime_dir, tmp_exec_file, tmp_input_dir, tmp_output_dir
 ):
+    """Build the decoder CLI with exec/runtime and I/O bindings."""
     # Arrange: Decoder with both input and output directories configured.
     dec = m.Decoder(
         input_files_directory=str(tmp_input_dir),
@@ -190,6 +197,7 @@ def test_decode_builds_cmd_with_exec_and_runtime_and_io(
 
 
 def test_decode_without_io_does_not_add_dirs(tmp_conf_file, tmp_runtime_dir, tmp_exec_file):
+    """Do not add I/O flags when no I/O directories are configured."""
     # Arrange: Decoder with no input nor output directory configured.
     dec = m.Decoder(
         input_files_directory=None,
@@ -224,6 +232,7 @@ def test_decode_without_io_does_not_add_dirs(tmp_conf_file, tmp_runtime_dir, tmp
 
 @pytest.mark.parametrize("bad_wmo", ["", "123", "abcdefg", "69028921", " 6902892 "])
 def test_invalid_wmo_raises(bad_wmo, tmp_conf_file, tmp_runtime_dir, tmp_exec_file):
+    """Invalid WMO values should raise WmoValidationError."""
     # Arrange
     dec = m.Decoder(
         input_files_directory=None,
@@ -238,6 +247,7 @@ def test_invalid_wmo_raises(bad_wmo, tmp_conf_file, tmp_runtime_dir, tmp_exec_fi
 
 
 def test_conf_file_missing_raises(tmp_path: Path, tmp_runtime_dir, tmp_exec_file):
+    """Missing JSON configuration file should raise ValueError."""
     # Arrange: non-existent JSON config file
     missing = tmp_path / "nope.json"
     # Act / Assert: constructing Decoder should fail on missing conf file
@@ -252,6 +262,7 @@ def test_conf_file_missing_raises(tmp_path: Path, tmp_runtime_dir, tmp_exec_file
 
 
 def test_executable_must_exist_and_be_executable(tmp_conf_file, tmp_runtime_dir, tmp_nonexec_file):
+    """Executable path must exist and be executable."""
     # Non-executable file should trigger a validation error for the executable path
     with pytest.raises(ValueError):
         m.Decoder(
@@ -264,6 +275,7 @@ def test_executable_must_exist_and_be_executable(tmp_conf_file, tmp_runtime_dir,
 
 
 def test_runtime_must_be_dir(tmp_conf_file, tmp_exec_file, tmp_path: Path):
+    """MATLAB runtime must be a directory, not a file."""
     # Arrange: a file (not a directory) used as runtime path
     not_a_dir = tmp_path / "file.txt"
     not_a_dir.write_text("x", encoding="utf-8")
@@ -281,6 +293,7 @@ def test_runtime_must_be_dir(tmp_conf_file, tmp_exec_file, tmp_path: Path):
 def test_calledprocesserror_is_caught_and_hold_runs(
     tmp_conf_file, tmp_runtime_dir, tmp_exec_file, tmp_input_dir, tmp_output_dir
 ):
+    """CalledProcessError is handled; hold branch should sleep once."""
     # Arrange: hold_after_run=2 so we can assert the sleep call is made once
     dec = m.Decoder(
         input_files_directory=str(tmp_input_dir),
@@ -303,6 +316,7 @@ def test_calledprocesserror_is_caught_and_hold_runs(
 
 
 def test_hold_after_run_none_no_sleep(tmp_conf_file, tmp_runtime_dir, tmp_exec_file):
+    """With hold_after_run=None, no sleep should occur."""
     # Arrange: hold_after_run=None should skip any sleep
     dec = m.Decoder(
         input_files_directory=None,
@@ -323,6 +337,7 @@ def test_hold_after_run_none_no_sleep(tmp_conf_file, tmp_runtime_dir, tmp_exec_f
 
 
 def test_hold_after_run_forever_loops_but_is_mocked(tmp_conf_file, tmp_runtime_dir, tmp_exec_file):
+    """With hold_after_run=-1, the infinite-hold loop sleeps repeatedly (mocked)."""
     # Arrange: hold_after_run=-1 triggers the "infinite hold" branch.
     dec = m.Decoder(
         input_files_directory=None,
