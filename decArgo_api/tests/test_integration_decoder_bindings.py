@@ -1,14 +1,13 @@
-"""
-Intégration: lance réellement le décodeur sur 3 flotteurs, compare les sorties
+"""Intégration: lance réellement le décodeur sur 3 flotteurs, compare les sorties
 avec des références validées (golden outputs). Toute divergence = échec.
 Lancer explicitement:  pytest -m "integration and matlab" -q
 """
 
+import importlib
 import os
 import sys
-import importlib
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 import numpy as np
 import pytest
@@ -78,8 +77,7 @@ from decoder_bindings.main import Decoder  # noqa: E402
 
 # --- Comparaison NetCDF robuste (échec au moindre écart par défaut) ----------
 def _assert_netcdf_equal(test_path: Path, ref_path: Path, *, atol: float, rtol: float) -> None:
-    """
-    Compare deux fichiers NetCDF:
+    """Compare deux fichiers NetCDF:
       - dimensions (noms, tailles)
       - variables (noms, dtypes, shapes, valeurs)
       - attributs globaux (sauf liste ignorée)
@@ -146,10 +144,9 @@ def _iter_nc(dirpath: Path) -> Iterable[Path]:
 
 
 def _compare_dirs_nc(test_dir: Path, ref_dir: Path, *, atol: float, rtol: float) -> None:
-    """
-    Compare l'ensemble des .nc produits vs la référence:
-      - mêmes fichiers (noms relatifs)
-      - contenu égal (cf _assert_netcdf_equal)
+    """Compare l'ensemble des .nc produits vs la référence:
+    - mêmes fichiers (noms relatifs)
+    - contenu égal (cf _assert_netcdf_equal)
     """
     # map par chemin relatif (pour supporter des sous-répertoires identiques)
     t_map = {p.relative_to(test_dir): p for p in _iter_nc_files(test_dir)}

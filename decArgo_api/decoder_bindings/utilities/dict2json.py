@@ -10,8 +10,7 @@ def save_info_meta_conf(
     meta: dict,
     decoder_conf: dict,
 ):
-    """
-    Save info and meta dictionaries into specified directory structure.
+    """Save info and meta dictionaries into specified directory structure.
     Extracts WMO and PTT from the info dictionary.
 
     Parameters:
@@ -28,7 +27,6 @@ def save_info_meta_conf(
     Raises:
         ValueError: If WMO or PTT keys are missing from info dictionary.
     """
-
     # Extract WMO and PTT from info dictionary
     wmo = info.get("WMO")
     ptt = info.get("PTT")
@@ -78,4 +76,4 @@ def save_info_meta_conf(
         }
 
     except Exception as e:
-        raise IOError(f"Failed to save configuration files: {e}")
+        raise OSError(f"Failed to save configuration files: {e}")

@@ -1,5 +1,4 @@
-"""
-Decoder Bindings
+"""Decoder Bindings
 ================
 
 Python bindings around the MATLAB-based Coriolis decoder, launched through a bash
@@ -17,21 +16,20 @@ Only documentation (docstrings and comments) has been added.
 
 import os
 import re
-import time
 import subprocess
-from pathlib import Path
+import time
 from datetime import datetime
-
-from decoder_bindings.settings import Settings
-from decoder_bindings.mock_data import (
-    info_dict,
-    meta_dict,
-    conf_dict,
-)  # Used for testing purposes only.
-from decoder_bindings.utilities.dict2json import save_info_meta_conf
+from pathlib import Path
 
 from pydantic import BaseModel, Field, field_validator
 
+from decoder_bindings.mock_data import (
+    conf_dict,
+    info_dict,
+    meta_dict,
+)  # Used for testing purposes only.
+from decoder_bindings.settings import Settings
+from decoder_bindings.utilities.dict2json import save_info_meta_conf
 
 # -----------------------------------------------------------------------------
 # Custom exceptions
@@ -56,8 +54,7 @@ class WmoValidationError(ValueError):
 
 
 class DecoderConfiguration(BaseModel):
-    """
-    Configuration passed to the decoder, with validation applied.
+    """Configuration passed to the decoder, with validation applied.
 
     Fields
     ------
@@ -105,10 +102,9 @@ class DecoderConfiguration(BaseModel):
     @field_validator("input_files_directory", mode="before")
     @classmethod
     def _validate_in_dir(cls, input_directory: Path | str | None):
-        """
-        Ensure the input directory exists and is not empty (if provided).
+        """Ensure the input directory exists and is not empty (if provided).
 
-        Raises
+        Raises:
         ------
         ValueError
             If the path is not an existing directory.
@@ -128,10 +124,9 @@ class DecoderConfiguration(BaseModel):
     @field_validator("output_files_directory", mode="before")
     @classmethod
     def _validate_out_dir(cls, output_directory: Path | str | None):
-        """
-        Ensure the output directory exists (if provided).
+        """Ensure the output directory exists (if provided).
 
-        Raises
+        Raises:
         ------
         ValueError
             If the path is not an existing directory.
@@ -146,10 +141,9 @@ class DecoderConfiguration(BaseModel):
     @field_validator("decoder_conf_file", mode="before")
     @classmethod
     def _validate_conf(cls, conf_file: Path | str):
-        """
-        Ensure the decoder configuration file exists as a regular file.
+        """Ensure the decoder configuration file exists as a regular file.
 
-        Raises
+        Raises:
         ------
         ValueError
             If the file does not exist or is not a regular file.
@@ -162,10 +156,9 @@ class DecoderConfiguration(BaseModel):
     @field_validator("decoder_executable", mode="before")
     @classmethod
     def _validate_exec(cls, exec_file: Path | str):
-        """
-        Ensure the decoder executable exists and is executable.
+        """Ensure the decoder executable exists and is executable.
 
-        Raises
+        Raises:
         ------
         ValueError
             If the executable is missing or lacks execute permissions.
@@ -180,10 +173,9 @@ class DecoderConfiguration(BaseModel):
     @field_validator("matlab_runtime", mode="before")
     @classmethod
     def _validate_runtime_dir(cls, runtime_directory: Path | str | None):
-        """
-        Ensure the MATLAB runtime directory exists (if provided).
+        """Ensure the MATLAB runtime directory exists (if provided).
 
-        Raises
+        Raises:
         ------
         ValueError
             If the path is not an existing directory.
@@ -202,8 +194,7 @@ class DecoderConfiguration(BaseModel):
 
 
 class Decoder:
-    """
-    Python bindings around the bash launcher for the MATLAB decoder.
+    """Python bindings around the bash launcher for the MATLAB decoder.
 
     Responsibilities
     ----------------
@@ -214,7 +205,7 @@ class Decoder:
     - Run the external process via `subprocess.run`, optionally capturing stdout/stderr.
     - Optionally "hold" after the run (sleep), replacing a previous infinite loop.
 
-    Notes
+    Notes:
     -----
     - This class *does not* modify files under the input directory.
     - It will create subdirectories under the configured `output_files_directory`
@@ -233,8 +224,7 @@ class Decoder:
         timeout_seconds: int | None = 3600,
         hold_after_run: int | None = None,
     ):
-        """
-        Initialize a `Decoder` instance.
+        """Initialize a `Decoder` instance.
 
         Parameters
         ----------
@@ -256,7 +246,7 @@ class Decoder:
             that many seconds; if 0 or None, it returns immediately; if negative,
             it sleeps in a loop indefinitely.
 
-        Raises
+        Raises:
         ------
         ValueError
             If any validated path is missing or invalid.
@@ -275,15 +265,14 @@ class Decoder:
 
     @staticmethod
     def _validate_wmo(wmonum: str):
-        """
-        Validate that the WMO number is a 7-digit string.
+        """Validate that the WMO number is a 7-digit string.
 
         Parameters
         ----------
         wmonum:
             The WMO identifier to validate.
 
-        Raises
+        Raises:
         ------
         WmoValidationError
             If `wmonum` is not a `str` or does not match the expected pattern.
@@ -294,8 +283,7 @@ class Decoder:
             raise WmoValidationError(f"Invalid WMO '{wmonum}'. Expected 7 digits (e.g., '6902892').")
 
     def _build_cmd(self, wmonum: str) -> list[str]:
-        """
-        Build the command-line argument list to run the decoder process.
+        """Build the command-line argument list to run the decoder process.
 
         The command includes:
         - Executable path and MATLAB runtime
@@ -308,7 +296,7 @@ class Decoder:
         wmonum:
             The WMO identifier to pass to the decoder.
 
-        Returns
+        Returns:
         -------
         list[str]
             The full command argument vector.
@@ -383,8 +371,7 @@ class Decoder:
         return cmd
 
     def _post_run_hold(self) -> None:
-        """
-        Optional post-run hold to replace a previous infinite loop.
+        """Optional post-run hold to replace a previous infinite loop.
 
         Behavior
         --------
@@ -392,7 +379,7 @@ class Decoder:
         - If `hold_after_run` > 0: sleep for that many seconds, then return.
         - If `hold_after_run` < 0: sleep indefinitely in 60-second intervals.
 
-        Notes
+        Notes:
         -----
         This method intentionally sleeps (does not busy-wait) to avoid CPU burn.
         """
@@ -406,8 +393,7 @@ class Decoder:
             time.sleep(60)
 
     def decode(self, wmonum: str, capture_output: bool = False) -> subprocess.CompletedProcess[str]:
-        """
-        Run the Coriolis decoder for the given WMO.
+        """Run the Coriolis decoder for the given WMO.
 
         Parameters
         ----------
@@ -416,7 +402,7 @@ class Decoder:
         capture_output:
             If True, capture stdout/stderr and store them in the returned object.
 
-        Returns
+        Returns:
         -------
         subprocess.CompletedProcess[str]
             **Note:** Although the type annotation says `CompletedProcess[str]`, the
@@ -424,7 +410,7 @@ class Decoder:
             the method. This docstring reflects the code as-is, without altering
             behavior.
 
-        Raises
+        Raises:
         ------
         WmoValidationError
             If `wmonum` fails validation and `check_wmo_format` is enabled.
@@ -435,7 +421,7 @@ class Decoder:
             If the configured executable is not found.
         """
         result = ""
-        
+
         if self.config.check_wmo_format:
             self._validate_wmo(wmonum)
 

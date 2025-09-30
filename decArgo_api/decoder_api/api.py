@@ -1,6 +1,4 @@
-"""
-Decoder API
-===========
+"""Decoder API.
 
 FastAPI service exposing two endpoints to run the Coriolis MATLAB-based decoder
 either with a JSON payload or by uploading JSON files (multipart/form-data).
@@ -10,27 +8,18 @@ All additions are documentation (docstrings, OpenAPI metadata, examples).
 """
 
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Optional
-import os
+from typing import Annotated, Any
 from uuid import uuid4
 
-from fastapi import (
-    FastAPI,
-    Depends,
-    HTTPException,
-    UploadFile,
-    File,
-    Form,
-)
-
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 
 from decoder_bindings.main import Decoder
-from decoder_bindings.utilities.dict2json import save_info_meta_conf
 from decoder_bindings.settings import Settings  # <- pydantic-settings
-
+from decoder_bindings.utilities.dict2json import save_info_meta_conf
 
 # --------------------------------------------------------------------------------------
 # App & settings (OpenAPI metadata only; no functional changes)
@@ -77,8 +66,7 @@ app = FastAPI(
 
 @lru_cache
 def get_settings() -> Settings:
-    """
-    Returns a cached Settings instance.
+    """Return a cached Settings instance.
 
     Settings are read once (from environment and defaults) and reused across requests.
     This provides stability and avoids repeated filesystem checks.
@@ -95,10 +83,9 @@ def get_settings() -> Settings:
 
 
 class DecodeRequest(BaseModel):
-    """
-    Request body for JSON-based decoding.
+    """Request body for JSON-based decoding.
 
-    Attributes
+    Attributes:
     ----------
     wmonum:
         WMO identifier of the float to decode.
@@ -112,15 +99,18 @@ class DecodeRequest(BaseModel):
 
     wmonum: str = Field(..., description="WMO of float to decode")
     conf_dict: dict[str, Any] = Field(..., description="Decoder configuration")
-    info_dict: Optional[dict[str, Any]] = Field(default=None, description="Information configuration file")
-    meta_dict: Optional[dict[str, Any]] = Field(default=None, description="Metadata configuration file")
+    info_dict: dict[str, Any] | None = Field(
+        default=None, description="Information configuration file"
+    )
+    meta_dict: dict[str, Any] | None = Field(
+        default=None, description="Metadata configuration file"
+    )
 
 
 class DecodeResponse(BaseModel):
-    """
-    Standard response model for a decode run.
+    """Standard response model for a decode run.
 
-    Attributes
+    Attributes:
     ----------
     status:
         Status string (e.g., 'OK').
@@ -144,20 +134,19 @@ class DecodeResponse(BaseModel):
 
 
 def _read_upload_json(f: UploadFile | None) -> dict[str, Any] | None:
-    """
-    Read and parse a single uploaded JSON file into a Python dict.
+    """Read and parse a single uploaded JSON file into a Python dict.
 
     Parameters
     ----------
     f:
         Optional `UploadFile` handle provided by FastAPI for multipart/form-data.
 
-    Returns
+    Returns:
     -------
     dict | None
         Parsed JSON object (dict) or `None` if no file is provided.
 
-    Raises
+    Raises:
     ------
     HTTPException
         400 if the uploaded content is not valid JSON or not a JSON object.
@@ -170,8 +159,10 @@ def _read_upload_json(f: UploadFile | None) -> dict[str, Any] | None:
         if not isinstance(data, dict):
             raise ValueError("Uploaded JSON must be an object")
         return data
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Invalid JSON file '{f.filename}': {e}")
+    except Exception as e:  # noqa: BLE001 (keep broad to wrap any parse error)
+        raise HTTPException(
+            status_code=400, detail=f"Invalid JSON file '{f.filename}': {e}"
+        ) from e
 
 
 def _run_decode(
@@ -182,8 +173,7 @@ def _run_decode(
     meta_dict: dict[str, Any] | None,
     settings: Settings,
 ) -> DecodeResponse:
-    """
-    Execute a full decode run (shared service used by both endpoints).
+    """Execute a full decode run (shared service used by both endpoints).
 
     Steps (unchanged):
     1) Create a unique run directory under the configured output root.
@@ -203,12 +193,12 @@ def _run_decode(
     settings:
         Resolved service configuration (`Settings`).
 
-    Returns
+    Returns:
     -------
     DecodeResponse
         Standardized response payload including run id, float info, and decoder output.
 
-    Raises
+    Raises:
     ------
     HTTPException
         400 if provided JSON is invalid or cannot be persisted.
@@ -216,21 +206,29 @@ def _run_decode(
     """
     # Output directories for this run
     request_id = uuid4()
-    request_output_root_dir = Path(settings.DECODER_OUTPUT_DIR) / "api" / str(request_id)
+    request_output_root_dir = Path(settings.DECODER_OUTPUT_DIR) / "api" / str(
+        request_id
+    )
     request_output_config_dir = request_output_root_dir / "config"
 
     # Persist JSON configuration files for the decoder
     try:
         float_info = save_info_meta_conf(
             config_dir=request_output_config_dir,
-            float_info_dir=str(request_output_config_dir / "decArgo_config_floats/json_float_info"),
-            float_meta_dir=str(request_output_config_dir / "decArgo_config_floats/json_float_meta"),
+            float_info_dir=str(
+                request_output_config_dir / "decArgo_config_floats/json_float_info"
+            ),
+            float_meta_dir=str(
+                request_output_config_dir / "decArgo_config_floats/json_float_meta"
+            ),
             info=info_dict,
             meta=meta_dict,
             decoder_conf=conf_dict,
         )
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Invalid input or save error: {e}")
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(
+            status_code=400, detail=f"Invalid input or save error: {e}"
+        ) from e
 
     # Execute decoder (MATLAB-based)
     try:
@@ -243,8 +241,8 @@ def _run_decode(
             timeout_seconds=settings.DECODER_TIMEOUT,
         )
         decoder_result = decoder.decode(wmonum, capture_output=True)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Decoder failed: {e}")
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(status_code=500, detail=f"Decoder failed: {e}") from e
 
     return DecodeResponse(
         status="OK",
@@ -284,10 +282,9 @@ def app_status():
 )
 def decode_float_json(
     payload: DecodeRequest,
-    settings: Settings = Depends(get_settings),
+    settings: Annotated[Settings, Depends(get_settings)],
 ):
-    """
-    JSON-based decode entrypoint.
+    """JSON-based decode entrypoint.
 
     Example request body:
     ```json
@@ -321,14 +318,17 @@ def decode_float_json(
     ),
 )
 async def decode_float_upload(
-    wmonum: str = Form(..., description="WMO of float to decode"),
-    conf_file: UploadFile = File(..., description="JSON file for conf_dict"),
-    info_file: UploadFile | None = File(None, description="JSON file for info_dict"),
-    meta_file: UploadFile | None = File(None, description="JSON file for meta_dict"),
-    settings: Settings = Depends(get_settings),
+    wmonum: Annotated[str, Form(..., description="WMO of float to decode")],
+    conf_file: Annotated[UploadFile, File(..., description="JSON file for conf_dict")],
+    info_file: Annotated[
+        UploadFile | None, File(None, description="JSON file for info_dict")
+    ],
+    meta_file: Annotated[
+        UploadFile | None, File(None, description="JSON file for meta_dict")
+    ],
+    settings: Annotated[Settings, Depends(get_settings)],
 ):
-    """
-    Multipart/form-data decode entrypoint.
+    """Multipart/form-data decode entrypoint.
 
     Example `curl`:
     ```bash
