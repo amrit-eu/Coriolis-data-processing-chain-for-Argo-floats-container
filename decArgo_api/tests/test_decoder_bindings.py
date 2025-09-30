@@ -60,9 +60,6 @@ sys.modules.setdefault(
     "utilities.dict2json",
     importlib.import_module("decoder_bindings.utilities.dict2json"),
 )
-sys.modules.setdefault(
-    "mock_data", importlib.import_module("decoder_bindings.mock_data")
-)
 sys.modules.setdefault("settings", importlib.import_module("decoder_bindings.settings"))
 
 MODULE_NAME = "decoder_bindings.main"

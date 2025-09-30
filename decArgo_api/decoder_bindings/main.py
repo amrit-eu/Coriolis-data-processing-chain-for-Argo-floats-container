@@ -1,4 +1,5 @@
-"""Decoder Bindings
+"""Decoder Bindings.
+
 ================
 
 Python bindings around the MATLAB-based Coriolis decoder, launched through a bash
@@ -22,14 +23,6 @@ from datetime import datetime
 from pathlib import Path
 
 from pydantic import BaseModel, Field, field_validator
-
-from decoder_bindings.mock_data import (
-    conf_dict,
-    info_dict,
-    meta_dict,
-)  # Used for testing purposes only.
-from decoder_bindings.settings import Settings
-from decoder_bindings.utilities.dict2json import save_info_meta_conf
 
 # -----------------------------------------------------------------------------
 # Custom exceptions
@@ -460,48 +453,48 @@ class Decoder:
 # Local harness (__main__)
 # -----------------------------------------------------------------------------
 
-if __name__ == "__main__":  # pragma: no cover
-    """
-    Minimal local harness to exercise the bindings with mock data.
+# if __name__ == "__main__":  # pragma: no cover
+#     """
+#     Minimal local harness to exercise the bindings with mock data.
 
-    This section:
-    - Loads settings (from env/defaults).
-    - Prepares a `config` and `output` directory under `DECODER_OUTPUT_DIR`.
-    - Writes mock info/meta/conf JSON files as the decoder expects.
-    - Instantiates a `Decoder` and runs it for WMO '6902892'.
+#     This section:
+#     - Loads settings (from env/defaults).
+#     - Prepares a `config` and `output` directory under `DECODER_OUTPUT_DIR`.
+#     - Writes mock info/meta/conf JSON files as the decoder expects.
+#     - Instantiates a `Decoder` and runs it for WMO '6902892'.
 
-    Intended for quick local smoke tests, not for production usage.
-    """
-    print("Running...")
-    settings = Settings()
+#     Intended for quick local smoke tests, not for production usage.
+#     """
+#     print("Running...")
+#     settings = Settings()
 
-    request_root: Path = Path(settings.DECODER_OUTPUT_DIR)
-    config_dir = request_root / "config"
-    output_dir = request_root / "files"
+#     request_root: Path = Path(settings.DECODER_OUTPUT_DIR)
+#     config_dir = request_root / "config"
+#     output_dir = request_root / "files"
 
-    try:
-        config_dir.mkdir(parents=True, exist_ok=True)
-        output_dir.mkdir(parents=True, exist_ok=True)
+#     try:
+#         config_dir.mkdir(parents=True, exist_ok=True)
+#         output_dir.mkdir(parents=True, exist_ok=True)
 
-        float_info = save_info_meta_conf(
-            config_dir=str(config_dir),
-            float_info_dir=str(config_dir / "decArgo_config_floats2/json_float_info"),
-            float_meta_dir=str(config_dir / "decArgo_config_floats2/json_float_meta"),
-            info=info_dict,
-            meta=meta_dict,
-            decoder_conf=conf_dict,
-        )
-        for key, value in float_info.items():
-            print(f"  {key}: {value}")
-    except Exception as e:
-        print(f"Error saving float info : {e}")
+#         float_info = save_info_meta_conf(
+#             config_dir=str(config_dir),
+#             float_info_dir=str(config_dir / "decArgo_config_floats2/json_float_info"),
+#             float_meta_dir=str(config_dir / "decArgo_config_floats2/json_float_meta"),
+#             info=info_dict,
+#             meta=meta_dict,
+#             decoder_conf=conf_dict,
+#         )
+#         for key, value in float_info.items():
+#             print(f"  {key}: {value}")
+#     except Exception as e:
+#         print(f"Error saving float info : {e}")
 
-    decoder = Decoder(
-        decoder_executable=str(settings.DECODER_EXECUTABLE),
-        matlab_runtime=str(settings.MATLAB_RUNTIME),
-        decoder_conf_file=str(config_dir / "decoder_conf.json"),
-        input_files_directory=str(settings.DECODER_INPUT_DIR),
-        output_files_directory=str(output_dir),
-        timeout_seconds=settings.DECODER_TIMEOUT,  # ← configurable
-    )
-    decoder.decode("6902892")
+#     decoder = Decoder(
+#         decoder_executable=str(settings.DECODER_EXECUTABLE),
+#         matlab_runtime=str(settings.MATLAB_RUNTIME),
+#         decoder_conf_file=str(config_dir / "decoder_conf.json"),
+#         input_files_directory=str(settings.DECODER_INPUT_DIR),
+#         output_files_directory=str(output_dir),
+#         timeout_seconds=settings.DECODER_TIMEOUT,  # ← configurable
+#     )
+#     decoder.decode("6902892")
