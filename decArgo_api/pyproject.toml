@@ -1,5 +1,5 @@
 [project]
-name = "decoder_bindings"
+name = "decoder_api"
 version = "0.1.0"
 description = "Decoder API for Argo floats"
 authors = [
@@ -7,16 +7,20 @@ authors = [
 ]
 dependencies = [
   "requests",
-  "pydantic"
+  "pydantic",
+  "pydantic-settings (>=2.11.0,<3.0.0)",
+  "uvicorn (>=0.37.0,<0.38.0)",
+  "fastapi (>=0.118.0,<0.119.0)",
+  "python-multipart (>=0.0.20,<0.0.21)"
 ]
 requires-python = ">=3.10"
 
 
 [tool.poetry]
-name = "decoder_bindings"
+name = "decoder_api"
 version = "0.1.0"
-description = "Bindings for the Decoder written in Python"
-authors = ["James Clare <jamclar@noc.ac.uk>"]
+description = "API for the Decoder written in Python"
+authors = ["James Clare <jamclar@noc.ac.uk>", "Leo Bruvry-Lagadec <leo.bruvry.lagadec@ifremer.fr>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -33,7 +37,7 @@ build-backend = "poetry.core.masonry.api"
 namespaces = false
 
 [tool.poetry.scripts]
-decoder = "decoder_bindings.main:main"
+decoder = "decoder_wrapper.main:main"
 
 
 [tool.poetry.group.lint]
@@ -91,7 +95,7 @@ allowlist_externals = ["poetry", "ruff"]
 commands_pre = [["poetry", "install", "--no-root", "--with", "lint"]]
 commands = [
   ["ruff", "format", "--check", "."],
-#  ["ruff", "check", "."]
+  ["ruff", "check", "."]
 ]
 
 [tool.tox.env.type]
@@ -99,7 +103,7 @@ description = "Mypy type-check"
 allowlist_externals = ["poetry", "mypy"]
 commands_pre = [["poetry", "install", "--no-root", "--with", "type"]]
 commands = [
-# ["mypy", "decoder_bindings", "tests"]
+#  ["mypy", "decoder_wrapper", "decoder_api", "tests"]
 ]
 
 [tool.tox.env.build]
@@ -123,11 +127,11 @@ env = [
 ]
 
 [tool.taskipy.tasks]
-lint = "ruff check decoder_bindings"
-lint_fix = "ruff check decoder_bindings --fix"
-format = "ruff format decoder_bindings"
-types = "pyright decoder_bindings"
+lint = "ruff check ."
+lint_fix = "ruff . --fix"
+format = "ruff format ."
+types = "pyright ."
 tests = """
-coverage run -m  --source decoder_bindings --data-file=.coverage --omit tests/* pytest && \
+coverage run -m  --source . --data-file=.coverage --omit tests/* pytest && \
 coverage report -m --data-file=.coverage --skip-covered
 """

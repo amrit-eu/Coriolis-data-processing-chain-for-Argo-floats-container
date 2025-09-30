@@ -1,3 +1,9 @@
+"""Utility functions for saving decoder configuration files.
+
+This module provides helpers to persist float info, meta, and decoder
+configuration dictionaries into a structured JSON-based directory layout.
+"""
+
 import json
 from pathlib import Path
 
@@ -10,25 +16,37 @@ def save_info_meta_conf(
     meta: dict,
     decoder_conf: dict,
 ):
-    """
-    Save info and meta dictionaries into specified directory structure.
+    """Save info and meta dictionaries into specified directory structure.
+
     Extracts WMO and PTT from the info dictionary.
 
     Parameters:
-        config_dir (str): Base configuration directory for all floats.
-        float_info_dir (str): Directory to save float info JSON files.
-        float_meta_dir (str): Directory to save float meta JSON files.
-        info (dict): Info dictionary containing WMO and PTT keys.
-        meta (dict): Meta dictionary to save.
-        decoder_conf (dict): Decoder configuration dictionary to save.
+    ----------
+    config_dir (str):
+        Base configuration directory for all floats.
+    float_info_dir (str):
+        Directory to save float info JSON files.
+    float_meta_dir (str):
+        Directory to save float meta JSON files.
+    info (dict):
+        Info dictionary containing WMO and PTT keys.
+    meta (dict):
+        Meta dictionary to save.
+    decoder_conf (dict):
+        Decoder configuration dictionary to save.
 
     Returns:
-        dict: Dictionary containing paths to created files.
+    -------
+    dict
+        Dictionary containing paths to created files.
 
     Raises:
-        ValueError: If WMO or PTT keys are missing from info dictionary.
+    ------
+    ValueError:
+        If WMO or PTT keys are missing from info dictionary.
+    OSError:
+        If writing any of the files fails.
     """
-
     # Extract WMO and PTT from info dictionary
     wmo = info.get("WMO")
     ptt = info.get("PTT")
@@ -77,5 +95,5 @@ def save_info_meta_conf(
             "conf_file": str(conf_file.absolute()),
         }
 
-    except Exception as e:
-        raise IOError(f"Failed to save configuration files: {e}")
+    except Exception as e:  # noqa: BLE001
+        raise OSError(f"Failed to save configuration files: {e}") from e

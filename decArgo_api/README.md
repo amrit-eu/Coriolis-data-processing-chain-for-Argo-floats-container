@@ -1,15 +1,33 @@
 # Decoder API
 
-## Python Bindings
+## Python FastAPI
 
-This Python package exists to access the Coriolis Decoder via Python.
+This Python package exists to access the Coriolis Decoder via Python API.
+
+## Get Started
+
+- Run API with Docker and local MATLAB runtime
+
+```bash
+./docker-decoder-api-linux.sh 6904182 /absolute-path-to/matlab/runtime/R2022b
+```
+
+- Decode demonstration float 6904182 with next command
+
+```bash
+# Browsing files
+curl -X POST "http://localhost:8000/browse/decode-float" \
+-F wmonum=6904182 -F conf_file=@tests/data/config/docker_decoder_conf_for_6904182.json \
+-F info_file=@../decArgo_demo/config/decArgo_config_floats/json_float_info/6904182_300125061965370_info.json \
+-F meta_file=@../decArgo_demo/config/decArgo_config_floats/json_float_meta/6904182_meta.json
+```
 
 ### Development
 
 - Create vitual environment
 
 ```bash
-conda create -n decoder-argo python=3.12 poetry
+conda create -n argo-decoder-api python=3.12 poetry
 cd decArgo_api
 ```
 
@@ -19,10 +37,26 @@ cd decArgo_api
 poetry install
 ```
 
-- Run application
+- Run application Python wrapper on predefine float
 
 ```bash
-python3 -u decoder_bindings/main.py
+python3 -u decoder_wrapper/main.py
+```
+
+- Run application API
+
+```bash
+python3 -u decoder_api/main.py
+```
+
+access API at <http://localhost:8000>
+
+- Example curl command to decode float :
+
+```bash
+curl -X POST "http://localhost:8000/decode-float" \
+-H "Content-Type: application/json" \
+-d '{"wmonum":"6904182","conf_dict":'"$(cat tests/data/config/decoder_conf_for_6904182.json)"', "info_dict":'"$(cat ../decArgo_demo/config/decArgo_config_floats/json_float_info/6904182_300125061965370_info.json)"', "meta_dict":'"$(cat ../decArgo_demo/config/decArgo_config_floats/json_float_meta/6904182_meta.json)"'}'
 ```
 
 - Run unit tests
@@ -36,5 +70,3 @@ pytest
 ```bash
 pytest -m "integration and matlab"
 ```
-
-## FastAPI
