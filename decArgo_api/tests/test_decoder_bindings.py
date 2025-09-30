@@ -53,9 +53,7 @@ _inject_stubs_for_top_level_imports()
 
 # Align "flat" imports used inside main.py so the module can import cleanly.
 # (main.py does `from utilities...` and `from mock_data...`)
-sys.modules.setdefault(
-    "utilities", importlib.import_module("decoder_bindings.utilities")
-)
+sys.modules.setdefault("utilities", importlib.import_module("decoder_bindings.utilities"))
 sys.modules.setdefault(
     "utilities.dict2json",
     importlib.import_module("decoder_bindings.utilities.dict2json"),
@@ -138,9 +136,7 @@ def test_decode_builds_cmd_with_exec_and_runtime_and_io(
 
     with patch.object(m.subprocess, "run") as mock_run:
         # Return a CompletedProcess-like object to satisfy decode() expectations.
-        mock_run.return_value = subprocess.CompletedProcess(
-            args=["dummy"], returncode=0, stdout="OK", stderr=""
-        )
+        mock_run.return_value = subprocess.CompletedProcess(args=["dummy"], returncode=0, stdout="OK", stderr="")
 
         # Act
         dec.decode(wmo)
@@ -193,9 +189,7 @@ def test_decode_builds_cmd_with_exec_and_runtime_and_io(
         assert isinstance(kwargs["env"], dict)
 
 
-def test_decode_without_io_does_not_add_dirs(
-    tmp_conf_file, tmp_runtime_dir, tmp_exec_file
-):
+def test_decode_without_io_does_not_add_dirs(tmp_conf_file, tmp_runtime_dir, tmp_exec_file):
     # Arrange: Decoder with no input nor output directory configured.
     dec = m.Decoder(
         input_files_directory=None,
@@ -206,9 +200,7 @@ def test_decode_without_io_does_not_add_dirs(
     )
 
     with patch.object(m.subprocess, "run") as mock_run:
-        mock_run.return_value = subprocess.CompletedProcess(
-            args=["dummy"], returncode=0, stdout="OK", stderr=""
-        )
+        mock_run.return_value = subprocess.CompletedProcess(args=["dummy"], returncode=0, stdout="OK", stderr="")
 
         # Act
         dec.decode("6902892")
@@ -259,9 +251,7 @@ def test_conf_file_missing_raises(tmp_path: Path, tmp_runtime_dir, tmp_exec_file
         )
 
 
-def test_executable_must_exist_and_be_executable(
-    tmp_conf_file, tmp_runtime_dir, tmp_nonexec_file
-):
+def test_executable_must_exist_and_be_executable(tmp_conf_file, tmp_runtime_dir, tmp_nonexec_file):
     # Non-executable file should trigger a validation error for the executable path
     with pytest.raises(ValueError):
         m.Decoder(
@@ -301,9 +291,7 @@ def test_calledprocesserror_is_caught_and_hold_runs(
         hold_after_run=2,
     )
 
-    with patch.object(m.subprocess, "run") as mock_run, patch.object(
-        m.time, "sleep"
-    ) as mock_sleep:
+    with patch.object(m.subprocess, "run") as mock_run, patch.object(m.time, "sleep") as mock_sleep:
         # Simulate a non-zero exit from the subprocess
         mock_run.side_effect = m.subprocess.CalledProcessError(returncode=42, cmd=["x"])
 
@@ -324,12 +312,8 @@ def test_hold_after_run_none_no_sleep(tmp_conf_file, tmp_runtime_dir, tmp_exec_f
         matlab_runtime=str(tmp_runtime_dir),
         hold_after_run=None,
     )
-    with patch.object(m.subprocess, "run") as mock_run, patch.object(
-        m.time, "sleep"
-    ) as mock_sleep:
-        mock_run.return_value = subprocess.CompletedProcess(
-            args=["dummy"], returncode=0, stdout="OK", stderr=""
-        )
+    with patch.object(m.subprocess, "run") as mock_run, patch.object(m.time, "sleep") as mock_sleep:
+        mock_run.return_value = subprocess.CompletedProcess(args=["dummy"], returncode=0, stdout="OK", stderr="")
 
         # Act
         dec.decode("6902892")
@@ -338,9 +322,7 @@ def test_hold_after_run_none_no_sleep(tmp_conf_file, tmp_runtime_dir, tmp_exec_f
         mock_sleep.assert_not_called()
 
 
-def test_hold_after_run_forever_loops_but_is_mocked(
-    tmp_conf_file, tmp_runtime_dir, tmp_exec_file
-):
+def test_hold_after_run_forever_loops_but_is_mocked(tmp_conf_file, tmp_runtime_dir, tmp_exec_file):
     # Arrange: hold_after_run=-1 triggers the "infinite hold" branch.
     dec = m.Decoder(
         input_files_directory=None,
@@ -360,21 +342,15 @@ def test_hold_after_run_forever_loops_but_is_mocked(
         if call_count["n"] >= 3:
             raise StopIteration  # stop the test here
 
-    with patch.object(m.subprocess, "run") as mock_run, patch.object(
-        m.time, "sleep", side_effect=fake_sleep
-    ):
-        mock_run.return_value = subprocess.CompletedProcess(
-            args=["dummy"], returncode=0, stdout="OK", stderr=""
-        )
+    with patch.object(m.subprocess, "run") as mock_run, patch.object(m.time, "sleep", side_effect=fake_sleep):
+        mock_run.return_value = subprocess.CompletedProcess(args=["dummy"], returncode=0, stdout="OK", stderr="")
         # Act / Assert: we raise StopIteration to exit the simulated infinite loop
         with pytest.raises(StopIteration):
             dec.decode("6902892")
         assert call_count["n"] >= 3
 
 
-def test_decoder_configuration_with_valid_directories(
-    tmp_input_dir, tmp_output_dir, tmp_conf_file, tmp_exec_file
-):
+def test_decoder_configuration_with_valid_directories(tmp_input_dir, tmp_output_dir, tmp_conf_file, tmp_exec_file):
     """Ensure configuration is built correctly when valid directories are supplied."""
     cfg = m.DecoderConfiguration(
         input_files_directory=tmp_input_dir,
@@ -387,9 +363,7 @@ def test_decoder_configuration_with_valid_directories(
     assert cfg.output_files_directory == tmp_output_dir.resolve()
 
 
-def test_decoder_with_empty_input_directory(
-    tmp_path: Path, tmp_output_dir, tmp_conf_file, tmp_exec_file
-):
+def test_decoder_with_empty_input_directory(tmp_path: Path, tmp_output_dir, tmp_conf_file, tmp_exec_file):
     """Empty input directory should raise EmptyInputDirectoryError."""
     empty_input = tmp_path / "empty_in"
     empty_input.mkdir()
@@ -405,8 +379,8 @@ def test_decoder_with_empty_input_directory(
 
 def test_decoder_with_invalid_directories(tmp_path: Path, tmp_conf_file, tmp_exec_file):
     """Non-existent directories should trigger coherent ValueError messages."""
-    input_path = tmp_path / "input"   # does not exist
-    output_path = tmp_path / "output" # does not exist
+    input_path = tmp_path / "input"  # does not exist
+    output_path = tmp_path / "output"  # does not exist
 
     with pytest.raises(ValueError) as exc:
         m.DecoderConfiguration(
@@ -433,9 +407,7 @@ def test_decoder_with_invalid_directories(tmp_path: Path, tmp_conf_file, tmp_exe
     assert "is not a valid output directory" in str(exc.value)
 
 
-def test_decoder_initialisation(
-    tmp_input_dir, tmp_output_dir, tmp_conf_file, tmp_exec_file
-):
+def test_decoder_initialisation(tmp_input_dir, tmp_output_dir, tmp_conf_file, tmp_exec_file):
     """Decoder initializes correctly with valid paths."""
     dec = m.Decoder(
         input_files_directory=str(tmp_input_dir),
@@ -450,9 +422,7 @@ def test_decoder_initialisation(
     assert dec.config.output_files_directory == tmp_output_dir.resolve()
 
 
-def test_subprocess_call(
-    monkeypatch, tmp_input_dir, tmp_output_dir, tmp_conf_file, tmp_exec_file
-):
+def test_subprocess_call(monkeypatch, tmp_input_dir, tmp_output_dir, tmp_conf_file, tmp_exec_file):
     """Ensure subprocess.run is invoked once and the command is shaped as expected."""
     dec = m.Decoder(
         input_files_directory=str(tmp_input_dir),
@@ -468,9 +438,7 @@ def test_subprocess_call(
         # record invocation and return a CompletedProcess-like object
         called["n"] += 1
         called["cmd"] = cmd
-        return subprocess.CompletedProcess(
-            args=["dummy"], returncode=0, stdout="OK", stderr=""
-        )
+        return subprocess.CompletedProcess(args=["dummy"], returncode=0, stdout="OK", stderr="")
 
     monkeypatch.setattr(m.subprocess, "run", fake_run)
 

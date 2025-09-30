@@ -99,12 +99,8 @@ class DecodeRequest(BaseModel):
 
     wmonum: str = Field(..., description="WMO of float to decode")
     conf_dict: dict[str, Any] = Field(..., description="Decoder configuration")
-    info_dict: dict[str, Any] | None = Field(
-        default=None, description="Information configuration file"
-    )
-    meta_dict: dict[str, Any] | None = Field(
-        default=None, description="Metadata configuration file"
-    )
+    info_dict: dict[str, Any] | None = Field(default=None, description="Information configuration file")
+    meta_dict: dict[str, Any] | None = Field(default=None, description="Metadata configuration file")
 
 
 class DecodeResponse(BaseModel):
@@ -160,9 +156,7 @@ def _read_upload_json(f: UploadFile | None) -> dict[str, Any] | None:
             raise ValueError("Uploaded JSON must be an object")
         return data
     except Exception as e:  # noqa: BLE001 (keep broad to wrap any parse error)
-        raise HTTPException(
-            status_code=400, detail=f"Invalid JSON file '{f.filename}': {e}"
-        ) from e
+        raise HTTPException(status_code=400, detail=f"Invalid JSON file '{f.filename}': {e}") from e
 
 
 def _run_decode(
@@ -206,29 +200,21 @@ def _run_decode(
     """
     # Output directories for this run
     request_id = uuid4()
-    request_output_root_dir = Path(settings.DECODER_OUTPUT_DIR) / "api" / str(
-        request_id
-    )
+    request_output_root_dir = Path(settings.DECODER_OUTPUT_DIR) / "api" / str(request_id)
     request_output_config_dir = request_output_root_dir / "config"
 
     # Persist JSON configuration files for the decoder
     try:
         float_info = save_info_meta_conf(
             config_dir=request_output_config_dir,
-            float_info_dir=str(
-                request_output_config_dir / "decArgo_config_floats/json_float_info"
-            ),
-            float_meta_dir=str(
-                request_output_config_dir / "decArgo_config_floats/json_float_meta"
-            ),
+            float_info_dir=str(request_output_config_dir / "decArgo_config_floats/json_float_info"),
+            float_meta_dir=str(request_output_config_dir / "decArgo_config_floats/json_float_meta"),
             info=info_dict,
             meta=meta_dict,
             decoder_conf=conf_dict,
         )
     except Exception as e:  # noqa: BLE001
-        raise HTTPException(
-            status_code=400, detail=f"Invalid input or save error: {e}"
-        ) from e
+        raise HTTPException(status_code=400, detail=f"Invalid input or save error: {e}") from e
 
     # Execute decoder (MATLAB-based)
     try:
@@ -320,12 +306,8 @@ def decode_float_json(
 async def decode_float_upload(
     wmonum: Annotated[str, Form(..., description="WMO of float to decode")],
     conf_file: Annotated[UploadFile, File(..., description="JSON file for conf_dict")],
-    info_file: Annotated[
-        UploadFile | None, File(None, description="JSON file for info_dict")
-    ],
-    meta_file: Annotated[
-        UploadFile | None, File(None, description="JSON file for meta_dict")
-    ],
+    info_file: Annotated[UploadFile | None, File(None, description="JSON file for info_dict")],
+    meta_file: Annotated[UploadFile | None, File(None, description="JSON file for meta_dict")],
     settings: Annotated[Settings, Depends(get_settings)],
 ):
     """Multipart/form-data decode entrypoint.
