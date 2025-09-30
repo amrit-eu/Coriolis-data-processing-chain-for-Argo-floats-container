@@ -93,6 +93,7 @@ def get_settings() -> Settings:
 # Schemas (request/response models)
 # --------------------------------------------------------------------------------------
 
+
 class DecodeRequest(BaseModel):
     """
     Request body for JSON-based decoding.
@@ -108,14 +109,11 @@ class DecodeRequest(BaseModel):
     meta_dict:
         Optional metadata object for the decoder.
     """
+
     wmonum: str = Field(..., description="WMO of float to decode")
     conf_dict: dict[str, Any] = Field(..., description="Decoder configuration")
-    info_dict: Optional[dict[str, Any]] = Field(
-        default=None, description="Information configuration file"
-    )
-    meta_dict: Optional[dict[str, Any]] = Field(
-        default=None, description="Metadata configuration file"
-    )
+    info_dict: Optional[dict[str, Any]] = Field(default=None, description="Information configuration file")
+    meta_dict: Optional[dict[str, Any]] = Field(default=None, description="Metadata configuration file")
 
 
 class DecodeResponse(BaseModel):
@@ -133,6 +131,7 @@ class DecodeResponse(BaseModel):
     result:
         Raw process output (stdout/stderr) returned by the underlying decoder call.
     """
+
     status: str
     request_id: str
     float_info: dict[str, Any] | None = None
@@ -142,6 +141,7 @@ class DecodeResponse(BaseModel):
 # --------------------------------------------------------------------------------------
 # Utilities / service (docstrings only; logic unchanged)
 # --------------------------------------------------------------------------------------
+
 
 def _read_upload_json(f: UploadFile | None) -> dict[str, Any] | None:
     """
@@ -171,9 +171,7 @@ def _read_upload_json(f: UploadFile | None) -> dict[str, Any] | None:
             raise ValueError("Uploaded JSON must be an object")
         return data
     except Exception as e:
-        raise HTTPException(
-            status_code=400, detail=f"Invalid JSON file '{f.filename}': {e}"
-        )
+        raise HTTPException(status_code=400, detail=f"Invalid JSON file '{f.filename}': {e}")
 
 
 def _run_decode(
@@ -218,21 +216,15 @@ def _run_decode(
     """
     # Output directories for this run
     request_id = uuid4()
-    request_output_root_dir = (
-        Path(settings.DECODER_OUTPUT_DIR) / "api" / str(request_id)
-    )
+    request_output_root_dir = Path(settings.DECODER_OUTPUT_DIR) / "api" / str(request_id)
     request_output_config_dir = request_output_root_dir / "config"
 
     # Persist JSON configuration files for the decoder
     try:
         float_info = save_info_meta_conf(
             config_dir=request_output_config_dir,
-            float_info_dir=str(
-                request_output_config_dir / "decArgo_config_floats/json_float_info"
-            ),
-            float_meta_dir=str(
-                request_output_config_dir / "decArgo_config_floats/json_float_meta"
-            ),
+            float_info_dir=str(request_output_config_dir / "decArgo_config_floats/json_float_info"),
+            float_meta_dir=str(request_output_config_dir / "decArgo_config_floats/json_float_meta"),
             info=info_dict,
             meta=meta_dict,
             decoder_conf=conf_dict,
@@ -265,6 +257,7 @@ def _run_decode(
 # --------------------------------------------------------------------------------------
 # Routes (summaries, descriptions, and examples only; logic unchanged)
 # --------------------------------------------------------------------------------------
+
 
 @app.get(
     "/",

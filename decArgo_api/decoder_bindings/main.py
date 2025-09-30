@@ -37,6 +37,7 @@ from pydantic import BaseModel, Field, field_validator
 # Custom exceptions
 # -----------------------------------------------------------------------------
 
+
 class EmptyInputDirectoryError(Exception):
     """Raised when the configured input directory exists but is empty."""
 
@@ -52,6 +53,7 @@ class WmoValidationError(ValueError):
 # -----------------------------------------------------------------------------
 # Configuration model
 # -----------------------------------------------------------------------------
+
 
 class DecoderConfiguration(BaseModel):
     """
@@ -198,6 +200,7 @@ class DecoderConfiguration(BaseModel):
 # Decoder wrapper
 # -----------------------------------------------------------------------------
 
+
 class Decoder:
     """
     Python bindings around the bash launcher for the MATLAB decoder.
@@ -288,9 +291,7 @@ class Decoder:
         if not isinstance(wmonum, str):
             raise WmoValidationError("WMOnum must be a string.")
         if not Decoder._WMO_RE.match(wmonum):
-            raise WmoValidationError(
-                f"Invalid WMO '{wmonum}'. Expected 7 digits (e.g., '6902892')."
-            )
+            raise WmoValidationError(f"Invalid WMO '{wmonum}'. Expected 7 digits (e.g., '6902892').")
 
     def _build_cmd(self, wmonum: str) -> list[str]:
         """
@@ -404,11 +405,7 @@ class Decoder:
         while True:
             time.sleep(60)
 
-    def decode(
-        self,
-        wmonum: str,
-        capture_output: bool = False
-    ) -> subprocess.CompletedProcess[str]:
+    def decode(self, wmonum: str, capture_output: bool = False) -> subprocess.CompletedProcess[str]:
         """
         Run the Coriolis decoder for the given WMO.
 
@@ -437,12 +434,14 @@ class Decoder:
         FileNotFoundError
             If the configured executable is not found.
         """
+        result = ""
+        
         if self.config.check_wmo_format:
             self._validate_wmo(wmonum)
 
         cmd = self._build_cmd(wmonum)
         try:
-            result = subprocess.run(
+            output = subprocess.run(
                 cmd,
                 env=os.environ.copy(),
                 check=True,
@@ -454,18 +453,21 @@ class Decoder:
             # Current behavior: print details; no re-raise.
             print("Command failed with return code:", e.returncode)
             print("STDERR:", e.stderr)
-        except FileNotFoundError:
+            result = e.stderr
+        except FileNotFoundError as e:
             # Current behavior: print; no re-raise.
-            print("Invalid command")
+            print("Invalid command:", e.strerror)
+            result = e.strerror
         else:
             # Successful run
+            result = output.stdout
             print("Decoding ran:", result)
 
         # Replace previous infinite loop with controlled hold (if configured)
         self._post_run_hold()
 
-        # Current behavior: return stdout (string), not the CompletedProcess object.
-        return result.stdout
+        # Current behavior: return result.
+        return result
 
 
 # -----------------------------------------------------------------------------
