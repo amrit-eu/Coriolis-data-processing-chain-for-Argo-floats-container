@@ -306,9 +306,7 @@ async def decode_float_upload(
     # Requis : pas de default dans Annotated, pas de valeur par défaut -> requis
     wmonum: Annotated[str, Form(description="WMO of float to decode")],
     conf_file: Annotated[UploadFile, File(description="JSON file for conf_dict")],
-
     settings: Annotated[Settings, Depends(get_settings)],
-
     # Optionnels : pas de default dans File(...). Le “None” est mis après le `=`.
     info_file: Annotated[UploadFile | None, File(description="JSON file for info_dict")] = None,
     meta_file: Annotated[UploadFile | None, File(description="JSON file for meta_dict")] = None,
