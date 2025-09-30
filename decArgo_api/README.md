@@ -56,7 +56,7 @@ access API at <http://localhost:8000>
 ```bash
 curl -X POST "http://localhost:8000/decode-float" \
 -H "Content-Type: application/json" \
--d '{"wmonum":"6904182","conf_dict":'"$(cat tests/data/config/docker_decoder_conf_for_6904182.json)"', "info_dict":'"$(cat ../decArgo_demo/config/decArgo_config_floats/json_float_info/6904182_300125061965370_info.json)"', "meta_dict":'"$(cat ../decArgo_demo/config/decArgo_config_floats/json_float_meta/6904182_meta.json)"'}'
+-d '{"wmonum":"6904182","conf_dict":'"$(cat tests/data/config/decoder_conf_for_6904182.json)"', "info_dict":'"$(cat ../decArgo_demo/config/decArgo_config_floats/json_float_info/6904182_300125061965370_info.json)"', "meta_dict":'"$(cat ../decArgo_demo/config/decArgo_config_floats/json_float_meta/6904182_meta.json)"'}'
 ```
 
 - Run unit tests
