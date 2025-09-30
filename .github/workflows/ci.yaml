@@ -17,7 +17,7 @@ jobs:
       context: decArgo_api
   container-image-build:
     needs: [python-linting]
-    uses: amrit-eu/ci-cd/.github/workflows/component-container-image.yml@latest
+    uses: amrit-eu/ci-cd/.github/workflows/component-container-image.yml@main
     with:
       context: decArgo_api
       image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api
@@ -27,7 +27,7 @@ jobs:
       contents: read
       actions: read
       security-events: write
-    uses: amrit-eu/ci-cd/.github/workflows/component-container-image-security.yml@mlatest
+    uses: amrit-eu/ci-cd/.github/workflows/component-container-image-security.yml@main
     with:
       context: .
       image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api
