@@ -15,3 +15,6 @@ docker build -t float-decoder -f Dockerfile .
 
 3. Run it all together
 docker compose -f .\docker-compose.yml up -d --build
+
+
+-----------------------------

@@ -89,5 +89,5 @@ RUN \
     chown -R root:gbatch /app /mnt && \
     chmod -R 770 /app /mnt
 
-ENTRYPOINT ["/app/entrypoint.sh"]
-
+# ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["uvicorn", "decoder_bindings.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/decoder_bindings"]

@@ -8,11 +8,13 @@ services:
     user: root
     volumes:
       - runtime-matlab-volume:/matlab/runtime:rw
+    
 
   decode-float:
     container_name: decode-floatwmo
     image: float-decoder:latest
-    entrypoint: ["python3", "-u", "decoder_bindings/main.py"]
+    # entrypoint: ["python3", "-u", "decoder_bindings/main.py"]
+    entrypoint: ["uvicorn", "decoder_bindings.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/decoder_bindings"]
     user: root
     env_file:
       - .env
@@ -24,6 +26,8 @@ services:
       - ./decArgo_demo/output:/mnt/data/output:rw
     depends_on:
       - runtime-matlab
+    ports:
+      - "8000:8000"
 
 volumes:
   runtime-matlab-volume:
