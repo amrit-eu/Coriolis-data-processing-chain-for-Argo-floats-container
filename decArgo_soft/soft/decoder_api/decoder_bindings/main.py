@@ -107,6 +107,6 @@ if __name__ == "__main__":  # pragma: no cover
     decoder = Decoder(
         input_files_directory=None,
         output_files_directory=None,
-        decoder_conf_file="/home/airflow/decoder_project/config_files/decoder_conf.json",
+        decoder_conf_file="/mnt/data/config/decoder_conf.json",
     )
     decoder.decode("6902892")

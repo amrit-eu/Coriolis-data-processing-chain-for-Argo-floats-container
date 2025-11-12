@@ -11,7 +11,7 @@ services:
 
   decode-float:
     container_name: decode-floatwmo
-    image: decoder_matlab_tool:latest
+    image: float-decoder:latest
     entrypoint: ["python3", "-u", "decoder_bindings/main.py"]
     user: root
     env_file:

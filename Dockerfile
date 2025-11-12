@@ -82,28 +82,12 @@ RUN pip install "poetry~=1.8.0" && \
    
 COPY --from=development /tmp /app
 
+COPY entrypoint.sh .
 
-# Second ticket, add the API layer:
-# 1. Install the API package
-# 2. Set up a Gunicorn entrypoint to replace the original script
+# adjust rights
+RUN \
+    chown -R root:gbatch /app /mnt && \
+    chmod -R 770 /app /mnt
 
-# ENTRYPOINT ["/path/to/gunicorn"]
-# CMD: ["your", "gunicorn", "args"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 
-
-# classique runtime image
-# FROM runtime-base AS runtime
-
-# ENTRYPOINT ["/app/entrypoint.sh"]
-
-# Galaxy runtime image
-# FROM runtime-base AS runtime-galaxy
-
-# RUN \
-#     apt-get -y update && \
-#     echo "===== ADD TOOLS LIBRARIES =====" && \
-#     apt-get -y install zip unzip
-
-# COPY --chown=root:gbatch ./R2022b /mnt/runtime
-
-# USER 1000:${GROUPID}
