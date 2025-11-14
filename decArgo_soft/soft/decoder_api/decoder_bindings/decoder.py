@@ -1,10 +1,11 @@
 """Decoder Bindings."""
 
+import logging
 import os
 import subprocess
+import traceback
 from pathlib import Path
 
-from fastapi import FastAPI
 from pydantic import BaseModel, field_validator
 
 
@@ -15,6 +16,8 @@ class EmptyInputDirectoryError(Exception):
 class ExecutionError(Exception):
     """Raised when no wmonum is passed."""
 
+class DecoderError(Exception):
+    """Raised when an error is detected during the decoding stage."""
 
 class DecoderConfiguration(BaseModel):
     """Configuration used to pass to the decoder, with validation applied."""
@@ -22,7 +25,6 @@ class DecoderConfiguration(BaseModel):
     input_files_directory: Path | None
     output_files_directory: Path | None
     decoder_conf_file: Path
-
 
     @field_validator("input_files_directory", mode="before")
     def check_input_files_directory(cls, input_directory: Path):
@@ -82,16 +84,16 @@ class Decoder:
                     str(self.config.output_files_directory),
                 ]
             )
-
-        # Regarding the 'except' clauses, these will return various non 200 status codes when integrated into the API.
         try:
-            result = subprocess.run(cmd, env=os.environ.copy(), check=True)
-        except subprocess.CalledProcessError as e:
-            print("Command failed with return code:", e.returncode)
-            print("STDERR:", e.stderr)
-        except FileNotFoundError:
-            print("Invalid command")
+            logging.info("Starting decode process.")
+            result = subprocess.run(cmd, env=os.environ.copy(), check=True, capture_output=True, text=True)
+        except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+            logging.error("An error occurred during the decoder process: %s", traceback.format_exc())
+            raise DecoderError from exc
         else:
-            print("Decoding ran:", result)
+            # Check the decoder output for any issues.
+            if "ERROR:" in result.stdout:
+                logging.error("An error occurred during the decoder process: %s", result.stdout)
+                raise DecoderError(result.stdout)
 
-
+        return True
