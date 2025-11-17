@@ -113,7 +113,7 @@ To build and run the Decoder API run the following steps:
 2. `docker compose -f docker-compose.yml up -d --build`
 3. Navigate to `http://localhost:8000/docs`
 
-The files in decArgo_demo are ready to be decoded, as an example user any file in:
+The files in decArgo_demo are ready to be decoded, as an example use any file in:
 
 `decArgo_demo/input/archive/cycle/300234065895840`
 with the wmonum: `6902892`.
