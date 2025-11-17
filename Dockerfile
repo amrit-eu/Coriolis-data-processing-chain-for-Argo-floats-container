@@ -69,19 +69,22 @@ FROM runtime AS python-runtime
 
 WORKDIR /app
 
-COPY decArgo_api .
+COPY decArgo_api/ .
 
 RUN apt-get update && \
     apt-get install -y python3 python3-pip && \
     python3 -m pip install --upgrade pip && \
-    rm -rf /var/lib/apt/lists/* && \ 
+    rm -rf /var/lib/apt/lists/* && \
     pip install "poetry~=1.8.0" && \
     poetry config virtualenvs.create false && \
     poetry install
 
+    
+
 COPY --from=development /tmp .
 # TODO : need to be remove after fix
-COPY decArgo_soft/exec/run_decode_argo_2_nc_rt.tmp.sh run_decode_argo_2_nc_rt.sh   
+
+COPY decArgo_soft/exec/run_decode_argo_2_nc_rt.sh run_decode_argo_2_nc_rt.sh   
 
 COPY entrypoint.sh .
 
@@ -90,5 +93,5 @@ RUN \
     chown -R root:gbatch /app /mnt && \
     chmod -R 770 /app /mnt
 
-# ENTRYPOINT ["/app/entrypoint.sh"]
+
 CMD ["uvicorn", "decoder_bindings.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/decoder_bindings"]
