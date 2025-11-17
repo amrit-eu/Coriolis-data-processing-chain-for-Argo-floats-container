@@ -28,7 +28,6 @@ class FileManager:
             os.getenv("ARCHIVE_RSYNC_LOCATION", "/mnt/data/rsync/rsync_list/")
         ).resolve()
 
-
     def _detect_imei(self):
         imei_number_search = re.search(r"\d{15}", self.files[0].filename)
         if imei_number_search is None:

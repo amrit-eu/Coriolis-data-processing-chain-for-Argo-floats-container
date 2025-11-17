@@ -1,6 +1,5 @@
 """API Entrypoint."""
 
-
 import logging
 
 from fastapi import FastAPI, UploadFile
@@ -26,8 +25,8 @@ async def decode_float(wmonum: str, files: list[UploadFile]):
 
     Returns: A zipfile, or a dict containing an error message.
     """
-    logging.info("WMONUM: %s", wmonum)
-    logging.info("Files: %s", files)
+    logging.info("Running for WMONUM: %s", wmonum)
+    logging.info("Running for Files: %s", files)
     try:
         rsync_file_name = FileManager(files).run()
 

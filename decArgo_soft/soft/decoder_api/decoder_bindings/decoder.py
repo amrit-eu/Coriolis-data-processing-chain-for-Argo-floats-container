@@ -16,8 +16,10 @@ class EmptyInputDirectoryError(Exception):
 class ExecutionError(Exception):
     """Raised when no wmonum is passed."""
 
+
 class DecoderError(Exception):
     """Raised when an error is detected during the decoding stage."""
+
 
 class DecoderConfiguration(BaseModel):
     """Configuration used to pass to the decoder, with validation applied."""
@@ -96,4 +98,5 @@ class Decoder:
                 logging.error("An error occurred during the decoder process: %s", result.stdout)
                 raise DecoderError(result.stdout)
 
+        logging.info("Decoding finished succesfully.")
         return True
