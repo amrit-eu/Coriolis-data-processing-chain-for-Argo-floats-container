@@ -6,27 +6,32 @@ import subprocess
 import traceback
 from pathlib import Path
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, Field
 
 
-class EmptyInputDirectoryError(Exception):
+class EmptyInputDirectoryError(FileNotFoundError):
     """Raised when the input directory is empty."""
 
 
-class ExecutionError(Exception):
-    """Raised when no wmonum is passed."""
+class ExecutionError(ValueError):
+    """Raised when no wmonum is passed to the decoder which is required to run the decode process."""
 
 
-class DecoderError(Exception):
+class DecoderError(RuntimeError):
     """Raised when an error is detected during the decoding stage."""
 
 
 class DecoderConfiguration(BaseModel):
     """Configuration used to pass to the decoder, with validation applied."""
-
-    input_files_directory: Path | None
-    output_files_directory: Path | None
-    decoder_conf_file: Path
+    input_files_directory: Path | None = Field(
+        default=None, description="Directory containing the input files for the decoder."
+    )
+    output_files_directory: Path | None = Field(
+        default=None, description="Directory where the decoded files will be written to"
+    )
+    decoder_conf_file: Path = Field(
+        ..., description="Path to the decoder configuration file."
+    )
 
     @field_validator("input_files_directory", mode="before")
     def check_input_files_directory(cls, input_directory: Path):
@@ -34,7 +39,7 @@ class DecoderConfiguration(BaseModel):
         if input_directory is None:
             return input_directory
         if not input_directory.is_dir():
-            raise ValueError(f"{input_directory} is not a valid input directory!")
+            raise NotADirectoryError(f"{input_directory} is not a valid input directory!")
 
         if not any(input_directory.iterdir()):
             raise EmptyInputDirectoryError(f"{input_directory} is empty!")
@@ -46,14 +51,14 @@ class DecoderConfiguration(BaseModel):
         if output_directory is None:
             return output_directory
         if not output_directory.is_dir():
-            raise ValueError(f"{output_directory} is not a valid output directory!")
+            raise NotADirectoryError(f"{output_directory} is not a valid output directory!")
         return output_directory.resolve()
 
 
 class Decoder:
-    """Decoder Bindings."""
+    """Code to bind to the Coriolis Decoder and provide an entrypoint via an API."""
 
-    def __init__(self, input_files_directory: str | None, output_files_directory: str | None, decoder_conf_file: str):
+    def __init__(self, decoder_conf_file: str, input_files_directory: str | None = None, output_files_directory: str | None = None):
         """Initialise the bindings instance."""
         self.config = DecoderConfiguration(
             input_files_directory=Path(input_files_directory) if isinstance(input_files_directory, str) else None,
