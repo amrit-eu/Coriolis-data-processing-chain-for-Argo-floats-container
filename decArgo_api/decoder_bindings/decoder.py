@@ -6,7 +6,7 @@ import subprocess
 import traceback
 from pathlib import Path
 
-from pydantic import BaseModel, field_validator, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class EmptyInputDirectoryError(FileNotFoundError):
@@ -23,15 +23,14 @@ class DecoderError(RuntimeError):
 
 class DecoderConfiguration(BaseModel):
     """Configuration used to pass to the decoder, with validation applied."""
+
     input_files_directory: Path | None = Field(
         default=None, description="Directory containing the input files for the decoder."
     )
     output_files_directory: Path | None = Field(
         default=None, description="Directory where the decoded files will be written to"
     )
-    decoder_conf_file: Path = Field(
-        ..., description="Path to the decoder configuration file."
-    )
+    decoder_conf_file: Path = Field(..., description="Path to the decoder configuration file.")
 
     @field_validator("input_files_directory", mode="before")
     def check_input_files_directory(cls, input_directory: Path):
@@ -58,7 +57,12 @@ class DecoderConfiguration(BaseModel):
 class Decoder:
     """Code to bind to the Coriolis Decoder and provide an entrypoint via an API."""
 
-    def __init__(self, decoder_conf_file: str, input_files_directory: str | None = None, output_files_directory: str | None = None):
+    def __init__(
+        self,
+        decoder_conf_file: str,
+        input_files_directory: str | None = None,
+        output_files_directory: str | None = None,
+    ):
         """Initialise the bindings instance."""
         self.config = DecoderConfiguration(
             input_files_directory=Path(input_files_directory) if isinstance(input_files_directory, str) else None,
@@ -81,14 +85,19 @@ class Decoder:
             "PROCESS_REMAINING_BUFFERS",
             "1",
         ]
-        # If passed, extend the command to include the new input/output arguments to the decoder.
+        # If passed, extend the command to include the new input/out arguments to the decoder.
+        if self.config.output_files_directory is not None:
+            cmd.extend(
+                [
+                    "DIR_OUTPUT_NETCDF_FILE",
+                    str(self.config.output_files_directory),
+                ]
+            )
         if self.config.input_files_directory is not None:
             cmd.extend(
                 [
                     "DIR_INPUT_RSYNC_DATA",
                     str(self.config.input_files_directory),
-                    "DIR_OUTPUT_NETCDF_FILE",
-                    str(self.config.output_files_directory),
                 ]
             )
         try:

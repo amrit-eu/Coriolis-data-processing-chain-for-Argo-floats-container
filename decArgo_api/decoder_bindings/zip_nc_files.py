@@ -1,7 +1,6 @@
 """Code to Zip decoded NC files."""
 
 import logging
-import os
 import traceback
 from io import BytesIO
 from pathlib import Path
@@ -15,10 +14,10 @@ class ZipNCFilesError(Exception):
 class ZipNCFiles:
     """Methods to zip newly decoded NC files from the Coriolis Decoder."""
 
-    def __init__(self, wmonum: str):
+    def __init__(self, output_location: str, wmonum: str):
         """Initialise the instance with the wmonum and NC file location."""
         self.wmonum = wmonum
-        self.base_output_location = Path(os.getenv("OUTPUT_LOCATION", f"/mnt/data/output/nc/{wmonum}")).resolve()
+        self.output_location = Path(output_location).resolve()
 
     def zip_all_nc_files(self) -> BytesIO:
         """Zip all .nc files under the wmonum's output directory.
@@ -30,7 +29,7 @@ class ZipNCFiles:
             buffer = BytesIO()
 
             with ZipFile(buffer, "w", compression=ZIP_DEFLATED) as zipfile:
-                for file in self.base_output_location.rglob("*.nc"):
+                for file in self.output_location.rglob("*.nc"):
                     zipfile.write(file)
 
             buffer.seek(0)
