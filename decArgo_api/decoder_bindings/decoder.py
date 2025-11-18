@@ -30,7 +30,7 @@ class DecoderConfiguration(BaseModel):
     output_files_directory: Path | None = Field(
         default=None, description="Directory where the decoded files will be written to"
     )
-    decoder_conf_file: Path = Field(..., description="Path to the decoder configuration file.")
+    decoder_conf_file: Path = Field(description="Path to the decoder configuration file.")
 
     @field_validator("input_files_directory", mode="before")
     def check_input_files_directory(cls, input_directory: Path):
