@@ -55,7 +55,7 @@ class DecoderConfiguration(BaseModel):
 
 
 class Decoder:
-    """Code to bind to the Coriolis Decoder and provide an entrypoint via an API."""
+    """A simple representation of the Coriolis Decoder for API entrypoints."""
 
     def __init__(
         self,
