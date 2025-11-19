@@ -86,7 +86,23 @@ COPY --from=development /tmp .
 
 COPY decArgo_soft/exec/run_decode_argo_2_nc_rt.sh run_decode_argo_2_nc_rt.sh   
 
+
 COPY entrypoint.sh .
+
+COPY decArgo_demo/config/decArgo_config_floats/ /mnt/data/config/
+COPY decArgo_demo/config/decoder_conf.json /mnt/data/config/
+COPY decArgo_demo/config/ar_greylist.txt /mnt/data/config/
+
+# runtime stage
+RUN \
+    mkdir -p /mnt/data/output/iridium \
+             /mnt/data/output/log \
+             /mnt/data/output/nc \
+             /mnt/data/output/xml \
+             /mnt/data/rsync/archive \
+             /mnt/data/rsync/archive/cycle \
+             /mnt/data/rsync/rsync_list
+
 
 # adjust rights
 RUN \

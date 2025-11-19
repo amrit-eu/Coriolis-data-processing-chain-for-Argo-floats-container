@@ -71,8 +71,10 @@ class FileManager:
             The name of the rsync file.
         """
         file_name = f"rsync_{datetime.now().strftime(format='%Y%m%dT%H%M%SZ')}.txt"
+        full_file_path = self.base_archive_rsync_location / self.imei / file_name
+        full_file_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(self.base_archive_rsync_location / self.imei / file_name, mode="w") as rsync_file:
+        with open(full_file_path, mode="w") as rsync_file:
             for filename in filenames:
                 rsync_file.write(f"{self.imei}/{filename}\n")
 
