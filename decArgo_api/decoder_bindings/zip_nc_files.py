@@ -7,6 +7,8 @@ from pathlib import Path
 from zipfile import ZIP_STORED, ZipFile
 import xml.etree.ElementTree as ET
 from contextlib import contextmanager
+import uuid
+
 class ZipNCFilesError(Exception):
     """Raised when there is an issue zipping the NC files."""
 
@@ -46,7 +48,8 @@ class ZipNCFiles:
                 
             buffer = BytesIO(data)
             buffer.seek(0)
-            return buffer
+            zip_filename = f"{self.wmonum}_{uuid.uuid4()}.zip"
+            return buffer, zip_filename
         except Exception as exc:
             logging.error(
             "An error occurred during the zip file process: %s",
