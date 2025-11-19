@@ -23,10 +23,10 @@ class FileManager:
         self.files = files
         self.base_archive_cycle_location = Path(
             os.getenv("ARCHIVE_CYCLE_LOCATION", "/mnt/data/rsync/archive/cycle")
-        ).resolve()
+        ).resolve(strict=True)
         self.base_archive_rsync_location = Path(
             os.getenv("ARCHIVE_RSYNC_LOCATION", "/mnt/data/rsync/rsync_list/")
-        ).resolve()
+        ).resolve(strict=True)
 
     def _detect_imei(self):
         imei_number_search = re.search(r"\d{15}", self.files[0].filename)
@@ -90,5 +90,4 @@ class FileManager:
                 [file.filename for file in self.files if self.copy_file_to_input_directory(file)]
             )
         except Exception as exc:
-            logging.error("An error occurred during the file management process: %s", traceback.format_exc())
-            raise FileManagerError from exc
+            raise FileManagerError(exc) from None

@@ -37,7 +37,8 @@ async def decode_float(wmonum: str, files: list[UploadFile]):
                 decoder_conf_file="/mnt/data/config/decoder_conf.json",
             )
             decoder.decode(wmonum=wmonum, rsync_file=rsync_file_name)
-            zipfile = ZipNCFiles(output_location=temporary_output_directory, wmonum=wmonum).zip_all_nc_files()
+            zipfile = ZipNCFiles(wmonum=wmonum).zip_all_nc_files()
+            
 
     except (FileManagerError, ZipNCFilesError, DecoderError):
         return {"Message": "Zip file not generated. Check the logs for more information."}
@@ -45,3 +46,4 @@ async def decode_float(wmonum: str, files: list[UploadFile]):
         return StreamingResponse(
             zipfile, media_type="application/zip", headers={"Content-Disposition": f"attachment; filename={wmonum}.zip"}
         )
+

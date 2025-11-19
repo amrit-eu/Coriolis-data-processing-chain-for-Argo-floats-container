@@ -75,7 +75,7 @@ class Decoder:
         cmd = [
             "/app/run_decode_argo_2_nc_rt.sh",
             "rsynclog",
-            rsync_file,
+            "all",
             "configfile",
             str(self.config.decoder_conf_file),
             "xmlreport",
@@ -103,6 +103,7 @@ class Decoder:
         try:
             logging.info("Starting decode process.")
             result = subprocess.run(cmd, env=os.environ.copy(), check=True, capture_output=True, text=True)
+            logging.info(result)
         except (subprocess.CalledProcessError, FileNotFoundError) as exc:
             raise DecoderError(exc) from None
         else:
@@ -111,4 +112,4 @@ class Decoder:
                 raise DecoderError(result.stdout)
 
         logging.info("Decoding finished succesfully.")
-        return True
+
