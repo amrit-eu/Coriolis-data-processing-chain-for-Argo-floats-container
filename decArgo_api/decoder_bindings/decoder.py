@@ -60,13 +60,13 @@ class Decoder:
     def __init__(
         self,
         decoder_conf_file: str,
-        input_files_directory: str | None = None,
-        output_files_directory: str | None = None,
+        input_files_directory: str | Path | None = None,
+        output_files_directory: str | Path | None = None,
     ):
         """Initialise the bindings instance."""
         self.config = DecoderConfiguration(
-            input_files_directory=Path(input_files_directory) if isinstance(input_files_directory, str) else None,
-            output_files_directory=Path(output_files_directory) if isinstance(output_files_directory, str) else None,
+            input_files_directory=Path(input_files_directory) if input_files_directory else None,
+            output_files_directory=Path(output_files_directory) if output_files_directory else None,
             decoder_conf_file=Path(decoder_conf_file),
         )
 
@@ -104,12 +104,10 @@ class Decoder:
             logging.info("Starting decode process.")
             result = subprocess.run(cmd, env=os.environ.copy(), check=True, capture_output=True, text=True)
         except (subprocess.CalledProcessError, FileNotFoundError) as exc:
-            logging.error("An error occurred during the decoder process: %s", traceback.format_exc())
-            raise DecoderError from exc
+            raise DecoderError(exc) from None
         else:
             # Check the decoder output for any issues.
             if "ERROR:" in result.stdout:
-                logging.error("An error occurred during the decoder process: %s", result.stdout)
                 raise DecoderError(result.stdout)
 
         logging.info("Decoding finished succesfully.")
