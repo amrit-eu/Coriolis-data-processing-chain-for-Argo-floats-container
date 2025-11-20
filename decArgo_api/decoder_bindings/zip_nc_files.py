@@ -51,9 +51,5 @@ class ZipNCFiles:
             buffer.seek(0)
             zip_filename = f"{self.wmonum}.zip"
             return buffer, zip_filename
-        except Exception:
-            logging.error(
-                "An error occurred during the zip file process: %s",
-                traceback.format_exc(),
-            )
-        raise ZipNCFilesError from None
+        except Exception as exc:
+            raise ZipNCFilesError(exc) from None
