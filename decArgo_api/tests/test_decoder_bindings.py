@@ -63,7 +63,7 @@ m = importlib.import_module(MODULE_NAME)
 # -----------------------------------------------------------------------------
 @pytest.fixture
 def tmp_conf_file(tmp_path: Path) -> Path:
-    p = tmp_path / "decoder_conf.json"
+    p = tmp_path / "api.decoder_conf.json"
     p.write_text('{"some":"config"}', encoding="utf-8")
     return p
 

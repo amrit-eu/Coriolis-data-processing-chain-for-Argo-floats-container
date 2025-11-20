@@ -97,6 +97,8 @@ class Decoder:
                     str(self.config.output_files_directory),
                     "DIR_OUTPUT_NETCDF_TRAJ_3_1_FILE",
                     str(self.config.output_files_directory),
+                    "IRIDIUM_DATA_DIRECTORY",
+                    str(self.config.output_files_directory / "iridium")
                 ]
             )
         if self.config.input_files_directory is not None:
@@ -108,7 +110,6 @@ class Decoder:
         try:
             logging.info("Starting decode process.")
             result = subprocess.run(cmd, env=os.environ.copy(), check=True, capture_output=True, text=True)
-            logging.info(result)
         except (subprocess.CalledProcessError, FileNotFoundError) as exc:
             raise DecoderError(exc) from None
         else:

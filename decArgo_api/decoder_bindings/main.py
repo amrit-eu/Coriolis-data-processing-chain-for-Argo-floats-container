@@ -9,7 +9,6 @@ from fastapi.responses import StreamingResponse
 from decoder_bindings.decoder import Decoder, DecoderError
 from decoder_bindings.file_manager import FileManager, FileManagerError
 from decoder_bindings.prepare_float_metadata import FloatMetadataManager, MissingFloatInfoError, MissingFloatMetaError
-from decoder_bindings.remove_decoded_files import RemoveIridiumFiles
 from decoder_bindings.zip_nc_files import ZipNCFiles, ZipNCFilesError
 
 logging.basicConfig(level=logging.INFO)
@@ -41,9 +40,11 @@ async def decode_float(
     except (MissingFloatMetaError, MissingFloatInfoError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from None
 
+
     float_metadata.write_all_float_metadata_to_file()
     imei = float_metadata.imei
 
+    # Given that the metadata is now in place, the main processing can now begin.
     try:
         # Copy the input files to their required location, and produce the 'rsync' file to pass to the decoder.
         rsync_file_name = FileManager(files=files, imei=imei).run()
@@ -53,17 +54,14 @@ async def decode_float(
             decoder = Decoder(
                 input_files_directory=None,
                 output_files_directory=temporary_output_directory,
-                decoder_conf_file="/mnt/data/config/decoder_conf.json",
+                decoder_conf_file="/mnt/data/config/api.decoder_conf.json",
                 extra_configuration=configuration_override,
             )
             # Run the decoder.
             decoder.decode(wmonum=wmonum, rsync_file=rsync_file_name)
 
-            # The newly decoded files are now zipped, ready to be returned in the response.
+            # The newly decoded files are now picked from the temp directory and zipped.
             zipfile, zip_filename = ZipNCFiles(wmonum=wmonum).zip_all_nc_files()
-
-        # Once the zip file is generated, clear the iridium directory for the next run.
-        RemoveIridiumFiles.remove_iridium_files(imei=imei, wmonum=wmonum)
 
     except (FileManagerError, ZipNCFilesError, DecoderError):
         return {"Message": "Zip file not generated. Check the logs for more information."}

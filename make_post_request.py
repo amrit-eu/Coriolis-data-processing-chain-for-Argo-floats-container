@@ -35,7 +35,7 @@ data = {
     "configuration_override": json.dumps(extra_args),  # optional
 }
 
-# Make the request
+# Make the request.
 response = requests.post(url, files=files, data=data)
 print(response.status_code)
 print(response)
