@@ -2,7 +2,6 @@
 
 import logging
 import os
-import re
 import shutil
 import traceback
 from datetime import datetime
@@ -18,9 +17,10 @@ class FileManagerError(Exception):
 class FileManager:
     """Methods to prepare raw files for delivery to the Coriolis Decoder."""
 
-    def __init__(self, files: list[UploadFile]):
+    def __init__(self, files: list[UploadFile], imei: str):
         """Initialise the instance with the given files."""
         self.files = files
+        self.imei = imei
         self.base_archive_cycle_location = Path(
             os.getenv("ARCHIVE_CYCLE_LOCATION", "/mnt/data/rsync/archive/cycle")
         ).resolve(strict=True)
@@ -28,11 +28,6 @@ class FileManager:
             os.getenv("ARCHIVE_RSYNC_LOCATION", "/mnt/data/rsync/rsync_list/")
         ).resolve(strict=True)
 
-    def _detect_imei(self):
-        imei_number_search = re.search(r"\d{15}", self.files[0].filename)
-        if imei_number_search is None:
-            raise ValueError("No IMEI detected in filename!")
-        return imei_number_search.group()
 
     def copy_file_to_input_directory(self, file) -> bool:
         """Copy the file to a directory where the decoder can pick it up.
@@ -87,7 +82,6 @@ class FileManager:
             The name of the rsync file to be passed to the decoder.
         """
         try:
-            self.imei = self._detect_imei()
             return self.construct_rsync_file(
                 [file.filename for file in self.files if self.copy_file_to_input_directory(file)]
             )

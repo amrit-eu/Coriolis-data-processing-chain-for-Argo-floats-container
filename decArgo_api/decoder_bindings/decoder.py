@@ -3,7 +3,6 @@
 import logging
 import os
 import subprocess
-import traceback
 from pathlib import Path
 
 from pydantic import BaseModel, Field, field_validator
@@ -91,15 +90,14 @@ class Decoder:
                 [
                     "DIR_OUTPUT_NETCDF_FILE",
                     str(self.config.output_files_directory),
+                    "DIR_OUTPUT_NETCDF_TRAJ_3_2_FILE",
+                    str(self.config.output_files_directory),
+                    "DIR_OUTPUT_NETCDF_TRAJ_3_1_FILE",
+                    str(self.config.output_files_directory),
                 ]
             )
         if self.config.input_files_directory is not None:
-            cmd.extend(
-                [
-                    "DIR_INPUT_RSYNC_DATA",
-                    str(self.config.input_files_directory),
-                ]
-            )
+            cmd.extend(["DIR_INPUT_RSYNC_DATA", str(self.config.input_files_directory)])
         try:
             logging.info("Starting decode process.")
             result = subprocess.run(cmd, env=os.environ.copy(), check=True, capture_output=True, text=True)
@@ -112,4 +110,3 @@ class Decoder:
                 raise DecoderError(result.stdout)
 
         logging.info("Decoding finished succesfully.")
-

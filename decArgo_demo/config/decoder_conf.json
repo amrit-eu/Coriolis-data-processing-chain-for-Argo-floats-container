@@ -29,6 +29,7 @@
     "DIR_OUTPUT_XML_FILE" : "/mnt/data/output/xml/",
     "DIR_OUTPUT_NETCDF_FILE" : "/mnt/data/output/nc/",
     "DIR_OUTPUT_NETCDF_TRAJ_3_2_FILE" : "/mnt/data/output/nc/",
+    "DIR_OUTPUT_NETCDF_TRAJ_3_1_FILE": "/mnt/data/output/nc/",
  
     "PROCESS_REMAINING_BUFFERS" : "0",
  
