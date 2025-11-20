@@ -18,13 +18,16 @@ app = FastAPI()
 
 
 @app.post("/decode_float/{wmonum}")
-async def decode_float(wmonum: str, files: list[UploadFile], float_metadata: str = Form(...)):
+async def decode_float(
+    wmonum: str, files: list[UploadFile], float_metadata: str = Form(...), configuration_override: str = Form(None)
+):
     """Invoke the decoder and return a ZIP file of the decoded NC files.
 
     Args:
         wmonum: The WMONUM of the raw files to be decoded.
         files: A list of files to be decoded.
         float_metadata: The meta & info payloads for a specific float.
+        configuration_override: Any additional configuration to run the decoder with.
 
     Returns: A zipfile, or a dict containing an error message.
     """
@@ -41,7 +44,6 @@ async def decode_float(wmonum: str, files: list[UploadFile], float_metadata: str
     float_metadata.write_all_float_metadata_to_file()
     imei = float_metadata.imei
 
-
     try:
         # Copy the input files to their required location, and produce the 'rsync' file to pass to the decoder.
         rsync_file_name = FileManager(files=files, imei=imei).run()
@@ -52,6 +54,7 @@ async def decode_float(wmonum: str, files: list[UploadFile], float_metadata: str
                 input_files_directory=None,
                 output_files_directory=temporary_output_directory,
                 decoder_conf_file="/mnt/data/config/decoder_conf.json",
+                extra_configuration=configuration_override,
             )
             # Run the decoder.
             decoder.decode(wmonum=wmonum, rsync_file=rsync_file_name)

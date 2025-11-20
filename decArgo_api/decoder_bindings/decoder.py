@@ -1,5 +1,6 @@
 """Decoder Bindings."""
 
+import json
 import logging
 import os
 import subprocess
@@ -61,6 +62,7 @@ class Decoder:
         decoder_conf_file: str,
         input_files_directory: str | Path | None = None,
         output_files_directory: str | Path | None = None,
+        extra_configuration: dict | None = None,
     ):
         """Initialise the bindings instance."""
         self.config = DecoderConfiguration(
@@ -68,6 +70,7 @@ class Decoder:
             output_files_directory=Path(output_files_directory) if output_files_directory else None,
             decoder_conf_file=Path(decoder_conf_file),
         )
+        self.extra_configuration = json.loads(extra_configuration)
 
     def decode(self, wmonum: str, rsync_file: str) -> None:
         """Run the Coriolis Decoder."""
@@ -98,6 +101,10 @@ class Decoder:
             )
         if self.config.input_files_directory is not None:
             cmd.extend(["DIR_INPUT_RSYNC_DATA", str(self.config.input_files_directory)])
+
+        if self.extra_configuration is not None:
+            for key, value in self.extra_configuration.items():
+                cmd.extend([key, value])
         try:
             logging.info("Starting decode process.")
             result = subprocess.run(cmd, env=os.environ.copy(), check=True, capture_output=True, text=True)

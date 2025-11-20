@@ -14,6 +14,7 @@ class MissingFloatMetaError(KeyError):
 
 class FloatMetadataManager:
     """Code to manage float metadata."""
+
     # These two directories will stay constant!
     float_info_directory = Path("/mnt/data/config/json_float_info/")
     float_meta_directory = Path("/mnt/data/config/json_float_meta/")

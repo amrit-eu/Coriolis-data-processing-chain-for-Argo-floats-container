@@ -28,7 +28,6 @@ class FileManager:
             os.getenv("ARCHIVE_RSYNC_LOCATION", "/mnt/data/rsync/rsync_list/")
         ).resolve(strict=True)
 
-
     def copy_file_to_input_directory(self, file) -> bool:
         """Copy the file to a directory where the decoder can pick it up.
 

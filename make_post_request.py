@@ -24,9 +24,16 @@ with open(r"mockfiles_6903014/meta_info.json") as file:
    meta_info = json.loads(file.read())
 
 
-data = {"float_metadata": json.dumps({"float_info": float_info,
-                  "float_meta_info": meta_info})}
+# Example Extra args, used to pass to the decoder and overwrite the default configuration.
+extra_args = {"DIR_OUTPUT_XML_FILE" : "/mnt/data/output/xml/",}
 
+data = {
+    "float_metadata": json.dumps({
+        "float_info": float_info,
+        "float_meta_info": meta_info,
+    }),
+    "configuration_override": json.dumps(extra_args),  # optional
+}
 
 # Make the request
 response = requests.post(url, files=files, data=data)
