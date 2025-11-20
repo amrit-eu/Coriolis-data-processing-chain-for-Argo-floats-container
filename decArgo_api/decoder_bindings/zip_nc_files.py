@@ -36,7 +36,6 @@ class ZipNCFiles:
         finally:
             zip_buffer.seek(0)
 
-
     def zip_all_nc_files(self) -> tuple[BytesIO, str]:
         """Zip all decoded NC files and return to the app so FastAPI can stream it."""
         try:

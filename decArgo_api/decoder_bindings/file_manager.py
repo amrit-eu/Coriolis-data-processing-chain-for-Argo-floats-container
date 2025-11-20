@@ -11,6 +11,7 @@ from fastapi import UploadFile
 class FileManagerError(Exception):
     """Raised when any error is encountered during the file management process."""
 
+
 class FileManager:
     """Methods to prepare raw files for delivery to the Coriolis Decoder."""
 
@@ -78,9 +79,7 @@ class FileManager:
                 self.copy_file_to_input_directory(file)
 
             # Then use all the files to build the rsync file, also required by the decoder.
-            return self.construct_rsync_file(
-                [file.filename for file in self.files]
-            )
+            return self.construct_rsync_file([file.filename for file in self.files])
 
         except Exception as exc:
             raise FileManagerError(exc) from None

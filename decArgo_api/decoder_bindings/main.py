@@ -1,6 +1,7 @@
 """API Entrypoint."""
 
 import logging
+import os
 import tempfile
 
 from fastapi import FastAPI, Form, HTTPException, UploadFile
@@ -13,7 +14,8 @@ from decoder_bindings.zip_nc_files import ZipNCFiles, ZipNCFilesError
 
 logging.basicConfig(level=logging.INFO)
 
-app = FastAPI()
+ROOT_PATH = os.getenv("API_ROOT_PATH", "")
+app = FastAPI(root_path=ROOT_PATH)
 
 
 @app.post("/decode_float/{wmonum}")
@@ -39,7 +41,6 @@ async def decode_float(
         float_metadata = FloatMetadataManager(wmonum=wmonum, float_metadata=float_metadata)
     except (MissingFloatMetaError, MissingFloatInfoError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from None
-
 
     float_metadata.write_all_float_metadata_to_file()
     imei = float_metadata.imei

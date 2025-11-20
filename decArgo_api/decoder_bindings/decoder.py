@@ -98,7 +98,7 @@ class Decoder:
                     "DIR_OUTPUT_NETCDF_TRAJ_3_1_FILE",
                     str(self.config.output_files_directory),
                     "IRIDIUM_DATA_DIRECTORY",
-                    str(self.config.output_files_directory / "iridium")
+                    str(self.config.output_files_directory / "iridium"),
                 ]
             )
         if self.config.input_files_directory is not None:
