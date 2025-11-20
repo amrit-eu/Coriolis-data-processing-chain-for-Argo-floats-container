@@ -49,7 +49,7 @@ async def decode_float(
         rsync_file_name = FileManager(files=files, imei=imei).run()
 
         # Prepare a temporary directory, and pass its name to the decoder, the decoded files will be placed here.
-        with tempfile.TemporaryDirectory(dir="/mnt/data") as temporary_output_directory:
+        with tempfile.TemporaryDirectory(dir="/tmp") as temporary_output_directory:
             decoder = Decoder(
                 input_files_directory=None,
                 output_files_directory=temporary_output_directory,

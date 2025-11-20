@@ -39,6 +39,7 @@ class ZipNCFiles:
         """Zip all decoded NC files and return to the app so FastAPI can stream it."""
         try:
             with self.bytes_buffer() as temp_bytes:
+                # With the zip file open, search for all NC files in the temporary directory and write them into the zip.
                 with ZipFile(temp_bytes, "w", compression=ZIP_STORED) as zipfile:
                     for file in self.fetch_all_nc_paths():
                         zipfile.write(file)
@@ -48,7 +49,7 @@ class ZipNCFiles:
 
             buffer = BytesIO(data)
             buffer.seek(0)
-            zip_filename = f"{self.wmonum}_{uuid.uuid4()}.zip"
+            zip_filename = f"{self.wmonum}.zip"
             return buffer, zip_filename
         except Exception:
             logging.error(

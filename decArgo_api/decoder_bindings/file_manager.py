@@ -1,9 +1,7 @@
 """Code to prepare the input files to be decoded."""
 
-import logging
 import os
 import shutil
-import traceback
 from datetime import datetime
 from pathlib import Path
 
@@ -12,7 +10,6 @@ from fastapi import UploadFile
 
 class FileManagerError(Exception):
     """Raised when any error is encountered during the file management process."""
-
 
 class FileManager:
     """Methods to prepare raw files for delivery to the Coriolis Decoder."""
@@ -28,7 +25,7 @@ class FileManager:
             os.getenv("ARCHIVE_RSYNC_LOCATION", "/mnt/data/rsync/rsync_list/")
         ).resolve(strict=True)
 
-    def copy_file_to_input_directory(self, file) -> bool:
+    def copy_file_to_input_directory(self, file) -> None:
         """Copy the file to a directory where the decoder can pick it up.
 
         The purpose of returning True/False is for the next step in the chain which is to
@@ -47,13 +44,8 @@ class FileManager:
         float_directory.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists.
         new_float_filename = float_directory / file.filename
 
-        try:
-            with new_float_filename.open("wb") as buffer:
-                shutil.copyfileobj(file.file, buffer)
-        except (OSError, TypeError):
-            logging.error("An error occurred during the file management process: %s", traceback.format_exc())
-            return False
-        return True
+        with new_float_filename.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
 
     def construct_rsync_file(self, filenames: list[str]) -> str:
         """Construct the rsync file required by the decoder.
@@ -81,8 +73,14 @@ class FileManager:
             The name of the rsync file to be passed to the decoder.
         """
         try:
+            # Copy each posted file to it's directory ready to be picked up by the decoder.
+            for file in self.files:
+                self.copy_file_to_input_directory(file)
+
+            # Then use all the files to build the rsync file, also required by the decoder.
             return self.construct_rsync_file(
-                [file.filename for file in self.files if self.copy_file_to_input_directory(file)]
+                [file.filename for file in self.files]
             )
+
         except Exception as exc:
             raise FileManagerError(exc) from None
