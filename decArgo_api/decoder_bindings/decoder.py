@@ -75,7 +75,7 @@ class Decoder:
     def decode(self, wmonum: str, rsync_file: str) -> None:
         """Run the Coriolis Decoder."""
         cmd = [
-            "/app/run_decode_argo_2_nc_rt.sh",
+            "/app/api.run_decode_argo_2_nc_rt.sh",
             "rsynclog",
             rsync_file,
             "configfile",
