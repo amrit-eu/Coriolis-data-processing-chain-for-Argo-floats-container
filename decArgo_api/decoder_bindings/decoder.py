@@ -70,14 +70,14 @@ class Decoder:
             output_files_directory=Path(output_files_directory) if output_files_directory else None,
             decoder_conf_file=Path(decoder_conf_file),
         )
-        self.extra_configuration = json.loads(extra_configuration)
+        self.extra_configuration = json.loads(extra_configuration) if extra_configuration is not None else None
 
     def decode(self, wmonum: str, rsync_file: str) -> None:
         """Run the Coriolis Decoder."""
         cmd = [
             "/app/run_decode_argo_2_nc_rt.sh",
             "rsynclog",
-            "all",
+            rsync_file,
             "configfile",
             str(self.config.decoder_conf_file),
             "xmlreport",
