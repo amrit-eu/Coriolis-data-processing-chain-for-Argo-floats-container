@@ -109,8 +109,8 @@ The Matlab runtime environent will pull and build by default, but the Decoder + 
 
 To build and run the Decoder API run the following steps:
 
-1. `docker build -t float-decoder -f api.Dockerfile .`
-2. `docker compose -f api.docker-compose.yml up -d --build`
+1. `docker build -t float-decoder -f decArgo_api/Dockerfile .`
+2. `docker compose -f compose.api.yml up -d --build`
 3. Navigate to `http://localhost:8000/docs`
 
 The files in decArgo_demo are ready to be decoded, as an example use any file in:
