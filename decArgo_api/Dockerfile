@@ -8,11 +8,11 @@ RUN \
 
 WORKDIR /tmp
 
-COPY decArgo_soft/exec/api.run_decode_argo_2_nc_rt.sh .
-COPY decArgo_soft/exec/decode_argo_2_nc_rt .
-COPY decArgo_soft/config/configuration_sample_files_docker/*.json ./config
-COPY decArgo_soft/config/_configParamNames ./config/_configParamNames
-COPY decArgo_soft/config/_techParamNames ./config/_techParamNames
+COPY ../decArgo_soft/exec/api.run_decode_argo_2_nc_rt.sh .
+COPY ../decArgo_soft/exec/decode_argo_2_nc_rt .
+COPY ../decArgo_soft/config/configuration_sample_files_docker/*.json ./config
+COPY ../decArgo_soft/config/_configParamNames ./config/_configParamNames
+COPY ../decArgo_soft/config/_techParamNames ./config/_techParamNames
 
 FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 AS runtime
 
@@ -56,7 +56,7 @@ RUN \
 WORKDIR ${APP_DIR}
 
 COPY --from=development /tmp/ .
-COPY entrypoint.sh .
+COPY ../entrypoint.sh .
 
 # adjust rights
 RUN \
@@ -69,7 +69,7 @@ FROM runtime AS python-runtime
 
 WORKDIR /app
 
-COPY decArgo_api/ .
+COPY . .
 
 RUN apt-get update && \
     apt-get install -y python3 python3-pip && \
@@ -84,14 +84,14 @@ RUN apt-get update && \
 COPY --from=development /tmp .
 # TODO : need to be remove after fix
 
-COPY decArgo_soft/exec/api.run_decode_argo_2_nc_rt.sh api.run_decode_argo_2_nc_rt.sh   
+COPY ../decArgo_soft/exec/api.run_decode_argo_2_nc_rt.sh api.run_decode_argo_2_nc_rt.sh   
 
 
-COPY entrypoint.sh .
+COPY ../entrypoint.sh .
 
-COPY decArgo_demo/config/decArgo_config_floats/ /mnt/data/config/
-COPY decArgo_api/api.decoder_conf.json /mnt/data/config/
-COPY decArgo_demo/config/ar_greylist.txt /mnt/data/config/
+COPY ../decArgo_demo/config/decArgo_config_floats/ /mnt/data/config/
+COPY ../decArgo_api/api.decoder_conf.json /mnt/data/config/
+COPY ../decArgo_demo/config/ar_greylist.txt /mnt/data/config/
 
 # runtime stage
 RUN \

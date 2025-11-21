@@ -28,7 +28,7 @@ jobs:
     uses: amrit-eu/ci-cd/.github/workflows/component-container-image.yml@main
     with:
       context: decArgo_api
-      image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api:${{ github.ref_name }}
+      image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api:latest
   container-image-security:
     needs: [container-image-build]
     permissions:
@@ -38,4 +38,4 @@ jobs:
     uses: amrit-eu/ci-cd/.github/workflows/component-container-image-security.yml@main
     with:
       context: decArgo_api
-      image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api:${{ github.ref_name }}
+      image-path: ghcr.io/amrit-eu/coriolis-data-processing-chain-for-argo-floats-container/api:latest
