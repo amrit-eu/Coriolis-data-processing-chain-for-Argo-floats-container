@@ -31,5 +31,6 @@ RUN chown -R decoderuser:appgroup /app
 # Switch to non-root user
 USER decoderuser
 
-# Run the application
-CMD ["python", "-u", "decoder_bindings/main.py"]
+
+CMD ["uvicorn", "decoder_bindings.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/decoder_bindings"]
+

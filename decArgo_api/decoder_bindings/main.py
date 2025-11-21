@@ -1,229 +1,74 @@
-"""Decoder Bindings."""
+"""API Entrypoint."""
 
+import logging
 import os
-import re
-import time
-import subprocess
-from pathlib import Path
+import tempfile
 
-from pydantic import BaseModel, Field, field_validator
-from utilities.dict2json import save_info_meta_conf
-from mock_data import info_dict, meta_dict, conf_dict  # Used for testing purposes only.
+from fastapi import FastAPI, Form, HTTPException, UploadFile
+from fastapi.responses import StreamingResponse
 
+from decoder_bindings.decoder import Decoder, DecoderError
+from decoder_bindings.file_manager import FileManager, FileManagerError
+from decoder_bindings.prepare_float_metadata import FloatMetadataManager, MissingFloatInfoError, MissingFloatMetaError
+from decoder_bindings.zip_nc_files import ZipNCFiles, ZipNCFilesError
 
-class EmptyInputDirectoryError(Exception):
-    """Raised when the input directory is empty."""
+logging.basicConfig(level=logging.INFO)
 
-
-class ExecutionError(Exception):
-    """Raised when no wmonum is passed."""
+ROOT_PATH = os.getenv("API_ROOT_PATH", "")
+app = FastAPI(root_path=ROOT_PATH)
 
 
-class WmoValidationError(ValueError):
-    """Raised when WMO number is invalid."""
+@app.post("/decode_float/{wmonum}")
+async def decode_float(
+    wmonum: str, files: list[UploadFile], float_metadata: str = Form(...), configuration_override: str = Form(None)
+):
+    """Invoke the decoder and return a ZIP file of the decoded NC files.
 
+    Args:
+        wmonum: The WMONUM of the raw files to be decoded.
+        files: A list of files to be decoded.
+        float_metadata: The meta & info payloads for a specific float.
+        configuration_override: Any additional configuration to run the decoder with.
 
-class DecoderConfiguration(BaseModel):
-    """Configuration used to pass to the decoder, with validation applied."""
+    Returns: A zipfile, or a dict containing an error message.
+    """
+    logging.info("Running for WMONUM: %s", wmonum)
+    logging.info("Running for Files: %s", files)
 
-    # Dossiers optionnels
-    input_files_directory: Path | None = Field(default=None)
-    output_files_directory: Path | None = Field(default=None)
-
-    # Fichier de conf OBLIGATOIRE
-    decoder_conf_file: Path
-
-    # Chemin exécutable (bash wrapper)
-    decoder_executable: Path | None = Field(default=None)
-    # Chemin runtime MATLAB
-    matlab_runtime: Path | None = Field(default=None)
-
-    # Options d’exécution
-    timeout_seconds: int | None = Field(default=3600, ge=1)  # 1h par défaut
-    check_wmo_format: bool = True
-
-    @field_validator("input_files_directory", mode="before")
-    @classmethod
-    def _validate_in_dir(cls, input_directory: Path | str | None):
-        if input_directory is None:
-            return None
-        p = Path(input_directory)
-        if not p.is_dir():
-            raise ValueError(f"{p} is not a valid input directory!")
-        # On considère vide = erreur (comportement actuel)
-        if not any(p.iterdir()):
-            raise EmptyInputDirectoryError(f"{p} is empty!")
-        return p.resolve()
-
-    @field_validator("output_files_directory", mode="before")
-    @classmethod
-    def _validate_out_dir(cls, output_directory: Path | str | None):
-        if output_directory is None:
-            return None
-        p = Path(output_directory)
-        if not p.is_dir():
-            raise ValueError(f"{p} is not a valid output directory!")
-        return p.resolve()
-
-    @field_validator("decoder_conf_file", mode="before")
-    @classmethod
-    def _validate_conf(cls, conf_file: Path | str):
-        p = Path(conf_file)
-        if not p.is_file():
-            raise ValueError(f"{p} is not a regular file!")
-        return p.resolve()
-
-    @field_validator("decoder_executable", mode="before")
-    @classmethod
-    def _validate_exec(cls, exec_file: Path | str):
-        p = Path(exec_file)
-        if not p.exists():
-            raise ValueError(f"Decoder executable not found: {p}")
-        if not os.access(p, os.X_OK):
-            raise ValueError(f"Decoder executable not executable: {p}")
-        return p.resolve()
-
-    @field_validator("matlab_runtime", mode="before")
-    @classmethod
-    def _validate_runtime_dir(cls, runtime_directory: Path | str | None):
-        if runtime_directory is None:
-            return None
-        p = Path(runtime_directory)
-        if not p.is_dir():
-            raise ValueError(f"{p} is not a valid output directory!")
-        return p.resolve()
-
-
-class Decoder:
-    """Python bindings around the bash launcher for the MATLAB decoder."""
-
-    _WMO_RE = re.compile(r"^\d{7}$")  # ex: '6902892'
-
-    def __init__(
-        self,
-        decoder_conf_file: str | Path,
-        decoder_executable: str | Path = None,
-        matlab_runtime: str | Path = None,
-        input_files_directory: str | Path | None = Field(default=None),
-        output_files_directory: str | Path | None = Field(default=None),
-        timeout_seconds: int | None = 3600,
-        hold_after_run: int | None = None,
-    ):
-        """Initialise the bindings instance."""
-        self.config = DecoderConfiguration(
-            input_files_directory=input_files_directory,
-            output_files_directory=output_files_directory,
-            decoder_conf_file=decoder_conf_file,
-            decoder_executable=decoder_executable,
-            matlab_runtime=matlab_runtime,
-            timeout_seconds=timeout_seconds,
-        )
-        self.hold_after_run = hold_after_run
-
-    @staticmethod
-    def _validate_wmo(wmonum: str):
-        if not isinstance(wmonum, str):
-            raise WmoValidationError("WMOnum must be a string.")
-        if not Decoder._WMO_RE.match(wmonum):
-            raise WmoValidationError(f"Invalid WMO '{wmonum}'. Expected 7 digits (e.g., '6902892').")
-
-    def _build_cmd(self, wmonum: str) -> list[str]:
-        cmd: list[str] = [
-            str(self.config.decoder_executable),
-            str(self.config.matlab_runtime),
-            "rsynclog",
-            "all",
-            "configfile",
-            str(self.config.decoder_conf_file),
-            "xmlreport",
-            "logfilexml.xml",
-            "floatwmo",
-            wmonum,
-            "PROCESS_REMAINING_BUFFERS",
-            "1",
-        ]
-
-        # Si l’utilisateur veut imposer les chemins I/O, on ne les ajoute que s’ils sont tous deux fournis
-        if self.config.input_files_directory is not None:
-            if self.config.output_files_directory is None:
-                raise ValueError(
-                    "If 'input_files_directory' is provided, 'output_files_directory' must also be provided."
-                )
-            cmd.extend(
-                [
-                    "DIR_INPUT_RSYNC_DATA",
-                    str(self.config.input_files_directory),
-                    "DIR_OUTPUT_NETCDF_FILE",
-                    str(self.config.output_files_directory),
-                ]
-            )
-        return cmd
-
-    def _post_run_hold(self) -> None:
-        """Remplace la boucle infinie par un hold optionnel et contrôlable."""
-        if self.hold_after_run is None or self.hold_after_run == 0:
-            return
-        if self.hold_after_run > 0:
-            time.sleep(self.hold_after_run)
-            return
-        # hold “infini” mais en dormant (pas de burn CPU)
-        while True:
-            time.sleep(60)
-
-    def decode(
-        self,
-        wmonum: str,
-    ) -> subprocess.CompletedProcess[str]:
-        """Run the Coriolis Decoder."""
-        if self.config.check_wmo_format:
-            self._validate_wmo(wmonum)
-
-        cmd = self._build_cmd(wmonum)
-        try:
-            print(cmd)
-            result = subprocess.run(
-                cmd,
-                env=os.environ.copy(),
-                check=True,
-                text=True,
-                timeout=self.config.timeout_seconds,
-            )
-        except subprocess.CalledProcessError as e:
-            print("Command failed with return code:", e.returncode)
-            print("STDERR:", e.stderr)
-        except FileNotFoundError:
-            print("Invalid command")
-        else:
-            print("Decoding ran:", result)
-
-        # << remplace `while True: pass`
-        self._post_run_hold()
-
-
-if __name__ == "__main__":  # pragma: no cover
-    print("Running...")
-
+    # Write the metadata JSON files to file, and simultaneously provide the IMEI for use further down the chain.
+    # If any errors are raised at this stage we will exit early and log an appropriate message back as a response.
     try:
-        float_info = save_info_meta_conf(
-            config_dir="./tmp/config",
-            float_info_dir="./tmp/config/decArgo_config_floats2/json_float_info",
-            float_meta_dir="./tmp/config/decArgo_config_floats2/json_float_meta",
-            info=info_dict,
-            meta=meta_dict,
-            decoder_conf=conf_dict,
-        )
-        for key, value in float_info.items():
-            print(f"  {key}: {value}")
-    except Exception as e:
-        print(f"Error saving float info : {e}")
+        float_metadata = FloatMetadataManager(wmonum=wmonum, float_metadata=float_metadata)
+    except (MissingFloatMetaError, MissingFloatInfoError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from None
 
-    # These are hardcoded for now, but will likely be passed by the calling code.
-    decoder = Decoder(
-        decoder_executable="../decArgo_soft/exec/run_decode_argo_2_nc_rt.sh",
-        matlab_runtime="/home/lbruvryl/development/tmp/tmp_tc/matlab_runtime/R2022b",
-        decoder_conf_file="../decArgo_demo/config/decoder_conf.json",
-        input_files_directory="../decArgo_demo/input",
-        output_files_directory="../decArgo_demo/output",
-        timeout_seconds=3600,
-    )
-    decoder.decode("6902892")
+    float_metadata.write_all_float_metadata_to_file()
+    imei = float_metadata.imei
+
+    # Given that the metadata is now in place, the main processing can now begin.
+    try:
+        # Copy the input files to their required location, and produce the 'rsync' file to pass to the decoder.
+        rsync_file_name = FileManager(files=files, imei=imei).run()
+
+        # Prepare a temporary directory, and pass its name to the decoder, the decoded files will be placed here.
+        with tempfile.TemporaryDirectory(dir="/tmp") as temporary_output_directory:
+            decoder = Decoder(
+                input_files_directory=None,
+                output_files_directory=temporary_output_directory,
+                decoder_conf_file="/mnt/data/config/api.decoder_conf.json",
+                extra_configuration=configuration_override,
+            )
+            # Run the decoder.
+            decoder.decode(wmonum=wmonum, rsync_file=rsync_file_name)
+
+            # The newly decoded files are now picked from the temp directory and zipped.
+            zipfile, zip_filename = ZipNCFiles(wmonum=wmonum).zip_all_nc_files()
+
+    except (FileManagerError, ZipNCFilesError, DecoderError):
+        return {"Message": "Zip file not generated. Check the logs for more information."}
+    else:
+        return StreamingResponse(
+            zipfile,
+            media_type="application/zip",
+            headers={"Content-Disposition": f"attachment; filename={zip_filename}"},
+        )
