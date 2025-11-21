@@ -45,14 +45,6 @@ namespaces = false
 [tool.poetry.scripts]
 decoder = "decoder_bindings.main:main"
 
-
-[tool.poetry.group.lint]
-optional = true
-
-[tool.poetry.group.lint.dependencies]
-ruff = "^0.4.2"
-
-
 [tool.poetry.group.test.dependencies]
 pyright = "1.1.401"
 pytest = "^8.3.3"
