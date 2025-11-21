@@ -1,7 +1,7 @@
 [project]
-name = "decoder_api"
+name = "decoder_bindings"
 version = "0.1.0"
-description = "Decoder API for Argo floats"
+description = "Bindings for the Decoder written in Python"
 authors = [
   { name="Léo Bruvry-Lagadec", email="leo.bruvry.lagadecl@ifremer.fr" }
 ]
