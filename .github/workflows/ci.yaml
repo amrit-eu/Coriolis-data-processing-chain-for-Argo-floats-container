@@ -4,7 +4,7 @@ on:
   push:
     branches:
       # Run on our main branch
-      - feature/api-publishing
+      - main
   pull_request:
     # Run for any pull requests
   release:
