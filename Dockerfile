@@ -8,7 +8,7 @@ RUN \
 
 WORKDIR /tmp
 
-COPY decArgo_soft/exec/api.run_decode_argo_2_nc_rt.sh .
+COPY decArgo_soft/exec/run_decode_argo_2_nc_rt.sh .
 COPY decArgo_soft/exec/decode_argo_2_nc_rt .
 COPY decArgo_soft/config/configuration_sample_files_docker/*.json ./config
 COPY decArgo_soft/config/_configParamNames ./config/_configParamNames
@@ -16,8 +16,8 @@ COPY decArgo_soft/config/_techParamNames ./config/_techParamNames
 
 FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 AS runtime
 
-# configurable arguments
-ARG RUN_FILE=api.run_decode_argo_2_nc_rt.sh
+# confifurable arguments
+ARG RUN_FILE=run_decode_argo_2_nc_rt.sh
 ARG GROUPID=9999
 ARG DATA_DIR=/mnt/data
 ARG RUNTIME_DIR=/mnt/runtime
@@ -65,7 +65,8 @@ RUN \
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 
-FROM runtime AS python-runtime
+# API runtime image
+FROM runtime AS runtime-api
 
 WORKDIR /app
 
@@ -79,16 +80,12 @@ RUN apt-get update && \
     poetry config virtualenvs.create false && \
     poetry install
 
-    
 
-COPY --from=development /tmp .
+# COPY --from=development /tmp .
+# COPY entrypoint.sh .
+
 # TODO : need to be remove after fix
-
-COPY decArgo_soft/exec/api.run_decode_argo_2_nc_rt.sh api.run_decode_argo_2_nc_rt.sh   
-
-
-COPY entrypoint.sh .
-
+COPY decArgo_soft/exec/api.run_decode_argo_2_nc_rt.sh api.run_decode_argo_2_nc_rt.sh 
 COPY decArgo_demo/config/decArgo_config_floats/ /mnt/data/config/
 COPY decArgo_api/api.decoder_conf.json /mnt/data/config/
 COPY decArgo_demo/config/ar_greylist.txt /mnt/data/config/

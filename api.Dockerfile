@@ -8,7 +8,7 @@ RUN \
 
 WORKDIR /tmp
 
-COPY decArgo_soft/exec/run_decode_argo_2_nc_rt.sh .
+COPY decArgo_soft/exec/api.run_decode_argo_2_nc_rt.sh .
 COPY decArgo_soft/exec/decode_argo_2_nc_rt .
 COPY decArgo_soft/config/configuration_sample_files_docker/*.json ./config
 COPY decArgo_soft/config/_configParamNames ./config/_configParamNames
@@ -16,8 +16,8 @@ COPY decArgo_soft/config/_techParamNames ./config/_techParamNames
 
 FROM gitlab-registry.ifremer.fr/ifremer-commons/docker/images/ubuntu:22.04 AS runtime
 
-# confifurable arguments
-ARG RUN_FILE=run_decode_argo_2_nc_rt.sh
+# configurable arguments
+ARG RUN_FILE=api.run_decode_argo_2_nc_rt.sh
 ARG GROUPID=9999
 ARG DATA_DIR=/mnt/data
 ARG RUNTIME_DIR=/mnt/runtime
@@ -65,7 +65,49 @@ RUN \
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 
-# API runtime image
-FROM runtime AS runtime-api
+FROM runtime AS python-runtime
+
+WORKDIR /app
+
+COPY decArgo_api/ .
+
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    python3 -m pip install --upgrade pip && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install "poetry~=1.8.0" && \
+    poetry config virtualenvs.create false && \
+    poetry install
+
+    
+
+COPY --from=development /tmp .
+# TODO : need to be remove after fix
+
+COPY decArgo_soft/exec/api.run_decode_argo_2_nc_rt.sh api.run_decode_argo_2_nc_rt.sh   
 
 
+COPY entrypoint.sh .
+
+COPY decArgo_demo/config/decArgo_config_floats/ /mnt/data/config/
+COPY decArgo_api/api.decoder_conf.json /mnt/data/config/
+COPY decArgo_demo/config/ar_greylist.txt /mnt/data/config/
+
+# runtime stage
+RUN \
+    mkdir -p /mnt/data/output/iridium \
+             /mnt/data/output/log \
+             /mnt/data/output/nc \
+             /mnt/data/output/xml \
+             /mnt/data/rsync/archive \
+             /mnt/data/rsync/archive/cycle \
+             /mnt/data/rsync/rsync_list
+
+
+# adjust rights
+RUN \
+    chown -R root:gbatch /app /mnt && \
+    chmod -R 770 /app /mnt
+
+
+CMD ["uvicorn", "decoder_bindings.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/decoder_bindings"]
