@@ -65,19 +65,46 @@ RUN \
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 
-# classique runtime image
-# FROM runtime-base AS runtime
+# API runtime image
+FROM runtime AS runtime-api
 
-# ENTRYPOINT ["/app/entrypoint.sh"]
+WORKDIR /app
 
-# Galaxy runtime image
-# FROM runtime-base AS runtime-galaxy
+COPY decArgo_api/ .
 
-# RUN \
-#     apt-get -y update && \
-#     echo "===== ADD TOOLS LIBRARIES =====" && \
-#     apt-get -y install zip unzip
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    python3 -m pip install --upgrade pip && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install "poetry~=1.8.0" && \
+    poetry config virtualenvs.create false && \
+    poetry install
 
-# COPY --chown=root:gbatch ./R2022b /mnt/runtime
 
-# USER 1000:${GROUPID}
+# COPY --from=development /tmp .
+# COPY entrypoint.sh .
+
+# TODO : need to be remove after fix
+COPY decArgo_soft/exec/api.run_decode_argo_2_nc_rt.sh api.run_decode_argo_2_nc_rt.sh 
+COPY decArgo_demo/config/decArgo_config_floats/ /mnt/data/config/
+COPY decArgo_api/api.decoder_conf.json /mnt/data/config/
+COPY decArgo_demo/config/ar_greylist.txt /mnt/data/config/
+
+# runtime stage
+RUN \
+    mkdir -p /mnt/data/output/iridium \
+             /mnt/data/output/log \
+             /mnt/data/output/nc \
+             /mnt/data/output/xml \
+             /mnt/data/rsync/archive \
+             /mnt/data/rsync/archive/cycle \
+             /mnt/data/rsync/rsync_list
+
+
+# adjust rights
+RUN \
+    chown -R root:gbatch /app /mnt && \
+    chmod -R 770 /app /mnt
+
+
+CMD ["uvicorn", "decoder_bindings.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/decoder_bindings"]

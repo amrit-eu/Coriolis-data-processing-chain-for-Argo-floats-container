@@ -6,11 +6,11 @@ Coriolis data processing chain for Argo floats Containerized
 
 ```mermaid
 graph TD
-   
+
       subgraph Docker[Docker]
             Argo-decoder[DCK Argo.x.y.z]
       end
-    
+
       subgraph Volumes[Volumes]
             subgraph Data[DATA]
                   Message[message]
@@ -38,7 +38,7 @@ graph TD
 - `/mnt/runtime` : Decoder runtime environment
 - `/mnt/data/output` : Output files directory
 - `/mnt/data/rsync` : Input files directory
-- `/mnt/data/config` :  external configurations directory
+- `/mnt/data/config` : external configurations directory
 - `/mnt/ref/gebco.nc` : GEBCO file
 
 ## Run image in your environment
@@ -101,7 +101,7 @@ set DECODER_REF_GEBCO_FILE=<path to gebco file> # optionnal
 ./docker-decoder-windows.bat 6902892
 ```
 
-### Using the Docker Compose file to run the API & Decoder.
+### Using the Docker Compose file to run the API & Decoder
 
 The Docker Compose file contains 2 services, the Matlab runtime environment, and the Decoder & Python bindings.
 
@@ -109,8 +109,8 @@ The Matlab runtime environent will pull and build by default, but the Decoder + 
 
 To build and run the Decoder API run the following steps:
 
-1. `docker build -t float-decoder -f Dockerfile .`
-2. `docker compose -f docker-compose.yml up -d --build`
+1. `docker build -t float-decoder -f decArgo_api/Dockerfile .`
+2. `docker compose -f compose.api.yml up -d --build`
 3. Navigate to `http://localhost:8000/docs`
 
 The files in decArgo_demo are ready to be decoded, as an example use any file in:
@@ -164,19 +164,20 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
 
 1. Lunix operating system **Required**
 2. Folowing procedure to [Install Docker Engine](https://docs.docker.com/engine/install/#supported-platforms) according to your operating system, or use next example using generic script (not recommended for production environments)
-   
+
    ```bash
-   # Install docker with generic script 
+   # Install docker with generic script
    curl -fsSL https://get.docker.com/ | sudo sh
-   
+
    # add your user to docker group
    sudo usermod -aG docker $USER
-   
+
    # Check that the Docker Engine installation is successful by running the hello-world image
    sudo docker run hello-world
    ```
-3. Install Git (*Optionnal*)
-   
+
+3. Install Git (_Optionnal_)
+
    ```bash
    sudo apt update
    sudo apt install git
@@ -185,17 +186,17 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
 ### Run demo
 
 - Upload the project with demonstration dataset
-  
+
   - Option 1 : Using Git
-  
+
   ```bash
   cd path-to-working-directory
   git clone -b feature/workshop https://github.com/euroargodev/Coriolis-data-processing-chain-for-Argo-floats.git
   cd Coriolis-data-processing-chain-for-Argo-floats
   ```
-  
+
   - Option 2 : Manual download
-  
+
   ```bash
   cd path-to-working-directory
   wget https://github.com/euroargodev/Coriolis-data-processing-chain-for-Argo-floats/archive/refs/heads/feature/workshop.zip
@@ -206,25 +207,26 @@ This demonstration will run the Coriolis-data-processing-chain-for-Argo-floats b
 #### with local runtime environment
 
 1. Costumize following variables to configure the decoder for the demonstration in `docker-decoder-linux.sh` file.
-   
+
    ```bash
    DECODER_RUNTIME_VOLUME=<path to runtime directory>
    ```
+
 2. Run the following script as an example to decode a single float.
-   
+
    ```bash
    ./docker-decoder-linux.sh 6902892
    ```
+
 3. Check next directory to see decoder outputs : `./decArgo_demo/output`
 
 #### with Dockerized runtime environment
 
 1. Copy `.env.docs` as `.env` file to configure the decoder for the demonstration.
 2. Run decoder demo with matlab runtime thanks to docker compose
-   
+
    ```bash
    ./docker-decoder-matlab-linux.sh 6902892
    ```
-3. Check next directory to see decoder outputs : `./decArgo_demo/output`
-   
 
+3. Check next directory to see decoder outputs : `./decArgo_demo/output`
