@@ -8,8 +8,9 @@ from pathlib import Path
 import requests
 import json
 
-url = "http://localhost:8000/decode_float/6903014"
-file_dir = r"mockfiles_6903014"
+url = "http://localhost:8000/decode_float/6902892"
+file_dir = r"mockfiles_6902892"
+
 
 
 # Open all the files we want to decode.
@@ -17,10 +18,10 @@ files = [("files", (str(Path(file_path).name), open(file_path, "rb"), "text/plai
 
 
 # Open the info and meta JSONS for the float we want to decode.
-with open(r"mockfiles_6903014/info_json.json") as file:
+with open(r"mockfiles_6902892/float_info.json") as file:
    float_info = json.loads(file.read())
 
-with open(r"mockfiles_6903014/meta_info.json") as file:
+with open(r"mockfiles_6902892/meta_info.json") as file:
    meta_info = json.loads(file.read())
 
 
