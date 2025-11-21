@@ -1,7 +1,7 @@
 """Sample request code."""
 
 
-# Step 1: Build the image: docker build -t float-decoder -f Dockerfile .  
+# Step 1: Build the image: docker build -t float-decoder -f api.Dockerfile .  
 # Step 2: Run the docker compose: docker compose -f api.docker-compose.yml up -d --build
 import requests as rq
 from pathlib import Path
