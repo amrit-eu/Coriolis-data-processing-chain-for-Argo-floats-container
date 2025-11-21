@@ -65,19 +65,7 @@ RUN \
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 
-# classique runtime image
-# FROM runtime-base AS runtime
+# API runtime image
+FROM runtime AS runtime-api
 
-# ENTRYPOINT ["/app/entrypoint.sh"]
 
-# Galaxy runtime image
-# FROM runtime-base AS runtime-galaxy
-
-# RUN \
-#     apt-get -y update && \
-#     echo "===== ADD TOOLS LIBRARIES =====" && \
-#     apt-get -y install zip unzip
-
-# COPY --chown=root:gbatch ./R2022b /mnt/runtime
-
-# USER 1000:${GROUPID}
